@@ -107,15 +107,15 @@ build src/CMakeFiles/nooblink.dir/main.cpp.o: CXX_COMPILER__nooblink_Debug /User
   OBJECT_DIR = src/CMakeFiles/nooblink.dir
   OBJECT_FILE_DIR = src/CMakeFiles/nooblink.dir
 
-build src/CMakeFiles/nooblink.dir/elfformat.cpp.o: CXX_COMPILER__nooblink_Debug /Users/zebullon/CLionProjects/nooblink/src/elfformat.cpp || cmake_object_order_depends_target_nooblink
-  DEP_FILE = src/CMakeFiles/nooblink.dir/elfformat.cpp.o.d
+build src/CMakeFiles/nooblink.dir/elf_format.cpp.o: CXX_COMPILER__nooblink_Debug /Users/zebullon/CLionProjects/nooblink/src/elf_format.cpp || cmake_object_order_depends_target_nooblink
+  DEP_FILE = src/CMakeFiles/nooblink.dir/elf_format.cpp.o.d
   FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk -std=gnu++2a
   INCLUDES = -I/Users/zebullon/CLionProjects/nooblink/src/.
   OBJECT_DIR = src/CMakeFiles/nooblink.dir
   OBJECT_FILE_DIR = src/CMakeFiles/nooblink.dir
 
-build src/CMakeFiles/nooblink.dir/property.cpp.o: CXX_COMPILER__nooblink_Debug /Users/zebullon/CLionProjects/nooblink/src/property.cpp || cmake_object_order_depends_target_nooblink
-  DEP_FILE = src/CMakeFiles/nooblink.dir/property.cpp.o.d
+build src/CMakeFiles/nooblink.dir/address.cpp.o: CXX_COMPILER__nooblink_Debug /Users/zebullon/CLionProjects/nooblink/src/address.cpp || cmake_object_order_depends_target_nooblink
+  DEP_FILE = src/CMakeFiles/nooblink.dir/address.cpp.o.d
   FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk -std=gnu++2a
   INCLUDES = -I/Users/zebullon/CLionProjects/nooblink/src/.
   OBJECT_DIR = src/CMakeFiles/nooblink.dir
@@ -129,7 +129,7 @@ build src/CMakeFiles/nooblink.dir/property.cpp.o: CXX_COMPILER__nooblink_Debug /
 #############################################
 # Link the executable src/nooblink
 
-build src/nooblink: CXX_EXECUTABLE_LINKER__nooblink_Debug src/CMakeFiles/nooblink.dir/main.cpp.o src/CMakeFiles/nooblink.dir/elfformat.cpp.o src/CMakeFiles/nooblink.dir/property.cpp.o
+build src/nooblink: CXX_EXECUTABLE_LINKER__nooblink_Debug src/CMakeFiles/nooblink.dir/main.cpp.o src/CMakeFiles/nooblink.dir/elf_format.cpp.o src/CMakeFiles/nooblink.dir/address.cpp.o
   FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk
   OBJECT_DIR = src/CMakeFiles/nooblink.dir
   POST_BUILD = :
