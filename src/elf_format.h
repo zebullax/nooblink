@@ -5,41 +5,74 @@
 #define NOOBLINK_ELF_FORMAT_H
 
 // nooblink
-#include <address.h>
+// json
+#include <nlohmann/json.hpp>
 // std
+#include <array>
 #include <cstddef>
 #include <cstdint>
+#include <ostream>
 
-namespace Nooblink {
+namespace NoobLink {
 
-// Describe length of fields in 32/64 bits ELF header
-template <AddressingType AdType> struct ElfHeaderLength {
-  static constexpr uint8_t k_Ident = 16;
-  static constexpr uint8_t k_ObjectFileType = 2;
-  static constexpr uint8_t k_Machine = 2;
-  static constexpr uint8_t k_Version = 4;
-  static constexpr uint8_t k_ExecutionAddress = AddressSize<AdType>::k_Value;
-  static constexpr uint8_t k_HeaderTableAddress = AddressSize<AdType>::k_Value;
-  static constexpr uint8_t k_SectionTableAddress = AddressSize<AdType>::k_Value;
-  static constexpr uint8_t k_Flags = 4;
-  static constexpr uint8_t k_ElfHeaderSize = 2;
-  static constexpr uint8_t k_HeaderTableSize = 2;
-  static constexpr uint8_t k_HeaderTableCount = 2;
-  static constexpr uint8_t k_SectionTableSize = 2;
-  static constexpr uint8_t k_SectionTableCount = 2;
-  static constexpr uint8_t k_SectionNameIndex = 2;
+// Describe size (bytes) of fields in ELF 64 header
+struct ElfHeader64FieldLength {
+  static constexpr size_t k_Ident = 4;
+  static constexpr size_t k_AddressClass = 1;
+  static constexpr size_t k_Endianness = 1;
+  static constexpr size_t k_ElfVersion = 1;
+  static constexpr size_t k_Abi = 1;
+  static constexpr size_t k_AbiVersion = 1;
+  static constexpr size_t k_Padding = 7;
+  // Endianness matter from here onward
+  static constexpr size_t k_ObjectFileType = 2;
+  static constexpr size_t k_Machine = 2;
+  static constexpr size_t k_Version = 4;
+  static constexpr size_t k_ExecutionAddress = 4;
+  static constexpr size_t k_HeaderTableAddress = 4;
+  static constexpr size_t k_SectionTableAddress = 4;
+  static constexpr size_t k_Flags = 4;
+  static constexpr size_t k_ElfHeaderSize = 2;
+  static constexpr size_t k_HeaderTableSize = 2;
+  static constexpr size_t k_HeaderTableCount = 2;
+  static constexpr size_t k_SectionTableSize = 2;
+  static constexpr size_t k_SectionTableCount = 2;
+  static constexpr size_t k_SectionNameIndex = 2;
+};
+// Describe offset of fields in ELF 64 header
+struct ElfHeader64FieldOffset {
+  static constexpr size_t k_Ident = 0x00;
+  static constexpr size_t k_AddressClass = 0x04;
+  static constexpr size_t k_Endianness = 0x05;
+  static constexpr size_t k_ElfVersion = 0x06;
+  static constexpr size_t k_Abi = 0x07;
+  static constexpr size_t k_AbiVersion = 0x08;
+  static constexpr size_t k_Padding = 0x09;
+  static constexpr size_t k_ObjectFileType = 0x10;
+  static constexpr size_t k_Machine = 0x12;
+  static constexpr size_t k_Version = 0x14;
+  static constexpr size_t k_ExecutionAddress = 0x18;
+  static constexpr size_t k_HeaderTableAddress = 0x20;
+  static constexpr size_t k_SectionTableAddress = 0x28;
+  static constexpr size_t k_Flags = 0x30;
+  static constexpr size_t k_ElfHeaderSize = 0x34;
+  static constexpr size_t k_HeaderTableSize = 0x36;
+  static constexpr size_t k_HeaderTableCount = 0x38;
+  static constexpr size_t k_SectionTableSize = 0x3a;
+  static constexpr size_t k_SectionTableCount = 0x3c;
+  static constexpr size_t k_SectionNameIndex = 0x3e;
 };
 
-template <AddressingType Length> struct ElfHeader {
-  std::byte ident[ElfHeaderLength<Length>::k_Ident];
-  std::byte objectFileType[ElfHeaderLength<Length>::k_ObjectFileType];
-  std::byte machine[ElfHeaderLength<Length>::k_Machine];
-  std::byte version[ElfHeaderLength<Length>::k_Version];
-  std::byte executionEntryPoint[ElfHeaderLength<Length>::k_ExecutionAddress];
-  std::byte headerTableOffset[ElfHeaderLength<Length>::k_HeaderTableAddress];
-  std::byte sectionTableOffset[ElfHeaderLength<Length>::k_SectionTableAddress];
-};
+// Sequence of raw bytes covering the Elf 64 header
+using Elf64Header =  std::array<std::byte, ElfHeader64FieldOffset::k_SectionNameIndex + ElfHeader64FieldLength::k_SectionNameIndex>;
 
-} // namespace Nooblink
+std::ostream &operator<<(std::ostream &os, const Elf64Header &header) {
+  using json = nlohmann::json;
+  json j;
+
+  return os;
+}
+
+} // namespace NoobLink
 
 #endif // NOOBLINK_ELF_FORMAT_H
