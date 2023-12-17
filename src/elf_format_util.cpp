@@ -2,12 +2,13 @@
 // Project: nooblink
 //
 
+// nooblink
+#include <elf_format_util.h>
+// json
+#include <nlohmann/json.hpp>
 // std
 #include <span>
 #include <utility>
-// nooblink
-#include <elf_constants.h>
-#include <elf_format_util.h>
 
 namespace NoobLink {
 
@@ -29,6 +30,24 @@ AddressClass ElfFormatUtil::resolveAddressClass(const Elf64Header &header) {
   return addressClass == std::byte(static_cast<unsigned char>(AddressClass::e_Invalid)) ? AddressClass::e_Invalid
          : addressClass == std::byte(static_cast<unsigned char>(AddressClass::e_64))    ? AddressClass::e_64
                                                                                         : AddressClass::e_32;
+}
+std::ostream &ElfFormatUtil::print(std::ostream &os, const Elf64Header &header) {
+  auto toString = [](auto e) {
+    std::ostringstream oss;
+    oss << e;
+    return oss.str();
+  };
+  using json = nlohmann::json;
+  json j;
+
+  if (!isElf(header)) {
+    return os << "{\"Error\": \"File is not Elf\"}";
+  }
+
+  j["AddressClass"] = toString(NoobLink::ElfFormatUtil::resolveAddressClass(header));
+  j["Endianness"] = toString(NoobLink::ElfFormatUtil::resolveEndianness(header));
+  os << j;
+  return os;
 }
 
 } // namespace NoobLink

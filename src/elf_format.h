@@ -4,7 +4,6 @@
 #ifndef NOOBLINK_ELF_FORMAT_H
 #define NOOBLINK_ELF_FORMAT_H
 
-// nooblink
 // json
 #include <nlohmann/json.hpp>
 // std
@@ -12,6 +11,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <ostream>
+#include <sstream>
 
 namespace NoobLink {
 
@@ -39,6 +39,7 @@ struct ElfHeader64FieldLength {
   static constexpr size_t k_SectionTableCount = 2;
   static constexpr size_t k_SectionNameIndex = 2;
 };
+
 // Describe offset of fields in ELF 64 header
 struct ElfHeader64FieldOffset {
   static constexpr size_t k_Ident = 0x00;
@@ -65,13 +66,6 @@ struct ElfHeader64FieldOffset {
 
 // Sequence of raw bytes covering the Elf 64 header
 using Elf64Header =  std::array<std::byte, ElfHeader64FieldOffset::k_SectionNameIndex + ElfHeader64FieldLength::k_SectionNameIndex>;
-
-std::ostream &operator<<(std::ostream &os, const Elf64Header &header) {
-  using json = nlohmann::json;
-  json j;
-
-  return os;
-}
 
 } // namespace NoobLink
 
