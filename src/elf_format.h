@@ -7,11 +7,9 @@
 // json
 #include <nlohmann/json.hpp>
 // std
-#include <array>
 #include <cstddef>
 #include <cstdint>
-#include <ostream>
-#include <sstream>
+#include <span>
 
 namespace NoobLink {
 
@@ -65,7 +63,8 @@ struct ElfHeader64FieldOffset {
 };
 
 // Sequence of raw bytes covering the Elf 64 header
-using Elf64Header =  std::array<std::byte, ElfHeader64FieldOffset::k_SectionNameIndex + ElfHeader64FieldLength::k_SectionNameIndex>;
+using Elf64Header =
+    std::span<std::byte, ElfHeader64FieldOffset::k_SectionNameIndex + ElfHeader64FieldLength::k_SectionNameIndex>;
 
 } // namespace NoobLink
 

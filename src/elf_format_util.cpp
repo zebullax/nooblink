@@ -13,7 +13,7 @@
 namespace NoobLink {
 
 bool ElfFormatUtil::isElf(const Elf64Header &header) {
-  std::span<const std::byte, 4> ident(header.begin(), 4);
+  std::span<const std::byte, 4> ident = header.first(4);
 
   return ident[0] == std::byte(0x7F) && ident[1] == std::byte(0x45) && ident[2] == std::byte(0x4c) &&
          ident[3] == std::byte(0x46);
@@ -41,7 +41,7 @@ std::ostream &ElfFormatUtil::print(std::ostream &os, const Elf64Header &header) 
   json j;
 
   if (!isElf(header)) {
-    return os << "{\"Error\": \"File is not Elf\"}";
+    return os << R"({"Error": "File is not Elf"})";
   }
 
   j["AddressClass"] = toString(NoobLink::ElfFormatUtil::resolveAddressClass(header));

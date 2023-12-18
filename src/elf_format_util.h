@@ -5,14 +5,13 @@
 #ifndef NOOBLINK_ELF_FORMAT_UTIL_H
 #define NOOBLINK_ELF_FORMAT_UTIL_H
 
-// std
-#include <array>
-#include <cstddef>
-#include <cstdint>
-#include <ostream>
 // nooblink
 #include <elf_constants.h>
 #include <elf_format.h>
+// std
+#include <cstddef>
+#include <cstdint>
+#include <ostream>
 
 namespace NoobLink {
 
