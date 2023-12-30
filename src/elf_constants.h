@@ -11,17 +11,16 @@
 
 namespace NoobLink {
 
-enum class AddressClass : unsigned char { e_Invalid, e_32, e_64 };
+enum class AddressClass : uint8_t { e_Invalid, e_32, e_64 };
 std::ostream &operator<<(std::ostream &os, const AddressClass &addressClass);
 
-enum class Endianness : unsigned char { e_Invalid, e_LittleEndian, e_BigEndian };
+enum class Endianness : uint8_t { e_Invalid, e_LittleEndian, e_BigEndian };
 std::ostream &operator<<(std::ostream &os, const Endianness &endianness);
 
 enum class ObjectFileType : uint16_t { e_Unknown, e_Relocatable, e_Executable, e_Shared, e_Core };
 std::ostream &operator<<(std::ostream &os, const ObjectFileType &objectFileType);
 
-enum class ABI {
-  e_Unknown = -1,
+enum class Abi : uint8_t {
   e_None = 0,
   e_Hpux = 1,
   e_Netbsd = 2,
@@ -41,9 +40,9 @@ enum class ABI {
   e_C6000Linux = 65,
   e_Arm = 97,
 };
-std::ostream &operator<<(std::ostream &os, const ABI &abi);
+std::ostream &operator<<(std::ostream &os, const Abi &abi);
 
-enum class Architecture : unsigned char {
+enum class Architecture : uint16_t {
   e_None = 0,            /* No machine */
   e_M32 = 1,             /* AT&T WE 32100 */
   e_Sparc = 2,           /* SUN SPARC */
@@ -257,8 +256,8 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const AddressClass &
     return os << "32bits";
   case AddressClass::e_64:
     return os << "64bits";
-  default:
   case AddressClass::e_Invalid:
+  default:
     return os << "Invalid";
   }
 }
@@ -270,8 +269,8 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const Endianness &en
     return os << "LowEndian";
   case Endianness::e_BigEndian:
     return os << "HighEndian";
-  default:
   case Endianness::e_Invalid:
+  default:
     return os << "Invalid";
   }
 }
@@ -288,48 +287,47 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const ObjectFileType
   case ObjectFileType::e_Core:
     return os << "Core";
   default:
-  case ObjectFileType::e_Unknown:
     return os << "Unknown";
   }
 }
 
-inline std::ostream &NoobLink::operator<<(std::ostream &os, const ABI &abi) {
+inline std::ostream &NoobLink::operator<<(std::ostream &os, const Abi &abi) {
   switch (abi) {
-  case ABI::e_None:
+  case Abi::e_None:
     return os << "None";
-  case ABI::e_Hpux:
+  case Abi::e_Hpux:
     return os << "Hpux";
-  case ABI::e_Netbsd:
+  case Abi::e_Netbsd:
     return os << "Netbsd";
-  case ABI::e_Linux:
+  case Abi::e_Linux:
     return os << "Linux";
-  case ABI::e_Solaris:
+  case Abi::e_Solaris:
     return os << "Solaris";
-  case ABI::e_Aix:
+  case Abi::e_Aix:
     return os << "Aix";
-  case ABI::e_Irix:
+  case Abi::e_Irix:
     return os << "Irix";
-  case ABI::e_Freebsd:
+  case Abi::e_Freebsd:
     return os << "Freebsd";
-  case ABI::e_Tru64:
+  case Abi::e_Tru64:
     return os << "Tru64";
-  case ABI::e_Modesto:
+  case Abi::e_Modesto:
     return os << "Modesto";
-  case ABI::e_Openbsd:
+  case Abi::e_Openbsd:
     return os << "Openbsd";
-  case ABI::e_Openvms:
+  case Abi::e_Openvms:
     return os << "Openvms";
-  case ABI::e_Nsk:
+  case Abi::e_Nsk:
     return os << "Nsk";
-  case ABI::e_Aros:
+  case Abi::e_Aros:
     return os << "Aros";
-  case ABI::e_Fenixos:
+  case Abi::e_Fenixos:
     return os << "Fenixos";
-  case ABI::e_C6000Elfabi:
+  case Abi::e_C6000Elfabi:
     return os << "C6000Elfabi";
-  case ABI::e_C6000Linux:
+  case Abi::e_C6000Linux:
     return os << "C6000Linux";
-  case ABI::e_Arm:
+  case Abi::e_Arm:
     return os << "Arm";
   default:
     return os << "Unknown";
@@ -697,6 +695,8 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const NoobLink::Arch
     return os << "Controls and Data Services VISIUM core processor";
   case NoobLink::Architecture::e_Moxie:
     return os << "Moxie processor family";
+  default:
+    return os << "Unknown";
   }
 }
 

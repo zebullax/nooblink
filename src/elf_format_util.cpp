@@ -3,6 +3,7 @@
 //
 
 // nooblink
+#include <elf_constants.h>
 #include <elf_format_util.h>
 // json
 #include <nlohmann/json.hpp>
@@ -11,7 +12,21 @@
 #include <sstream>
 
 namespace NoobLink {
+namespace {
 
+// Helper function to reinterpret the specified 'source' span as a specified 'Target'
+template <class Target, size_t NbBytes> Target convertTo(std::span<std::byte, NbBytes> source) {
+  static_assert(sizeof(Target) == NbBytes);
+  Target *head = reinterpret_cast<Target *>(source.data());
+  return *head;
+}
+
+// Macro to cast the specified 'FIELD_NAME' from the header to the specified 'TARGET_TYPE'
+#define RETURN_CAST_FIELD(TARGET_TYPE, FIELD_NAME)                                                                     \
+  std::span field = header.subspan<ElfHeader64FieldOffset::k_##FIELD_NAME, ElfHeader64FieldLength::k_##FIELD_NAME>();  \
+  return convertTo<TARGET_TYPE>(field);
+
+} // namespace
 bool ElfFormatUtil::isElf(Elf64Header header) {
   std::span ident = header.first(4);
 
@@ -19,62 +34,17 @@ bool ElfFormatUtil::isElf(Elf64Header header) {
          ident[3] == std::byte(0x46);
 }
 
-Endianness ElfFormatUtil::resolveEndianness(Elf64Header header) {
-  const std::byte &endianness = header[ElfHeader64FieldOffset::k_Endianness];
-  return endianness == std::byte(static_cast<unsigned char>(Endianness::e_Invalid))        ? Endianness::e_Invalid
-         : endianness == std::byte(static_cast<unsigned char>(Endianness::e_LittleEndian)) ? Endianness::e_LittleEndian
-                                                                                           : Endianness::e_BigEndian;
+Endianness ElfFormatUtil::resolveEndianness(Elf64Header header) { RETURN_CAST_FIELD(Endianness, Endianness); }
+
+AddressClass ElfFormatUtil::resolveAddressClass(Elf64Header header) { RETURN_CAST_FIELD(AddressClass, AddressClass); }
+
+Abi ElfFormatUtil::resolveABI(Elf64Header header) { RETURN_CAST_FIELD(Abi, Abi); }
+
+ObjectFileType ElfFormatUtil::resolveObjectFileType(Elf64Header header) {
+  RETURN_CAST_FIELD(ObjectFileType, ObjectFileType);
 }
 
-AddressClass ElfFormatUtil::resolveAddressClass(Elf64Header header) {
-  const std::byte &addressClass = header[ElfHeader64FieldOffset::k_AddressClass];
-  return addressClass == std::byte(static_cast<unsigned char>(AddressClass::e_Invalid)) ? AddressClass::e_Invalid
-         : addressClass == std::byte(static_cast<unsigned char>(AddressClass::e_64))    ? AddressClass::e_64
-                                                                                        : AddressClass::e_32;
-}
-ABI ElfFormatUtil::resolveABI(Elf64Header header) {
-  const std::byte &abi = header[ElfHeader64FieldOffset::k_Abi];
-  switch (abi) {
-  case std::byte(0):
-    return ABI::e_None;
-  case std::byte(1):
-    return ABI::e_Hpux;
-  case std::byte(2):
-    return ABI::e_Netbsd;
-  case std::byte(3):
-    return ABI::e_Linux;
-  case std::byte(6):
-    return ABI::e_Solaris;
-  case std::byte(7):
-    return ABI::e_Aix;
-  case std::byte(8):
-    return ABI::e_Irix;
-  case std::byte(9):
-    return ABI::e_Freebsd;
-  case std::byte(10):
-    return ABI::e_Tru64;
-  case std::byte(11):
-    return ABI::e_Modesto;
-  case std::byte(12):
-    return ABI::e_Openbsd;
-  case std::byte(13):
-    return ABI::e_Openvms;
-  case std::byte(14):
-    return ABI::e_Nsk;
-  case std::byte(15):
-    return ABI::e_Aros;
-  case std::byte(16):
-    return ABI::e_Fenixos;
-  case std::byte(64):
-    return ABI::e_C6000Elfabi;
-  case std::byte(65):
-    return ABI::e_C6000Linux;
-  case std::byte(97):
-    return ABI::e_Arm;
-  default:
-    return ABI::e_Unknown;
-  }
-}
+Architecture ElfFormatUtil::resolveArchitecture(Elf64Header header) { RETURN_CAST_FIELD(Architecture, Architecture); }
 
 std::ostream &ElfFormatUtil::print(std::ostream &os, Elf64Header header) {
   auto toString = [](auto e) {
@@ -96,7 +66,7 @@ std::ostream &ElfFormatUtil::print(std::ostream &os, Elf64Header header) {
   j["k_AbiVersion"] = "k_AbiVersion";
   //  j["k_Padding"] = "k_Padding";
   j["k_ObjectFileType"] = toString(ElfFormatUtil::resolveObjectFileType(header));
-  j["k_Architecture"] = "k_Architecture";
+  j["k_Architecture"] = toString(ElfFormatUtil::resolveArchitecture(header));
   j["k_Version"] = "k_Version";
   j["k_ExecutionAddress"] = "k_ExecutionAddress";
   j["k_HeaderTableAddress"] = "k_HeaderTableAddress";
@@ -112,14 +82,5 @@ std::ostream &ElfFormatUtil::print(std::ostream &os, Elf64Header header) {
   return os;
 }
 
-NoobLink::ObjectFileType NoobLink::ElfFormatUtil::resolveObjectFileType(NoobLink::Elf64Header header) {
-  static_assert(sizeof(NoobLink::ObjectFileType) == NoobLink::ElfHeader64FieldLength::k_ObjectFileType);
-
-  std::span objectFileType = header.subspan(NoobLink::ElfHeader64FieldOffset::k_ObjectFileType,
-                                            NoobLink::ElfHeader64FieldLength::k_ObjectFileType);
-  // FIXME harden against UB
-  NoobLink::ObjectFileType *head = reinterpret_cast<NoobLink::ObjectFileType *>(objectFileType.data());
-  return *head;
-}
-
+#undef RETURN_CAST_FIELD
 } // namespace NoobLink

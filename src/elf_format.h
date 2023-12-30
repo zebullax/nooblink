@@ -8,7 +8,6 @@
 #include <nlohmann/json.hpp>
 // std
 #include <cstddef>
-#include <cstdint>
 #include <span>
 
 namespace NoobLink {

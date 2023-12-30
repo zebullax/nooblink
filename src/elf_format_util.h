@@ -26,10 +26,13 @@ struct ElfFormatUtil {
   static Endianness resolveEndianness(Elf64Header header);
 
   // Return the ABI from the specified 'header'
-  static ABI resolveABI(Elf64Header header);
+  static Abi resolveABI(Elf64Header header);
 
   // Return the object file type from the specified 'header'
   static ObjectFileType resolveObjectFileType(Elf64Header header);
+
+  // Return the architecture from the specified 'header'
+  static Architecture resolveArchitecture(Elf64Header header);
 
   // Print a description of the specified 'header' to the specified 'os' and return that stream
   static std::ostream &print(std::ostream &os, Elf64Header header);
