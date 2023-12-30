@@ -253,32 +253,32 @@ std::ostream &operator<<(std::ostream &os, const Architecture &architecture);
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const AddressClass &addressClass) {
   switch (addressClass) {
 
-  case AddressClass::e_Invalid:
-    return os << "Invalid";
   case AddressClass::e_32:
     return os << "32bits";
   case AddressClass::e_64:
     return os << "64bits";
+  default:
+  case AddressClass::e_Invalid:
+    return os << "Invalid";
   }
 }
 
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const Endianness &endianness) {
   switch (endianness) {
 
-  case Endianness::e_Invalid:
-    return os << "Invalid";
   case Endianness::e_LittleEndian:
     return os << "LowEndian";
   case Endianness::e_BigEndian:
     return os << "HighEndian";
+  default:
+  case Endianness::e_Invalid:
+    return os << "Invalid";
   }
 }
 
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const ObjectFileType &objectFileType) {
   switch (objectFileType) {
 
-  case ObjectFileType::e_Unknown:
-    return os << "Unknown";
   case ObjectFileType::e_Relocatable:
     return os << "Relocatable";
   case ObjectFileType::e_Executable:
@@ -287,6 +287,9 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const ObjectFileType
     return os << "Shared";
   case ObjectFileType::e_Core:
     return os << "Core";
+  default:
+  case ObjectFileType::e_Unknown:
+    return os << "Unknown";
   }
 }
 

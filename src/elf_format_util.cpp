@@ -9,7 +9,6 @@
 // std
 #include <span>
 #include <sstream>
-#include <utility>
 
 namespace NoobLink {
 
@@ -22,10 +21,9 @@ bool ElfFormatUtil::isElf(Elf64Header header) {
 
 Endianness ElfFormatUtil::resolveEndianness(Elf64Header header) {
   const std::byte &endianness = header[ElfHeader64FieldOffset::k_Endianness];
-  return endianness == std::byte(static_cast<unsigned char>(Endianness::e_Invalid)) ? Endianness::e_Invalid
-         : endianness == std::byte(static_cast<unsigned char>(Endianness::e_LittleEndian))
-             ? Endianness::e_LittleEndian
-             : Endianness::e_BigEndian;
+  return endianness == std::byte(static_cast<unsigned char>(Endianness::e_Invalid))        ? Endianness::e_Invalid
+         : endianness == std::byte(static_cast<unsigned char>(Endianness::e_LittleEndian)) ? Endianness::e_LittleEndian
+                                                                                           : Endianness::e_BigEndian;
 }
 
 AddressClass ElfFormatUtil::resolveAddressClass(Elf64Header header) {
@@ -96,7 +94,7 @@ std::ostream &ElfFormatUtil::print(std::ostream &os, Elf64Header header) {
   j["k_ElfVersion"] = header[ElfHeader64FieldOffset::k_Version] == std::byte(1) ? "Current" : "Invalid";
   j["k_Abi"] = toString(ElfFormatUtil::resolveABI(header));
   j["k_AbiVersion"] = "k_AbiVersion";
-//  j["k_Padding"] = "k_Padding";
+  //  j["k_Padding"] = "k_Padding";
   j["k_ObjectFileType"] = toString(ElfFormatUtil::resolveObjectFileType(header));
   j["k_Architecture"] = "k_Architecture";
   j["k_Version"] = "k_Version";
@@ -112,6 +110,16 @@ std::ostream &ElfFormatUtil::print(std::ostream &os, Elf64Header header) {
   j["k_SectionNameIndex"] = "k_SectionNameIndex";
   os << j;
   return os;
+}
+
+NoobLink::ObjectFileType NoobLink::ElfFormatUtil::resolveObjectFileType(NoobLink::Elf64Header header) {
+  static_assert(sizeof(NoobLink::ObjectFileType) == NoobLink::ElfHeader64FieldLength::k_ObjectFileType);
+
+  std::span objectFileType = header.subspan(NoobLink::ElfHeader64FieldOffset::k_ObjectFileType,
+                                            NoobLink::ElfHeader64FieldLength::k_ObjectFileType);
+  // FIXME harden against UB
+  NoobLink::ObjectFileType *head = reinterpret_cast<NoobLink::ObjectFileType *>(objectFileType.data());
+  return *head;
 }
 
 } // namespace NoobLink
