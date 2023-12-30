@@ -24,7 +24,7 @@ struct ElfHeader64FieldLength {
   static constexpr size_t k_Padding = 7;
   // Endianness matter from here onward
   static constexpr size_t k_ObjectFileType = 2;
-  static constexpr size_t k_Machine = 2;
+  static constexpr size_t k_Architecture = 2;
   static constexpr size_t k_Version = 4;
   static constexpr size_t k_ExecutionAddress = 4;
   static constexpr size_t k_HeaderTableAddress = 4;
@@ -48,7 +48,7 @@ struct ElfHeader64FieldOffset {
   static constexpr size_t k_AbiVersion = 0x08;
   static constexpr size_t k_Padding = 0x09;
   static constexpr size_t k_ObjectFileType = 0x10;
-  static constexpr size_t k_Machine = 0x12;
+  static constexpr size_t k_Architecture = 0x12;
   static constexpr size_t k_Version = 0x14;
   static constexpr size_t k_ExecutionAddress = 0x18;
   static constexpr size_t k_HeaderTableAddress = 0x20;
