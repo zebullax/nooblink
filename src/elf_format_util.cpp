@@ -63,8 +63,8 @@ uint64_t ElfFormatUtil::resolveHeaderTableAddress(Elf64Header header) {
   RETURN_CAST_FIELD(uint64_t, HeaderTableAddress);
 }
 
-uint64_t ElfFormatUtil::resolveSectionTableAddress(Elf64Header header) {
-  RETURN_CAST_FIELD(uint64_t, SectionTableAddress);
+uint32_t ElfFormatUtil::resolveSectionTableAddress(Elf64Header header) {
+  RETURN_CAST_FIELD(uint32_t, SectionTableAddress);
 }
 
 uint32_t ElfFormatUtil::resolveFlags(Elf64Header header) { RETURN_CAST_FIELD(uint32_t, Flags); }

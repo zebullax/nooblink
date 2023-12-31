@@ -51,7 +51,7 @@ struct ElfFormatUtil {
   static uint64_t resolveHeaderTableAddress(Elf64Header header);
 
   // Return the SectionTableAddress from the specified 'header'
-  static uint64_t resolveSectionTableAddress(Elf64Header header);
+  static uint32_t resolveSectionTableAddress(Elf64Header header);
 
   // Return the flags from the specified 'header'
   static uint32_t resolveFlags(Elf64Header header);
