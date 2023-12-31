@@ -67,6 +67,20 @@ uint64_t ElfFormatUtil::resolveSectionTableAddress(Elf64Header header) {
   RETURN_CAST_FIELD(uint64_t, SectionTableAddress);
 }
 
+uint32_t ElfFormatUtil::resolveFlags(Elf64Header header) { RETURN_CAST_FIELD(uint32_t, Flags); }
+
+uint16_t ElfFormatUtil::resolveElfHeaderSize(Elf64Header header) { RETURN_CAST_FIELD(uint16_t, ElfHeaderSize); }
+
+uint16_t ElfFormatUtil::resolveHeaderTableSize(Elf64Header header) { RETURN_CAST_FIELD(uint16_t, HeaderTableSize); }
+
+uint16_t ElfFormatUtil::resolveHeaderTableCount(Elf64Header header) { RETURN_CAST_FIELD(uint16_t, HeaderTableCount); }
+
+uint16_t ElfFormatUtil::resolveSectionTableSize(Elf64Header header) { RETURN_CAST_FIELD(uint16_t, SectionTableSize); }
+
+uint16_t ElfFormatUtil::resolveSectionTableCount(Elf64Header header) { RETURN_CAST_FIELD(uint16_t, SectionTableCount); }
+
+uint16_t ElfFormatUtil::resolveSectionNameIndex(Elf64Header header) { RETURN_CAST_FIELD(uint16_t, SectionNameIndex); }
+
 std::ostream &ElfFormatUtil::print(std::ostream &os, Elf64Header header) {
   auto toString = [](auto e) {
     std::ostringstream oss;
@@ -74,7 +88,7 @@ std::ostream &ElfFormatUtil::print(std::ostream &os, Elf64Header header) {
     return oss.str();
   };
 
-  auto toAddress = [](auto e) {
+  auto toHex = [](auto e) {
     std::ostringstream oss;
     oss << "0x" << std::hex << std::setw(sizeof(e)) << std::setfill('0') << e;
     return oss.str();
@@ -96,16 +110,16 @@ std::ostream &ElfFormatUtil::print(std::ostream &os, Elf64Header header) {
   j["ObjectFileType"] = toString(ElfFormatUtil::resolveObjectFileType(header));
   j["Architecture"] = toString(ElfFormatUtil::resolveArchitecture(header));
   j["ObjectFileVersion"] = ElfFormatUtil::resolveObjectFileVersion(header);
-  j["k_ExecutionAddress"] = toAddress(ElfFormatUtil::resolveExecutionAddress(header));
-  j["k_HeaderTableAddress"] = toAddress(ElfFormatUtil::resolveHeaderTableAddress(header));
-  j["k_SectionTableAddress"] = toAddress(ElfFormatUtil::resolveSectionTableAddress(header));
-  j["k_Flags"] = "k_Flags";
-  j["k_ElfHeaderSize"] = "k_ElfHeaderSize";
-  j["k_HeaderTableSize"] = "k_HeaderTableSize";
-  j["k_HeaderTableCount"] = "k_HeaderTableCount";
-  j["k_SectionTableSize"] = "k_SectionTableSize";
-  j["k_SectionTableCount"] = "k_SectionTableCount";
-  j["k_SectionNameIndex"] = "k_SectionNameIndex";
+  j["ExecutionAddress"] = toHex(ElfFormatUtil::resolveExecutionAddress(header));
+  j["HeaderTableAddress"] = toHex(ElfFormatUtil::resolveHeaderTableAddress(header));
+  j["SectionTableAddress"] = toHex(ElfFormatUtil::resolveSectionTableAddress(header));
+  j["Flags"] = toHex(ElfFormatUtil::resolveFlags(header));
+  j["ElfHeaderSize"] = ElfFormatUtil::resolveElfHeaderSize(header);
+  j["HeaderTableSize"] = ElfFormatUtil::resolveHeaderTableSize(header);
+  j["HeaderTableCount"] = ElfFormatUtil::resolveHeaderTableCount(header);
+  j["SectionTableSize"] = ElfFormatUtil::resolveSectionTableSize(header);
+  j["SectionTableCount"] = ElfFormatUtil::resolveSectionTableCount(header);
+  j["SectionNameIndex"] = ElfFormatUtil::resolveSectionNameIndex(header);
   os << j;
   return os;
 }

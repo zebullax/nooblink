@@ -53,6 +53,27 @@ struct ElfFormatUtil {
   // Return the SectionTableAddress from the specified 'header'
   static uint64_t resolveSectionTableAddress(Elf64Header header);
 
+  // Return the flags from the specified 'header'
+  static uint32_t resolveFlags(Elf64Header header);
+
+  // Return the ElfHeaderSize from the specified 'header'
+  static uint16_t resolveElfHeaderSize(Elf64Header header);
+
+  // Return the HeaderTableSize from the specified 'header'
+  static uint16_t resolveHeaderTableSize(Elf64Header header);
+
+  // Return the HeaderTableCount from the specified 'header'
+  static uint16_t resolveHeaderTableCount(Elf64Header header);
+
+  // Return the SectionTableSize from the specified 'header'
+  static uint16_t resolveSectionTableSize(Elf64Header header);
+
+  // Return the SectionTableCount from the specified 'header'
+  static uint16_t resolveSectionTableCount(Elf64Header header);
+
+  // Return the SectionNameIndex from the specified 'header'
+  static uint16_t resolveSectionNameIndex(Elf64Header header);
+
   // Print a description of the specified 'header' to the specified 'os' and return that stream
   static std::ostream &print(std::ostream &os, Elf64Header header);
 };
