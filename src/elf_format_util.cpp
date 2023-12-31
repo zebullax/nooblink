@@ -69,7 +69,7 @@ uint64_t ElfFormatUtil::resolveSectionTableAddress(Elf64Header header) {
 
 uint32_t ElfFormatUtil::resolveFlags(Elf64Header header) { RETURN_CAST_FIELD(uint32_t, Flags); }
 
-uint16_t ElfFormatUtil::resolveElfHeaderSize(Elf64Header header) { RETURN_CAST_FIELD(uint16_t, ElfHeaderSize); }
+uint16_t ElfFormatUtil::resolveHeaderSize(Elf64Header header) { RETURN_CAST_FIELD(uint16_t, HeaderSize); }
 
 uint16_t ElfFormatUtil::resolveHeaderTableSize(Elf64Header header) { RETURN_CAST_FIELD(uint16_t, HeaderTableSize); }
 
@@ -114,7 +114,7 @@ std::ostream &ElfFormatUtil::print(std::ostream &os, Elf64Header header) {
   j["HeaderTableAddress"] = toHex(ElfFormatUtil::resolveHeaderTableAddress(header));
   j["SectionTableAddress"] = toHex(ElfFormatUtil::resolveSectionTableAddress(header));
   j["Flags"] = toHex(ElfFormatUtil::resolveFlags(header));
-  j["ElfHeaderSize"] = ElfFormatUtil::resolveElfHeaderSize(header);
+  j["HeaderSize"] = ElfFormatUtil::resolveHeaderSize(header);
   j["HeaderTableSize"] = ElfFormatUtil::resolveHeaderTableSize(header);
   j["HeaderTableCount"] = ElfFormatUtil::resolveHeaderTableCount(header);
   j["SectionTableSize"] = ElfFormatUtil::resolveSectionTableSize(header);

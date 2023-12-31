@@ -56,8 +56,8 @@ struct ElfFormatUtil {
   // Return the flags from the specified 'header'
   static uint32_t resolveFlags(Elf64Header header);
 
-  // Return the ElfHeaderSize from the specified 'header'
-  static uint16_t resolveElfHeaderSize(Elf64Header header);
+  // Return the HeaderSize from the specified 'header'
+  static uint16_t resolveHeaderSize(Elf64Header header);
 
   // Return the HeaderTableSize from the specified 'header'
   static uint16_t resolveHeaderTableSize(Elf64Header header);

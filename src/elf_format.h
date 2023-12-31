@@ -27,9 +27,9 @@ struct ElfHeader64FieldLength {
   static constexpr size_t k_ObjectFileVersion = 4;
   static constexpr size_t k_ExecutionAddress = 8;
   static constexpr size_t k_HeaderTableAddress = 8;
-  static constexpr size_t k_SectionTableAddress = 8;
+  static constexpr size_t k_SectionTableAddress = 4;
   static constexpr size_t k_Flags = 4;
-  static constexpr size_t k_ElfHeaderSize = 2;
+  static constexpr size_t k_HeaderSize = 2;
   static constexpr size_t k_HeaderTableSize = 2;
   static constexpr size_t k_HeaderTableCount = 2;
   static constexpr size_t k_SectionTableSize = 2;
@@ -53,7 +53,7 @@ struct ElfHeader64FieldOffset {
   static constexpr size_t k_HeaderTableAddress = 0x20;
   static constexpr size_t k_SectionTableAddress = 0x28;
   static constexpr size_t k_Flags = 0x30;
-  static constexpr size_t k_ElfHeaderSize = 0x34;
+  static constexpr size_t k_HeaderSize = 0x34;
   static constexpr size_t k_HeaderTableSize = 0x36;
   static constexpr size_t k_HeaderTableCount = 0x38;
   static constexpr size_t k_SectionTableSize = 0x3a;
