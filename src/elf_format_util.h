@@ -9,6 +9,7 @@
 #include <elf_constants.h>
 #include <elf_format.h>
 // std
+#include <cstdint>
 #include <ostream>
 
 namespace NoobLink {
@@ -25,14 +26,32 @@ struct ElfFormatUtil {
   // Return the endianness from the specified 'header'
   static Endianness resolveEndianness(Elf64Header header);
 
+  // Return header version from specified 'header'
+  static uint8_t resolveHeaderVersion(Elf64Header header);
+
   // Return the ABI from the specified 'header'
   static Abi resolveABI(Elf64Header header);
+
+  // Return ABI version from specified 'header'
+  static uint8_t resolveAbiVersion(Elf64Header header);
 
   // Return the object file type from the specified 'header'
   static ObjectFileType resolveObjectFileType(Elf64Header header);
 
+  // Return object file version from specified 'header'
+  static uint32_t resolveObjectFileVersion(Elf64Header header);
+
   // Return the architecture from the specified 'header'
   static Architecture resolveArchitecture(Elf64Header header);
+
+  // Return the ExecutionAddress from the specified 'header'
+  static uint64_t resolveExecutionAddress(Elf64Header header);
+
+  // Return the HeaderTableAddress from the specified 'header'
+  static uint64_t resolveHeaderTableAddress(Elf64Header header);
+
+  // Return the SectionTableAddress from the specified 'header'
+  static uint64_t resolveSectionTableAddress(Elf64Header header);
 
   // Print a description of the specified 'header' to the specified 'os' and return that stream
   static std::ostream &print(std::ostream &os, Elf64Header header);
