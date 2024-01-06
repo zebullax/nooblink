@@ -27,12 +27,12 @@ struct FieldOffset {
     static constexpr size_t k_Architecture = 0x12;
     static constexpr size_t k_ObjectFileVersion = 0x14;
     static constexpr size_t k_Entry = 0x18;
-    static constexpr size_t k_ProgramHeaderTableAddress = 0x20;
+    static constexpr size_t k_ProgramTableAddress = 0x20;
     static constexpr size_t k_SectionTableAddress = 0x28;
     static constexpr size_t k_Flags = 0x30;
     static constexpr size_t k_HeaderSize = 0x34;
-    static constexpr size_t k_ProgramHeaderTableSize = 0x36;
-    static constexpr size_t k_ProgramHeaderTableCount = 0x38;
+    static constexpr size_t k_ProgramTableSize = 0x36;
+    static constexpr size_t k_ProgramTableCount = 0x38;
     // This member holds a section header's size in bytes. A section header is one entry in the section
     // header table; all entries are the same size.
     static constexpr size_t k_SectionTableSize = 0x3a;
@@ -82,12 +82,12 @@ struct FieldLength {
     static constexpr size_t k_Architecture = 2;
     static constexpr size_t k_ObjectFileVersion = 4;
     static constexpr size_t k_Entry = 8;
-    static constexpr size_t k_ProgramHeaderTableAddress = 8;
+    static constexpr size_t k_ProgramTableAddress = 8;
     static constexpr size_t k_SectionTableAddress = 8;
     static constexpr size_t k_Flags = 4;
     static constexpr size_t k_HeaderSize = 2;
-    static constexpr size_t k_ProgramHeaderTableSize = 2;
-    static constexpr size_t k_ProgramHeaderTableCount = 2;
+    static constexpr size_t k_ProgramTableSize = 2;
+    static constexpr size_t k_ProgramTableCount = 2;
     static constexpr size_t k_SectionTableSize = 2;
     static constexpr size_t k_SectionTableCount = 2;
     static constexpr size_t k_SectionNameIndex = 2;

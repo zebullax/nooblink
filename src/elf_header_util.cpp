@@ -37,53 +37,45 @@ bool ElfHeaderUtil::isElf(ElfHeader header) {
          ident[3] == std::byte(0x46);
 }
 
-Endianness ElfHeaderUtil::resolveEndianness(ElfHeader header) { RETURN_CAST_FIELD(Endianness, Endianness); }
+Endianness ElfHeaderUtil::endianness(ElfHeader header) { RETURN_CAST_FIELD(Endianness, Endianness); }
 
-uint8_t ElfHeaderUtil::resolveHeaderVersion(ElfHeader header){RETURN_CAST_FIELD(uint8_t, HeaderVersion)}
+uint8_t ElfHeaderUtil::headerVersion(ElfHeader header){RETURN_CAST_FIELD(uint8_t, HeaderVersion)}
 
-AddressClass ElfHeaderUtil::resolveAddressClass(ElfHeader header) {
+AddressClass ElfHeaderUtil::addressClass(ElfHeader header) {
   RETURN_CAST_FIELD(AddressClass, AddressClass);
 }
 
-Abi ElfHeaderUtil::resolveABI(ElfHeader header) { RETURN_CAST_FIELD(Abi, Abi); }
+Abi ElfHeaderUtil::abi(ElfHeader header) { RETURN_CAST_FIELD(Abi, Abi); }
 
-uint8_t ElfHeaderUtil::resolveAbiVersion(ElfHeader header){RETURN_CAST_FIELD(uint8_t, AbiVersion)}
+uint8_t ElfHeaderUtil::abiVersion(ElfHeader header){RETURN_CAST_FIELD(uint8_t, AbiVersion)}
 
-ObjectFileType ElfHeaderUtil::resolveObjectFileType(ElfHeader header) {
+ObjectFileType ElfHeaderUtil::objectFileType(ElfHeader header) {
   RETURN_CAST_FIELD(ObjectFileType, ObjectFileType);
 }
 
-Architecture ElfHeaderUtil::resolveArchitecture(ElfHeader header) { RETURN_CAST_FIELD(Architecture, Architecture); }
+Architecture ElfHeaderUtil::architecture(ElfHeader header) { RETURN_CAST_FIELD(Architecture, Architecture); }
 
-uint32_t ElfHeaderUtil::resolveObjectFileVersion(ElfHeader header) { RETURN_CAST_FIELD(uint32_t, ObjectFileVersion); }
+uint32_t ElfHeaderUtil::objectFileVersion(ElfHeader header) { RETURN_CAST_FIELD(uint32_t, ObjectFileVersion); }
 
-uint64_t ElfHeaderUtil::resolveExecutionAddress(ElfHeader header) { RETURN_CAST_FIELD(uint64_t, Entry); }
+uint64_t ElfHeaderUtil::executionAddress(ElfHeader header) { RETURN_CAST_FIELD(uint64_t, Entry); }
 
-uint64_t ElfHeaderUtil::resolveProgramHeaderTableAddress(ElfHeader header) {
-  RETURN_CAST_FIELD(uint64_t, ProgramHeaderTableAddress);
-}
+uint64_t ElfHeaderUtil::ProgramTableAddress(ElfHeader header) { RETURN_CAST_FIELD(uint64_t, ProgramTableAddress); }
 
-uint64_t ElfHeaderUtil::resolveSectionTableAddress(ElfHeader header) {
-  RETURN_CAST_FIELD(uint64_t, SectionTableAddress);
-}
+uint64_t ElfHeaderUtil::sectionTableAddress(ElfHeader header) { RETURN_CAST_FIELD(uint64_t, SectionTableAddress); }
 
-uint32_t ElfHeaderUtil::resolveFlags(ElfHeader header) { RETURN_CAST_FIELD(uint32_t, Flags); }
+uint32_t ElfHeaderUtil::flags(ElfHeader header) { RETURN_CAST_FIELD(uint32_t, Flags); }
 
-uint16_t ElfHeaderUtil::resolveHeaderSize(ElfHeader header) { RETURN_CAST_FIELD(uint16_t, HeaderSize); }
+uint16_t ElfHeaderUtil::headerSize(ElfHeader header) { RETURN_CAST_FIELD(uint16_t, HeaderSize); }
 
-uint16_t ElfHeaderUtil::resolveProgramHeaderTableEntrySize(ElfHeader header) {
-  RETURN_CAST_FIELD(uint16_t, ProgramHeaderTableSize);
-}
+uint16_t ElfHeaderUtil::ProgramTableEntrySize(ElfHeader header) { RETURN_CAST_FIELD(uint16_t, ProgramTableSize); }
 
-uint16_t ElfHeaderUtil::resolveProgramHeaderTableEntryCount(ElfHeader header) {
-  RETURN_CAST_FIELD(uint16_t, ProgramHeaderTableCount);
-}
+uint16_t ElfHeaderUtil::ProgramTableEntryCount(ElfHeader header) { RETURN_CAST_FIELD(uint16_t, ProgramTableCount); }
 
-uint16_t ElfHeaderUtil::resolveSectionTableSize(ElfHeader header) { RETURN_CAST_FIELD(uint16_t, SectionTableSize); }
+uint16_t ElfHeaderUtil::sectionTableSize(ElfHeader header) { RETURN_CAST_FIELD(uint16_t, SectionTableSize); }
 
-uint16_t ElfHeaderUtil::resolveSectionTableCount(ElfHeader header) { RETURN_CAST_FIELD(uint16_t, SectionTableCount); }
+uint16_t ElfHeaderUtil::sectionTableCount(ElfHeader header) { RETURN_CAST_FIELD(uint16_t, SectionTableCount); }
 
-uint16_t ElfHeaderUtil::resolveSectionNameIndex(ElfHeader header) { RETURN_CAST_FIELD(uint16_t, SectionNameIndex); }
+uint16_t ElfHeaderUtil::sectionNameIndex(ElfHeader header) { RETURN_CAST_FIELD(uint16_t, SectionNameIndex); }
 
 std::ostream &ElfHeaderUtil::print(std::ostream &os, ElfHeader header) {
   auto toString = [](auto e) {
@@ -105,25 +97,25 @@ std::ostream &ElfHeaderUtil::print(std::ostream &os, ElfHeader header) {
     return os << R"({"Error": "File is not Elf"})";
   }
 
-  j["AddressClass"] = toString(ElfHeaderUtil::resolveAddressClass(header));
-  j["Endianness"] = toString(ElfHeaderUtil::resolveEndianness(header));
-  j["HeaderVersion"] = ElfHeaderUtil::resolveHeaderVersion(header);
-  j["Abi"] = toString(ElfHeaderUtil::resolveABI(header));
-  j["AbiVersion"] = ElfHeaderUtil::resolveAbiVersion(header);
+  j["AddressClass"] = toString(ElfHeaderUtil::addressClass(header));
+  j["Endianness"] = toString(ElfHeaderUtil::endianness(header));
+  j["HeaderVersion"] = ElfHeaderUtil::headerVersion(header);
+  j["Abi"] = toString(ElfHeaderUtil::abi(header));
+  j["AbiVersion"] = ElfHeaderUtil::abiVersion(header);
   j["Padding"] = "       ";
-  j["ObjectFileType"] = toString(ElfHeaderUtil::resolveObjectFileType(header));
-  j["Architecture"] = toString(ElfHeaderUtil::resolveArchitecture(header));
-  j["ObjectFileVersion"] = ElfHeaderUtil::resolveObjectFileVersion(header);
-  j["ExecutionAddress"] = toHex(ElfHeaderUtil::resolveExecutionAddress(header));
-  j["ProgramHeaderTableAddress"] = toHex(ElfHeaderUtil::resolveProgramHeaderTableAddress(header));
-  j["SectionTableAddress"] = toHex(ElfHeaderUtil::resolveSectionTableAddress(header));
-  j["Flags"] = toHex(ElfHeaderUtil::resolveFlags(header));
-  j["HeaderSize"] = ElfHeaderUtil::resolveHeaderSize(header);
-  j["ProgramHeaderTableSize"] = ElfHeaderUtil::resolveProgramHeaderTableEntrySize(header);
-  j["ProgramHeaderTableCount"] = ElfHeaderUtil::resolveProgramHeaderTableEntryCount(header);
-  j["SectionTableSize"] = ElfHeaderUtil::resolveSectionTableSize(header);
-  j["SectionTableCount"] = ElfHeaderUtil::resolveSectionTableCount(header);
-  j["SectionNameIndex"] = ElfHeaderUtil::resolveSectionNameIndex(header);
+  j["ObjectFileType"] = toString(ElfHeaderUtil::objectFileType(header));
+  j["Architecture"] = toString(ElfHeaderUtil::architecture(header));
+  j["ObjectFileVersion"] = ElfHeaderUtil::objectFileVersion(header);
+  j["ExecutionAddress"] = toHex(ElfHeaderUtil::executionAddress(header));
+  j["ProgramTableAddress"] = toHex(ElfHeaderUtil::ProgramTableAddress(header));
+  j["SectionTableAddress"] = toHex(ElfHeaderUtil::sectionTableAddress(header));
+  j["Flags"] = toHex(ElfHeaderUtil::flags(header));
+  j["HeaderSize"] = ElfHeaderUtil::headerSize(header);
+  j["ProgramTableSize"] = ElfHeaderUtil::ProgramTableEntrySize(header);
+  j["ProgramTableCount"] = ElfHeaderUtil::ProgramTableEntryCount(header);
+  j["SectionTableSize"] = ElfHeaderUtil::sectionTableSize(header);
+  j["SectionTableCount"] = ElfHeaderUtil::sectionTableCount(header);
+  j["SectionNameIndex"] = ElfHeaderUtil::sectionNameIndex(header);
   os << j;
   return os;
 }
