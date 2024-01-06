@@ -247,6 +247,49 @@ enum class Architecture : uint16_t {
 };
 std::ostream &operator<<(std::ostream &os, const Architecture &architecture);
 
+enum class SectionType : uint32_t {
+  e_Null = 0,
+  e_Progbits = 1,
+  e_Symtab = 2,
+  e_Strtab = 3,
+  e_Rela = 4,
+  e_Hash = 5,
+  e_Dynamic = 6,
+  e_Note = 7,
+  e_Nobits = 8,
+  e_Rel = 9,
+  e_Shlib = 10,
+  e_Dynsym = 11,
+  e_Init_array = 14,
+  e_Fini_array = 15,
+  e_Preinit_array = 16,
+  e_Group = 17,
+  e_Symtab_shndx = 18,
+  e_Loos = 0x60000000,
+  e_Hios = 0x6fffffff,
+  e_Loproc = 0x70000000,
+  e_Hiproc = 0x7fffffff,
+  e_Louser = 0x80000000,
+  e_Hiuser = 0xffffffff,
+};
+std::ostream &operator<<(std::ostream &os, const SectionType &sectionType);
+
+enum class SectionFlag : uint64_t {
+  e_Write = 0x1,     // Writable
+  e_Alloc = 0x2,     // Occupies memory at runtime
+  e_Execinstr = 0x4, // Executable
+  e_Merge = 0x10,    // Might be merged
+  e_Strings = 0x20,  // Contains C-style string
+  e_Info_link = 0x40,
+  e_Link_order = 0x80, // Preserve order after combining
+  e_Os_nonconforming = 0x100,
+  e_Group = 0x200,
+  e_Tls = 0x400, // Section hold thread local data
+  e_Maskos = 0x0ff00000,
+  e_Maskproc = 0xf0000000,
+};
+std::ostream &operator<<(std::ostream &os, const SectionFlag &sectionFlag);
+
 } // namespace NoobLink
 
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const AddressClass &addressClass) {
@@ -334,369 +377,449 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const Abi &abi) {
   }
 }
 
-inline std::ostream &NoobLink::operator<<(std::ostream &os, const NoobLink::Architecture &architecture) {
+inline std::ostream &NoobLink::operator<<(std::ostream &os, const Architecture &architecture) {
   switch (architecture) {
-  case NoobLink::Architecture::e_None:
+  case Architecture::e_None:
     return os << "No machine";
-  case NoobLink::Architecture::e_M32:
+  case Architecture::e_M32:
     return os << "AT&T WE 32100";
-  case NoobLink::Architecture::e_Sparc:
+  case Architecture::e_Sparc:
     return os << "SUN SPARC";
-  case NoobLink::Architecture::e_386:
+  case Architecture::e_386:
     return os << "Intel 80386";
-  case NoobLink::Architecture::e_68k:
+  case Architecture::e_68k:
     return os << "Motorola m68k family";
-  case NoobLink::Architecture::e_88k:
+  case Architecture::e_88k:
     return os << "Motorola m88k family";
-  case NoobLink::Architecture::e_486:
+  case Architecture::e_486:
     return os << "Intel 80486";
-  case NoobLink::Architecture::e_860:
+  case Architecture::e_860:
     return os << "Intel 80860";
-  case NoobLink::Architecture::e_Mips:
+  case Architecture::e_Mips:
     return os << "MIPS R3000 (officially, big-endian only)";
-  case NoobLink::Architecture::e_S370:
+  case Architecture::e_S370:
     return os << "IBM System/370";
-  case NoobLink::Architecture::e_Mips_rs3_le:
+  case Architecture::e_Mips_rs3_le:
     return os << "MIPS R3000 little-endian (Oct 4 1999 Draft) Deprecated";
-  case NoobLink::Architecture::e_res011:
-  case NoobLink::Architecture::e_res012:
-  case NoobLink::Architecture::e_res013:
-  case NoobLink::Architecture::e_res014:
+  case Architecture::e_res011:
+  case Architecture::e_res012:
+  case Architecture::e_res013:
+  case Architecture::e_res014:
     return os << "Reserved";
-  case NoobLink::Architecture::e_Parisc:
+  case Architecture::e_Parisc:
     return os << "HPPA";
-  case NoobLink::Architecture::e_res016:
+  case Architecture::e_res016:
     return os << "Reserved";
-  case NoobLink::Architecture::e_Vpp550:
+  case Architecture::e_Vpp550:
     return os << "Fujitsu VPP500";
-  case NoobLink::Architecture::e_Sparc32plus:
+  case Architecture::e_Sparc32plus:
     return os << "Sun's \"v8plus\"";
-  case NoobLink::Architecture::e_960:
+  case Architecture::e_960:
     return os << "Intel 80960";
-  case NoobLink::Architecture::e_Ppc:
+  case Architecture::e_Ppc:
     return os << "PowerPC";
-  case NoobLink::Architecture::e_Ppc64:
+  case Architecture::e_Ppc64:
     return os << "64-bit PowerPC";
-  case NoobLink::Architecture::e_S390:
+  case Architecture::e_S390:
     return os << "IBM S/390";
-  case NoobLink::Architecture::e_Spu:
+  case Architecture::e_Spu:
     return os << "Sony/Toshiba/IBM SPU";
-  case NoobLink::Architecture::e_res024:
-  case NoobLink::Architecture::e_res025:
-  case NoobLink::Architecture::e_res026:
-  case NoobLink::Architecture::e_res027:
-  case NoobLink::Architecture::e_res028:
-  case NoobLink::Architecture::e_res029:
-  case NoobLink::Architecture::e_res030:
-  case NoobLink::Architecture::e_res031:
-  case NoobLink::Architecture::e_res032:
-  case NoobLink::Architecture::e_res033:
-  case NoobLink::Architecture::e_res034:
-  case NoobLink::Architecture::e_res035:
+  case Architecture::e_res024:
+  case Architecture::e_res025:
+  case Architecture::e_res026:
+  case Architecture::e_res027:
+  case Architecture::e_res028:
+  case Architecture::e_res029:
+  case Architecture::e_res030:
+  case Architecture::e_res031:
+  case Architecture::e_res032:
+  case Architecture::e_res033:
+  case Architecture::e_res034:
+  case Architecture::e_res035:
     return os << "Reserved";
-  case NoobLink::Architecture::e_V800:
+  case Architecture::e_V800:
     return os << "NEC V800 series";
-  case NoobLink::Architecture::e_Fr20:
+  case Architecture::e_Fr20:
     return os << "Fujitsu FR20";
-  case NoobLink::Architecture::e_Rh32:
+  case Architecture::e_Rh32:
     return os << "TRW RH32";
-  case NoobLink::Architecture::e_Mcore:
+  case Architecture::e_Mcore:
     return os << "MCore";
-  case NoobLink::Architecture::e_Arm:
+  case Architecture::e_Arm:
     return os << "ARM";
-  case NoobLink::Architecture::e_Old_alpha:
+  case Architecture::e_Old_alpha:
     return os << "Digital Alpha";
-  case NoobLink::Architecture::e_Sh:
+  case Architecture::e_Sh:
     return os << "Renesas (formerly Hitachi) / SuperH SH";
-  case NoobLink::Architecture::e_Sparcv9:
+  case Architecture::e_Sparcv9:
     return os << "SPARC v9 64-bit";
-  case NoobLink::Architecture::e_Tricore:
+  case Architecture::e_Tricore:
     return os << "Siemens Tricore embedded processor";
-  case NoobLink::Architecture::e_Arc:
+  case Architecture::e_Arc:
     return os << "ARC Cores";
-  case NoobLink::Architecture::e_H8_300:
+  case Architecture::e_H8_300:
     return os << "Renesas (formerly Hitachi) H8/300";
-  case NoobLink::Architecture::e_H8_300h:
+  case Architecture::e_H8_300h:
     return os << "Renesas (formerly Hitachi) H8/300H";
-  case NoobLink::Architecture::e_H8s:
+  case Architecture::e_H8s:
     return os << "Renesas (formerly Hitachi) H8S";
-  case NoobLink::Architecture::e_H8_500:
+  case Architecture::e_H8_500:
     return os << "Renesas (formerly Hitachi) H8/500";
-  case NoobLink::Architecture::e_Ia_64:
+  case Architecture::e_Ia_64:
     return os << "Intel IA-64 Processor";
-  case NoobLink::Architecture::e_Mips_x:
+  case Architecture::e_Mips_x:
     return os << "Stanford MIPS-X";
-  case NoobLink::Architecture::e_Coldfire:
+  case Architecture::e_Coldfire:
     return os << "Motorola Coldfire";
-  case NoobLink::Architecture::e_68hc12:
+  case Architecture::e_68hc12:
     return os << "Motorola M68HC12";
-  case NoobLink::Architecture::e_Mma:
+  case Architecture::e_Mma:
     return os << "Fujitsu Multimedia Accelerator";
-  case NoobLink::Architecture::e_Pcp:
+  case Architecture::e_Pcp:
     return os << "Siemens PCP";
-  case NoobLink::Architecture::e_Ncpu:
+  case Architecture::e_Ncpu:
     return os << "Sony nCPU embedded RISC processor";
-  case NoobLink::Architecture::e_Ndr1:
+  case Architecture::e_Ndr1:
     return os << "Denso NDR1 microprocessor";
-  case NoobLink::Architecture::e_Starcore:
+  case Architecture::e_Starcore:
     return os << "Motorola Star*Core processor";
-  case NoobLink::Architecture::e_Me16:
+  case Architecture::e_Me16:
     return os << "Toyota ME16 processor";
-  case NoobLink::Architecture::e_St100:
+  case Architecture::e_St100:
     return os << "STMicroelectronics ST100 processor";
-  case NoobLink::Architecture::e_Tinyj:
+  case Architecture::e_Tinyj:
     return os << "Advanced Logic Corp. TinyJ embedded processor";
-  case NoobLink::Architecture::e_X86_64:
+  case Architecture::e_X86_64:
     return os << "Advanced Micro Devices X86-64 processor";
-  case NoobLink::Architecture::e_Pdsp:
+  case Architecture::e_Pdsp:
     return os << "Sony DSP Processor";
-  case NoobLink::Architecture::e_Pdp10:
+  case Architecture::e_Pdp10:
     return os << "Digital Equipment Corp. PDP-10";
-  case NoobLink::Architecture::e_Pdp11:
+  case Architecture::e_Pdp11:
     return os << "Digital Equipment Corp. PDP-11";
-  case NoobLink::Architecture::e_Fx66:
+  case Architecture::e_Fx66:
     return os << "Siemens FX66 microcontroller";
-  case NoobLink::Architecture::e_St9plus:
+  case Architecture::e_St9plus:
     return os << "STMicroelectronics ST9+ 8/16 bit microcontroller";
-  case NoobLink::Architecture::e_St7:
+  case Architecture::e_St7:
     return os << "STMicroelectronics ST7 8-bit microcontroller";
-  case NoobLink::Architecture::e_68hc16:
+  case Architecture::e_68hc16:
     return os << "Motorola MC68HC16 Microcontroller";
-  case NoobLink::Architecture::e_68hc11:
+  case Architecture::e_68hc11:
     return os << "Motorola MC68HC11 Microcontroller";
-  case NoobLink::Architecture::e_68hc08:
+  case Architecture::e_68hc08:
     return os << "Motorola MC68HC08 Microcontroller";
-  case NoobLink::Architecture::e_68hc05:
+  case Architecture::e_68hc05:
     return os << "Motorola MC68HC05 Microcontroller";
-  case NoobLink::Architecture::e_Svx:
+  case Architecture::e_Svx:
     return os << "Silicon Graphics SVx";
-  case NoobLink::Architecture::e_St19:
+  case Architecture::e_St19:
     return os << "STMicroelectronics ST19 8-bit cpu";
-  case NoobLink::Architecture::e_Vax:
+  case Architecture::e_Vax:
     return os << "Digital VAX";
-  case NoobLink::Architecture::e_Cris:
+  case Architecture::e_Cris:
     return os << "Axis Communications 32-bit embedded processor";
-  case NoobLink::Architecture::e_Javelin:
+  case Architecture::e_Javelin:
     return os << "Infineon Technologies 32-bit embedded cpu";
-  case NoobLink::Architecture::e_Firepath:
+  case Architecture::e_Firepath:
     return os << "Element 14 64-bit DSP processor";
-  case NoobLink::Architecture::e_Zsp:
+  case Architecture::e_Zsp:
     return os << "LSI Logic's 16-bit DSP processor";
-  case NoobLink::Architecture::e_Mmix:
+  case Architecture::e_Mmix:
     return os << "Donald Knuth's educational 64-bit processor";
-  case NoobLink::Architecture::e_Huany:
+  case Architecture::e_Huany:
     return os << "Harvard's machine-independent format";
-  case NoobLink::Architecture::e_Prism:
+  case Architecture::e_Prism:
     return os << "SiTera Prism";
-  case NoobLink::Architecture::e_Avr:
+  case Architecture::e_Avr:
     return os << "Atmel AVR 8-bit microcontroller";
-  case NoobLink::Architecture::e_Fr30:
+  case Architecture::e_Fr30:
     return os << "Fujitsu FR30";
-  case NoobLink::Architecture::e_D10v:
+  case Architecture::e_D10v:
     return os << "Mitsubishi D10V";
-  case NoobLink::Architecture::e_D30v:
+  case Architecture::e_D30v:
     return os << "Mitsubishi D30V";
-  case NoobLink::Architecture::e_V850:
+  case Architecture::e_V850:
     return os << "Renesas V850 (formerly NEC V850)";
-  case NoobLink::Architecture::e_M32r:
+  case Architecture::e_M32r:
     return os << "Renesas M32R (formerly Mitsubishi M32R)";
-  case NoobLink::Architecture::e_Mn10300:
+  case Architecture::e_Mn10300:
     return os << "Matsushita MN10300";
-  case NoobLink::Architecture::e_Mn10200:
+  case Architecture::e_Mn10200:
     return os << "Matsushita MN10200";
-  case NoobLink::Architecture::e_Pj:
+  case Architecture::e_Pj:
     return os << "picoJava";
-  case NoobLink::Architecture::e_Or1k:
+  case Architecture::e_Or1k:
     return os << "OpenRISC 1000 32-bit embedded processor";
-  case NoobLink::Architecture::e_Arc_a5:
+  case Architecture::e_Arc_a5:
     return os << "ARC Cores Tangent-A5";
-  case NoobLink::Architecture::e_Xtensa:
+  case Architecture::e_Xtensa:
     return os << "Tensilica Xtensa Architecture";
-  case NoobLink::Architecture::e_Videocore:
+  case Architecture::e_Videocore:
     return os << "Alphamosaic VideoCore processor";
-  case NoobLink::Architecture::e_Tmm_gpp:
+  case Architecture::e_Tmm_gpp:
     return os << "Thompson Multimedia General Purpose Processor";
-  case NoobLink::Architecture::e_Ns32k:
+  case Architecture::e_Ns32k:
     return os << "National Semiconductor 32000 series";
-  case NoobLink::Architecture::e_Tpc:
+  case Architecture::e_Tpc:
     return os << "Tenor Network TPC processor";
-  case NoobLink::Architecture::e_Snp1k:
+  case Architecture::e_Snp1k:
     return os << "Trebia SNP 1000 processor";
-  case NoobLink::Architecture::e_St200:
+  case Architecture::e_St200:
     return os << "STMicroelectronics ST200 microcontroller";
-  case NoobLink::Architecture::e_Ip2k:
+  case Architecture::e_Ip2k:
     return os << "Ubicom IP2022 micro controller";
-  case NoobLink::Architecture::e_Max:
+  case Architecture::e_Max:
     return os << "MAX Processor";
-  case NoobLink::Architecture::e_Cr:
+  case Architecture::e_Cr:
     return os << "National Semiconductor CompactRISC";
-  case NoobLink::Architecture::e_F2mc16:
+  case Architecture::e_F2mc16:
     return os << "Fujitsu F2MC16";
-  case NoobLink::Architecture::e_Msp430:
+  case Architecture::e_Msp430:
     return os << "TI msp430 micro controller";
-  case NoobLink::Architecture::e_Blackfin:
+  case Architecture::e_Blackfin:
     return os << "ADI Blackfin";
-  case NoobLink::Architecture::e_Se_c33:
+  case Architecture::e_Se_c33:
     return os << "S1C33 Family of Seiko Epson processors";
-  case NoobLink::Architecture::e_Sep:
+  case Architecture::e_Sep:
     return os << "Sharp embedded microprocessor";
-  case NoobLink::Architecture::e_Arca:
+  case Architecture::e_Arca:
     return os << "Arca RISC Microprocessor";
-  case NoobLink::Architecture::e_Unicore:
+  case Architecture::e_Unicore:
     return os << "Microprocessor series from PKU-Unity Ltd. and MPRC of Peking University";
-  case NoobLink::Architecture::e_Excess:
+  case Architecture::e_Excess:
     return os << "eXcess: 16/32/64-bit configurable embedded CPU";
-  case NoobLink::Architecture::e_Dxp:
+  case Architecture::e_Dxp:
     return os << "Icera Semiconductor Inc. Deep Execution Processor";
-  case NoobLink::Architecture::e_Altera_nios2:
+  case Architecture::e_Altera_nios2:
     return os << "Altera Nios II soft-core processor";
-  case NoobLink::Architecture::e_Crx:
+  case Architecture::e_Crx:
     return os << "National Semiconductor CRX";
-  case NoobLink::Architecture::e_Xgate:
+  case Architecture::e_Xgate:
     return os << "Motorola XGATE embedded processor";
-  case NoobLink::Architecture::e_C166:
+  case Architecture::e_C166:
     return os << "Infineon C16x/XC16x processor";
-  case NoobLink::Architecture::e_M16c:
+  case Architecture::e_M16c:
     return os << "Renesas M16C series microprocessors";
-  case NoobLink::Architecture::e_Dspic30f:
+  case Architecture::e_Dspic30f:
     return os << "Microchip Technology dsPIC30F Digital Signal Controller";
-  case NoobLink::Architecture::e_Ce:
+  case Architecture::e_Ce:
     return os << "Freescale Communication Engine RISC core";
-  case NoobLink::Architecture::e_M32c:
+  case Architecture::e_M32c:
     return os << "Renesas M32C series microprocessors";
-  case NoobLink::Architecture::e_res121:
-  case NoobLink::Architecture::e_res122:
-  case NoobLink::Architecture::e_res123:
-  case NoobLink::Architecture::e_res124:
-  case NoobLink::Architecture::e_res125:
-  case NoobLink::Architecture::e_res126:
-  case NoobLink::Architecture::e_res127:
-  case NoobLink::Architecture::e_res128:
-  case NoobLink::Architecture::e_res129:
-  case NoobLink::Architecture::e_res130:
+  case Architecture::e_res121:
+  case Architecture::e_res122:
+  case Architecture::e_res123:
+  case Architecture::e_res124:
+  case Architecture::e_res125:
+  case Architecture::e_res126:
+  case Architecture::e_res127:
+  case Architecture::e_res128:
+  case Architecture::e_res129:
+  case Architecture::e_res130:
     return os << "Reserved";
-  case NoobLink::Architecture::e_Tsk3000:
+  case Architecture::e_Tsk3000:
     return os << "Altium TSK3000 core";
-  case NoobLink::Architecture::e_Rs08:
+  case Architecture::e_Rs08:
     return os << "Freescale RS08 embedded processor";
-  case NoobLink::Architecture::e_res133:
+  case Architecture::e_res133:
     return os << "Reserved";
-  case NoobLink::Architecture::e_Ecog2:
+  case Architecture::e_Ecog2:
     return os << "Cyan Technology eCOG2 microprocessor";
-  case NoobLink::Architecture::e_Score7:
+  case Architecture::e_Score7:
     return os << "Sunplus S+core7 RISC processor";
-  case NoobLink::Architecture::e_Dsp24:
+  case Architecture::e_Dsp24:
     return os << "New Japan Radio (NJR) 24-bit DSP Processor";
-  case NoobLink::Architecture::e_Videocore3:
+  case Architecture::e_Videocore3:
     return os << "Broadcom VideoCore III processor";
-  case NoobLink::Architecture::e_Latticemico32:
+  case Architecture::e_Latticemico32:
     return os << "RISC processor for Lattice FPGA architecture";
-  case NoobLink::Architecture::e_Se_c17:
+  case Architecture::e_Se_c17:
     return os << "Seiko Epson C17 family";
-  case NoobLink::Architecture::e_Ti_c6000:
+  case Architecture::e_Ti_c6000:
     return os << "Texas Instruments TMS320C6000 DSP family";
-  case NoobLink::Architecture::e_Ti_c2000:
+  case Architecture::e_Ti_c2000:
     return os << "Texas Instruments TMS320C2000 DSP family";
-  case NoobLink::Architecture::e_Ti_c5500:
+  case Architecture::e_Ti_c5500:
     return os << "Texas Instruments TMS320C55x DSP family";
-  case NoobLink::Architecture::e_res143:
-  case NoobLink::Architecture::e_res144:
-  case NoobLink::Architecture::e_res145:
-  case NoobLink::Architecture::e_res146:
-  case NoobLink::Architecture::e_res147:
-  case NoobLink::Architecture::e_res148:
-  case NoobLink::Architecture::e_res149:
-  case NoobLink::Architecture::e_res150:
-  case NoobLink::Architecture::e_res151:
-  case NoobLink::Architecture::e_res152:
-  case NoobLink::Architecture::e_res153:
-  case NoobLink::Architecture::e_res154:
-  case NoobLink::Architecture::e_res155:
-  case NoobLink::Architecture::e_res156:
-  case NoobLink::Architecture::e_res157:
-  case NoobLink::Architecture::e_res158:
-  case NoobLink::Architecture::e_res159:
+  case Architecture::e_res143:
+  case Architecture::e_res144:
+  case Architecture::e_res145:
+  case Architecture::e_res146:
+  case Architecture::e_res147:
+  case Architecture::e_res148:
+  case Architecture::e_res149:
+  case Architecture::e_res150:
+  case Architecture::e_res151:
+  case Architecture::e_res152:
+  case Architecture::e_res153:
+  case Architecture::e_res154:
+  case Architecture::e_res155:
+  case Architecture::e_res156:
+  case Architecture::e_res157:
+  case Architecture::e_res158:
+  case Architecture::e_res159:
     return os << "Reserved";
-  case NoobLink::Architecture::e_Mmdsp_plus:
+  case Architecture::e_Mmdsp_plus:
     return os << "STMicroelectronics 64bit VLIW Data Signal Processor";
-  case NoobLink::Architecture::e_Cypress_m8c:
+  case Architecture::e_Cypress_m8c:
     return os << "Cypress M8C microprocessor";
-  case NoobLink::Architecture::e_R32c:
+  case Architecture::e_R32c:
     return os << "Renesas R32C series microprocessors";
-  case NoobLink::Architecture::e_Trimedia:
+  case Architecture::e_Trimedia:
     return os << "NXP Semiconductors TriMedia architecture family";
-  case NoobLink::Architecture::e_Qdsp6:
+  case Architecture::e_Qdsp6:
     return os << "QUALCOMM DSP6 Processor";
-  case NoobLink::Architecture::e_8051:
+  case Architecture::e_8051:
     return os << "Intel 8051 and variants";
-  case NoobLink::Architecture::e_Stxp7x:
+  case Architecture::e_Stxp7x:
     return os << "STMicroelectronics STxP7x family";
-  case NoobLink::Architecture::e_Nds32:
+  case Architecture::e_Nds32:
     return os << "Andes Technology compact code size embedded RISC processor family";
-  case NoobLink::Architecture::e_Ecog1x:
+  case Architecture::e_Ecog1x:
     return os << "Cyan Technology eCOG1X family";
-  case NoobLink::Architecture::e_Maxq30:
+  case Architecture::e_Maxq30:
     return os << "Dallas Semiconductor MAXQ30 Core Micro-controllers";
-  case NoobLink::Architecture::e_Ximo16:
+  case Architecture::e_Ximo16:
     return os << "New Japan Radio (NJR) 16-bit DSP Processor";
-  case NoobLink::Architecture::e_Manik:
+  case Architecture::e_Manik:
     return os << "M2000 Reconfigurable RISC Microprocessor";
-  case NoobLink::Architecture::e_Craynv2:
+  case Architecture::e_Craynv2:
     return os << "Cray Inc. NV2 vector architecture";
-  case NoobLink::Architecture::e_Rx:
+  case Architecture::e_Rx:
     return os << "Renesas RX family";
-  case NoobLink::Architecture::e_Metag:
+  case Architecture::e_Metag:
     return os << "Imagination Technologies Meta processor architecture";
-  case NoobLink::Architecture::e_Mcst_elbrus:
+  case Architecture::e_Mcst_elbrus:
     return os << "MCST Elbrus general purpose hardware architecture";
-  case NoobLink::Architecture::e_Ecog16:
+  case Architecture::e_Ecog16:
     return os << "Cyan Technology eCOG16 family";
-  case NoobLink::Architecture::e_Cr16:
+  case Architecture::e_Cr16:
     return os << "National Semiconductor CompactRISC 16-bit processor";
-  case NoobLink::Architecture::e_Etpu:
+  case Architecture::e_Etpu:
     return os << "Freescale Extended Time Processing Unit";
-  case NoobLink::Architecture::e_Sle9x:
+  case Architecture::e_Sle9x:
     return os << "Infineon Technologies SLE9X core";
-  case NoobLink::Architecture::e_L1om:
+  case Architecture::e_L1om:
     return os << "Intel L1OM";
-  case NoobLink::Architecture::e_K1om:
+  case Architecture::e_K1om:
     return os << "Intel K1OM";
-  case NoobLink::Architecture::e_Intel182:
+  case Architecture::e_Intel182:
     return os << "Reserved by Intel";
-  case NoobLink::Architecture::e_Aarch64:
+  case Architecture::e_Aarch64:
     return os << "ARM 64-bit architecture";
-  case NoobLink::Architecture::e_Arm184:
+  case Architecture::e_Arm184:
     return os << "Reserved by ARM";
-  case NoobLink::Architecture::e_Avr32:
+  case Architecture::e_Avr32:
     return os << "Atmel Corporation 32-bit microprocessor family";
-  case NoobLink::Architecture::e_Stm8:
+  case Architecture::e_Stm8:
     return os << "STMicroeletronics STM8 8-bit microcontroller";
-  case NoobLink::Architecture::e_Tile64:
+  case Architecture::e_Tile64:
     return os << "Tilera TILE64 multicore architecture family";
-  case NoobLink::Architecture::e_Tilepro:
+  case Architecture::e_Tilepro:
     return os << "Tilera TILEPro multicore architecture family";
-  case NoobLink::Architecture::e_Microblaze:
+  case Architecture::e_Microblaze:
     return os << "Xilinx MicroBlaze 32-bit RISC soft processor core";
-  case NoobLink::Architecture::e_Cuda:
+  case Architecture::e_Cuda:
     return os << "NVIDIA CUDA architecture";
-  case NoobLink::Architecture::e_Tilegx:
+  case Architecture::e_Tilegx:
     return os << "Tilera TILE-Gx multicore architecture family";
-  case NoobLink::Architecture::e_Rl78:
+  case Architecture::e_Rl78:
     return os << "Renesas RL78 family. ";
-  case NoobLink::Architecture::e_78k0r:
+  case Architecture::e_78k0r:
     return os << "Renesas 78K0R. ";
-  case NoobLink::Architecture::e_Intel205:
-  case NoobLink::Architecture::e_Intel206:
-  case NoobLink::Architecture::e_Intel207:
-  case NoobLink::Architecture::e_Intel208:
-  case NoobLink::Architecture::e_Intel209:
+  case Architecture::e_Intel205:
+  case Architecture::e_Intel206:
+  case Architecture::e_Intel207:
+  case Architecture::e_Intel208:
+  case Architecture::e_Intel209:
     return os << "Reserved by Intel";
-  case NoobLink::Architecture::e_Visium:
+  case Architecture::e_Visium:
     return os << "Controls and Data Services VISIUM core processor";
-  case NoobLink::Architecture::e_Moxie:
+  case Architecture::e_Moxie:
     return os << "Moxie processor family";
   default:
     return os << "Unknown";
+  }
+}
+
+inline std::ostream &NoobLink::operator<<(std::ostream &os, const SectionType &sectionType) {
+  switch (sectionType) {
+  case SectionType::e_Null:
+    return os << "Null";
+  case SectionType::e_Progbits:
+    return os << "Progbits";
+  case SectionType::e_Symtab:
+    return os << "Symtab"; // Symbol table
+  case SectionType::e_Strtab:
+    return os << "Strtab"; // String table
+  case SectionType::e_Rela:
+    return os << "Elf64_Rela"; // Relocation with addend
+  case SectionType::e_Hash:
+    return os << "Hash"; // Symbol hash table
+  case SectionType::e_Dynamic:
+    return os << "Dynamic"; // Dynmimc linking info
+  case SectionType::e_Note:
+    return os << "Note";
+  case SectionType::e_Nobits:
+    return os << "Nobits";
+  case SectionType::e_Rel:
+    return os << "Elf64_Rel";
+  case SectionType::e_Shlib:
+    return os << "Shlib";
+  case SectionType::e_Dynsym:
+    return os << "Dynsym";
+  case SectionType::e_Init_array:
+    return os << "Init_array";
+  case SectionType::e_Fini_array:
+    return os << "Fini_array";
+  case SectionType::e_Preinit_array:
+    return os << "Preinit_array";
+  case SectionType::e_Group:
+    return os << "Group";
+  case SectionType::e_Symtab_shndx:
+    return os << "Symtab_shndx";
+  case SectionType::e_Loos:
+    return os << "Loos";
+  case SectionType::e_Hios:
+    return os << "Hios";
+  case SectionType::e_Loproc:
+    return os << "Loproc";
+  case SectionType::e_Hiproc:
+    return os << "Hiproc";
+  case SectionType::e_Louser:
+    return os << "Louser";
+  case SectionType::e_Hiuser:
+    return os << "Hiuser";
+  }
+}
+
+inline std::ostream &NoobLink::operator<<(std::ostream &os, const SectionFlag &sectionFlag) {
+  switch (sectionFlag) {
+  case SectionFlag::e_Write:
+    return os << "Write";
+  case SectionFlag::e_Alloc:
+    return os << "Alloc";
+  case SectionFlag::e_Execinstr:
+    return os << "Execinstr";
+  case SectionFlag::e_Merge:
+    return os << "Merge";
+  case SectionFlag::e_Strings:
+    return os << "Strings";
+  case SectionFlag::e_Info_link:
+    return os << "Info_link";
+  case SectionFlag::e_Link_order:
+    return os << "Link_order";
+  case SectionFlag::e_Os_nonconforming:
+    return os << "Os_nonconforming";
+  case SectionFlag::e_Group:
+    return os << "Group";
+  case SectionFlag::e_Tls:
+    return os << "Tls";
+  case SectionFlag::e_Maskos:
+    return os << "Maskos";
+  case SectionFlag::e_Maskproc:
+    return os << "Maskproc";
   }
 }
 
