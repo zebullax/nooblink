@@ -1,8 +1,8 @@
 # Nooblink
 Trying to write a linker from more or less scratch
 
-**Should Support**
-Low endian 64 bits architecture
+**Supported**
+ELF Low endian 64 bits
 
 ## Dev steps
 1. **Decode header**

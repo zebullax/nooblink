@@ -1,9 +1,9 @@
-// File: elf_constants.h
+// File: constants.h
 // Project: nooblink
 //
 
-#ifndef NOOBLINK_ELF_CONSTANTS_H
-#define NOOBLINK_ELF_CONSTANTS_H
+#ifndef NOOBLINK_HEADER_CONSTANTS_H
+#define NOOBLINK_HEADER_CONSTANTS_H
 
 // std
 #include <cstdint>
@@ -823,4 +823,4 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const SectionFlag &s
   }
 }
 
-#endif // NOOBLINK_ELF_CONSTANTS_H
+#endif // NOOBLINK_HEADER_CONSTANTS_H

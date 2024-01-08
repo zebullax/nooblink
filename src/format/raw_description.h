@@ -1,11 +1,10 @@
-// File: elf_format.h
+﻿// File: raw_description.h
 // Project: nooblink
+//
 
-#ifndef NOOBLINK_ELF_FORMAT_H
-#define NOOBLINK_ELF_FORMAT_H
+#ifndef NOOBLINK_RAW_DESCRIPTION_H
+#define NOOBLINK_RAW_DESCRIPTION_H
 
-// json
-#include <nlohmann/json.hpp>
 // std
 #include <cstddef>
 #include <span>
@@ -14,8 +13,8 @@ namespace NoobLink {
 
 // Describe offset of fields
 struct FieldOffset {
+  // Offset of each fields from file start
   struct Header {
-    // Offset of each fields from file start
     static constexpr size_t k_Ident = 0x00;
     static constexpr size_t k_AddressClass = 0x04;
     static constexpr size_t k_Endianness = 0x05;
@@ -51,12 +50,15 @@ struct FieldOffset {
     static constexpr size_t k_SectionNameIndex = 0x3e;
   };
 
+  // Offset of each fields from individual entry start
   struct Section {
-    // Offset of each fields from entry start
-    static constexpr size_t k_Name = 0x00;
+    // Index into section header string table
+    static constexpr size_t k_NameIndex = 0x00;
     static constexpr size_t k_Type = 0x04;
     static constexpr size_t k_Flags = 0x08;
+    // If section appear in final image of the process, this is the address where the section should start (otherwise 0)
     static constexpr size_t k_Addr = 0x10;
+    // Offset from the beginning of the file where first byte of this section appears
     static constexpr size_t k_Offset = 0x18;
     static constexpr size_t k_Size = 0x20;
     static constexpr size_t k_Link = 0x28;
@@ -94,7 +96,7 @@ struct FieldLength {
   };
 
   struct Section {
-    static constexpr size_t k_Name = 0x04;
+    static constexpr size_t k_NameIndex = 0x04;
     static constexpr size_t k_Type = 0x04;
     static constexpr size_t k_Flags = 0x08;
     static constexpr size_t k_Addr = 0x08;
@@ -108,12 +110,12 @@ struct FieldLength {
 };
 
 // Alias over sequence of bytes covering the Elf header
-using ElfHeader =
+using RawElfHeader =
     std::span<std::byte, FieldOffset::Header::k_SectionNameIndex + FieldLength::Header::k_SectionNameIndex>;
 
-// Alias over sequence of bytes representing a section entry
-using SectionEntry = std::span<std::byte, FieldOffset::Section::k_EntrySize + FieldLength::Section::k_EntrySize>;
+// Alias over sequence of bytes covering a section entry
+using RawSectionEntry = std::span<std::byte, FieldOffset::Section::k_EntrySize + FieldLength::Section::k_EntrySize>;
 
 } // namespace NoobLink
 
-#endif // NOOBLINK_ELF_FORMAT_H
+#endif // NOOBLINK_RAW_DESCRIPTION_H
