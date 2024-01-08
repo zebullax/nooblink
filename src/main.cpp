@@ -1,6 +1,9 @@
 // nooblink
-#include <format/elf_header.h>
-#include <format/raw_section_util.h>
+#include "raw/raw_elf_header.h"
+#include "raw/raw_elf_header_util.h"
+#include "raw/raw_section_header.h"
+#include "raw/raw_section_header_util.h"
+#include "vocabulary/elf_header.h"
 // std
 #include <cstdlib>
 #include <filesystem>
@@ -56,6 +59,7 @@ int main(int, char **argv) {
   MMapFile file(argv[1]);
   std::byte *objFileStart = reinterpret_cast<std::byte *>(file.getMappedRegionStart());
 
+  // Demo starts here
   NoobLink::RawElfHeader rawElfHeader(objFileStart, k_ElfHeaderLength);
   NoobLink::ElfHeader elfHeader(rawElfHeader);
   elfHeader.print(std::cout);
@@ -63,10 +67,10 @@ int main(int, char **argv) {
   std::byte *sectionStart = objFileStart + elfHeader.getSectionTableAddress();
   NoobLink::SectionTableBound sectionTableBound{elfHeader.getSectionTableCount(), elfHeader.getSectionTableSize(),
                                                 sectionStart};
-
+  std::cout << "\n";
   for (auto entry :
-       NoobLink::RawSectionUtil::findEntriesBySectionType(sectionTableBound, NoobLink::SectionType::e_Strtab)) {
-    std::cout << "Found " << NoobLink::SectionType::e_Strtab << "entry at :" << entry << "\n";
+       NoobLink::RawSectionHeaderUtil::findEntriesBySectionType(sectionTableBound, NoobLink::SectionType::e_Strtab)) {
+    std::cout << "Found '" << NoobLink::SectionType::e_Strtab << "' entry at: " << entry << "\n";
   }
 
   return EXIT_SUCCESS;

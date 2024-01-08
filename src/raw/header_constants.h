@@ -1,4 +1,4 @@
-// File: constants.h
+// File: header_constants.h
 // Project: nooblink
 //
 
@@ -124,7 +124,7 @@ enum class Architecture : uint16_t {
   e_Firepath = 78,       /* Element 14 64-bit DSP processor */
   e_Zsp = 79,            /* LSI Logic's 16-bit DSP processor */
   e_Mmix = 80,           /* Donald Knuth's educational 64-bit processor */
-  e_Huany = 81,          /* Harvard's machine-independent format */
+  e_Huany = 81,          /* Harvard's machine-independent raw */
   e_Prism = 82,          /* SiTera Prism */
   e_Avr = 83,            /* Atmel AVR 8-bit microcontroller */
   e_Fr30 = 84,           /* Fujitsu FR30 */
@@ -528,7 +528,7 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const Architecture &
   case Architecture::e_Mmix:
     return os << "Donald Knuth's educational 64-bit processor";
   case Architecture::e_Huany:
-    return os << "Harvard's machine-independent format";
+    return os << "Harvard's machine-independent raw";
   case Architecture::e_Prism:
     return os << "SiTera Prism";
   case Architecture::e_Avr:

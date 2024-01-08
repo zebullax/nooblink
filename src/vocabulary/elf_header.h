@@ -1,13 +1,14 @@
-// File: ElfHeader.h
+// File: elf_header.h
 // Project: nooblink
 //
 
-#ifndef NOOBLINK_ELF_HEADER_H
-#define NOOBLINK_ELF_HEADER_H
+#ifndef NOOBLINK_VOCABULARY_ELF_HEADER_H
+#define NOOBLINK_VOCABULARY_ELF_HEADER_H
 
 // nooblink
-#include <format/header_constants.h>
-#include <format/raw_description.h>
+#include "raw/header_constants.h"
+#include "raw/layout.h"
+#include "raw/raw_elf_header.h"
 
 namespace NoobLink {
 
@@ -16,7 +17,7 @@ public:
   // CREATORS
 
   // Construct this object from the specified 'rawHeader', the behavior is undefined if 'rawHeader' is related to an
-  // unsupported format (ref. README)
+  // unsupported raw (ref. README)
   explicit ElfHeader(RawElfHeader rawHeader);
 
   // ACCESSORS

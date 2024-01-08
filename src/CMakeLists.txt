@@ -1,12 +1,14 @@
 add_executable(nooblink
         main.cpp
-        format/raw_description.cpp
-        format/header_constants.cpp
-        format/raw_header_util.cpp
-        format/elf_section.cpp
-        format/raw_section_util.cpp
+        raw/layout.cpp
+        raw/header_constants.cpp
+        raw/raw_elf_header_util.cpp
+        vocabulary/elf_section.cpp
+        raw/raw_section_header_util.cpp
         byte_util.cpp
-        format/elf_header.cpp
+        vocabulary/elf_header.cpp
+        raw/raw_elf_header.cpp
+        raw/raw_section_header.cpp
 )
 find_package(nlohmann_json 3.11.3 REQUIRED)
 target_include_directories(nooblink PUBLIC .)

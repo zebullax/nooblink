@@ -1,10 +1,10 @@
-// File: ElfHeader.cpp
+// File: elf_header.cpp
 // Project: nooblink
 //
 
 // nooblink
-#include <format/elf_header.h>
-#include <format/raw_header_util.h>
+#include "vocabulary/elf_header.h"
+#include "raw/raw_elf_header_util.h"
 // json
 #include <nlohmann/json.hpp>
 // std
@@ -15,21 +15,22 @@
 namespace NoobLink {
 
 ElfHeader::ElfHeader(NoobLink::RawElfHeader rawHeader)
-    : d_isSupported(RawHeaderUtil::isElf(rawHeader)), d_addressClass(RawHeaderUtil::addressClass(rawHeader)),
-      d_endianness(RawHeaderUtil::endianness(rawHeader)), d_headerVersion(RawHeaderUtil::headerVersion(rawHeader)),
-      d_abi(RawHeaderUtil::abi(rawHeader)), d_abiVersion(RawHeaderUtil::abiVersion(rawHeader)),
-      d_objectFileType(RawHeaderUtil::objectFileType(rawHeader)),
-      d_architecture(RawHeaderUtil::architecture(rawHeader)),
-      d_objectFileVersion(RawHeaderUtil::objectFileVersion(rawHeader)),
-      d_entry(RawHeaderUtil::executionAddress(rawHeader)),
-      d_programTableAddress(RawHeaderUtil::ProgramTableAddress(rawHeader)),
-      d_sectionTableAddress(RawHeaderUtil::sectionTableAddress(rawHeader)), d_flags(RawHeaderUtil::flags(rawHeader)),
-      d_headerSize(RawHeaderUtil::headerSize(rawHeader)),
-      d_programTableSize(RawHeaderUtil::ProgramTableEntrySize(rawHeader)),
-      d_programTableCount(RawHeaderUtil::ProgramTableEntryCount(rawHeader)),
-      d_sectionTableSize(RawHeaderUtil::sectionTableSize(rawHeader)),
-      d_sectionTableCount(RawHeaderUtil::sectionTableCount(rawHeader)),
-      d_sectionNameIndex(RawHeaderUtil::sectionNameIndex(rawHeader)) {}
+    : d_isSupported(RawElfHeaderUtil::isElf(rawHeader)), d_addressClass(RawElfHeaderUtil::addressClass(rawHeader)),
+      d_endianness(RawElfHeaderUtil::endianness(rawHeader)),
+      d_headerVersion(RawElfHeaderUtil::headerVersion(rawHeader)), d_abi(RawElfHeaderUtil::abi(rawHeader)),
+      d_abiVersion(RawElfHeaderUtil::abiVersion(rawHeader)),
+      d_objectFileType(RawElfHeaderUtil::objectFileType(rawHeader)),
+      d_architecture(RawElfHeaderUtil::architecture(rawHeader)),
+      d_objectFileVersion(RawElfHeaderUtil::objectFileVersion(rawHeader)),
+      d_entry(RawElfHeaderUtil::executionAddress(rawHeader)),
+      d_programTableAddress(RawElfHeaderUtil::ProgramTableAddress(rawHeader)),
+      d_sectionTableAddress(RawElfHeaderUtil::sectionTableAddress(rawHeader)),
+      d_flags(RawElfHeaderUtil::flags(rawHeader)), d_headerSize(RawElfHeaderUtil::headerSize(rawHeader)),
+      d_programTableSize(RawElfHeaderUtil::ProgramTableEntrySize(rawHeader)),
+      d_programTableCount(RawElfHeaderUtil::ProgramTableEntryCount(rawHeader)),
+      d_sectionTableSize(RawElfHeaderUtil::sectionTableSize(rawHeader)),
+      d_sectionTableCount(RawElfHeaderUtil::sectionTableCount(rawHeader)),
+      d_sectionNameIndex(RawElfHeaderUtil::sectionNameIndex(rawHeader)) {}
 
 AddressClass ElfHeader::getAddressClass() const { return d_addressClass; }
 

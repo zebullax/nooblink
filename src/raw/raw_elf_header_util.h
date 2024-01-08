@@ -2,19 +2,20 @@
 // Project: nooblink
 //
 
-#ifndef NOOBLINK_RAW_HEADER_UTIL_H
-#define NOOBLINK_RAW_HEADER_UTIL_H
+#ifndef NOOBLINK_RAW_ELF_HEADER_UTIL_H
+#define NOOBLINK_RAW_ELF_HEADER_UTIL_H
 
 // nooblink
-#include <format/header_constants.h>
-#include <format/raw_description.h>
+#include "raw/header_constants.h"
+#include "raw/layout.h"
+#include "raw/raw_elf_header.h"
 // std
 #include <cstdint>
 
 namespace NoobLink {
 
-struct RawHeaderUtil {
-  RawHeaderUtil() = delete;
+struct RawElfHeaderUtil {
+  RawElfHeaderUtil() = delete;
 
   // Return whether the specified 'header' is Elf
   static bool isElf(RawElfHeader header);
@@ -76,4 +77,4 @@ struct RawHeaderUtil {
 
 } // namespace NoobLink
 
-#endif // NOOBLINK_RAW_HEADER_UTIL_H
+#endif // NOOBLINK_HEADER_UTIL_H
