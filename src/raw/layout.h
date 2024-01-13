@@ -1,4 +1,6 @@
-﻿// File: layout.h
+﻿// -*-C++-*-
+//
+// File: layout.h
 // Project: nooblink
 //
 
@@ -68,7 +70,7 @@ struct Layout {
       static constexpr size_t k_AddrAlign = 0x30;
       static constexpr size_t k_EntrySize = 0x38;
     };
-  }; // Describe size (bytes) of fields
+  };  // Describe size (bytes) of fields
 
   struct FieldLength {
     struct Header {
@@ -110,6 +112,6 @@ struct Layout {
   };
 };
 
-} // namespace NoobLink
+}  // namespace NoobLink
 
-#endif // NOOBLINK_LAYOUT_H
+#endif  // NOOBLINK_LAYOUT_H

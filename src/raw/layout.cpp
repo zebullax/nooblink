@@ -1,3 +1,5 @@
+// -*-C++-*-
+//
 // File: layout.cpp
 // Project: nooblink
 //

@@ -1,3 +1,5 @@
+// -*-C++-*-
+//
 // File: elf_header.h
 // Project: nooblink
 //
@@ -13,11 +15,11 @@
 namespace NoobLink {
 
 class ElfHeader {
-public:
+ public:
   // CREATORS
 
-  // Construct this object from the specified 'rawHeader', the behavior is undefined if 'rawHeader' is related to an
-  // unsupported raw (ref. README)
+  // Construct this object from the specified 'rawHeader', the behavior is undefined if 'rawHeader' does not cover a
+  // valid ELF raw header (ref. README)
   explicit ElfHeader(RawElfHeader rawHeader);
 
   // ACCESSORS
@@ -79,7 +81,7 @@ public:
   // Output to the specified 'os' a JSON representation of this object, return the stream
   std::ostream &print(std::ostream &os) const;
 
-private:
+ private:
   bool d_isSupported;
   AddressClass d_addressClass;
   Endianness d_endianness;
@@ -100,6 +102,6 @@ private:
   uint16_t d_sectionTableCount{};
   uint16_t d_sectionNameIndex{};
 };
-} // namespace NoobLink
+}  // namespace NoobLink
 
-#endif // NOOBLINK_ELF_HEADER_H
+#endif  // NOOBLINK_ELF_HEADER_H

@@ -1,3 +1,5 @@
+// -*-C++-*-
+//
 // File: raw_elf_header.cpp
 // Project: nooblink
 //

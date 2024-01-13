@@ -1,9 +1,12 @@
+// -*-C++-*-
+//
 // File: elf_header.cpp
 // Project: nooblink
 //
 
 // nooblink
 #include "vocabulary/elf_header.h"
+
 #include "raw/raw_elf_header_util.h"
 // json
 #include <nlohmann/json.hpp>
@@ -15,9 +18,11 @@
 namespace NoobLink {
 
 ElfHeader::ElfHeader(NoobLink::RawElfHeader rawHeader)
-    : d_isSupported(RawElfHeaderUtil::isElf(rawHeader)), d_addressClass(RawElfHeaderUtil::addressClass(rawHeader)),
+    : d_isSupported((assert(RawElfHeaderUtil::isElf(rawHeader)), true)),
+      d_addressClass(RawElfHeaderUtil::addressClass(rawHeader)),
       d_endianness(RawElfHeaderUtil::endianness(rawHeader)),
-      d_headerVersion(RawElfHeaderUtil::headerVersion(rawHeader)), d_abi(RawElfHeaderUtil::abi(rawHeader)),
+      d_headerVersion(RawElfHeaderUtil::headerVersion(rawHeader)),
+      d_abi(RawElfHeaderUtil::abi(rawHeader)),
       d_abiVersion(RawElfHeaderUtil::abiVersion(rawHeader)),
       d_objectFileType(RawElfHeaderUtil::objectFileType(rawHeader)),
       d_architecture(RawElfHeaderUtil::architecture(rawHeader)),
@@ -25,7 +30,8 @@ ElfHeader::ElfHeader(NoobLink::RawElfHeader rawHeader)
       d_entry(RawElfHeaderUtil::executionAddress(rawHeader)),
       d_programTableAddress(RawElfHeaderUtil::ProgramTableAddress(rawHeader)),
       d_sectionTableAddress(RawElfHeaderUtil::sectionTableAddress(rawHeader)),
-      d_flags(RawElfHeaderUtil::flags(rawHeader)), d_headerSize(RawElfHeaderUtil::headerSize(rawHeader)),
+      d_flags(RawElfHeaderUtil::flags(rawHeader)),
+      d_headerSize(RawElfHeaderUtil::headerSize(rawHeader)),
       d_programTableSize(RawElfHeaderUtil::ProgramTableEntrySize(rawHeader)),
       d_programTableCount(RawElfHeaderUtil::ProgramTableEntryCount(rawHeader)),
       d_sectionTableSize(RawElfHeaderUtil::sectionTableSize(rawHeader)),
@@ -107,4 +113,4 @@ std::ostream &ElfHeader::print(std::ostream &os) const {
   return os;
 }
 
-} // namespace NoobLink
+}  // namespace NoobLink

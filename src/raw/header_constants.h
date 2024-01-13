@@ -1,3 +1,5 @@
+// -*-C++-*-
+//
 // File: header_constants.h
 // Project: nooblink
 //
@@ -153,7 +155,8 @@ enum class Architecture : uint16_t {
   e_Se_c33 = 107,        /* S1C33 Family of Seiko Epson processors */
   e_Sep = 108,           /* Sharp embedded microprocessor */
   e_Arca = 109,          /* Arca RISC Microprocessor */
-  e_Unicore = 110,       /* Microprocessor series from PKU-Unity Ltd. and MPRC of Peking University */
+  e_Unicore = 110,       /* Microprocessor series from PKU-Unity Ltd. and MPRC of
+                            Peking University */
   e_Excess = 111,        /* eXcess: 16/32/64-bit configurable embedded CPU */
   e_Dxp = 112,           /* Icera Semiconductor Inc. Deep Execution Processor */
   e_Altera_nios2 = 113,  /* Altera Nios II soft-core processor */
@@ -210,7 +213,8 @@ enum class Architecture : uint16_t {
   e_Qdsp6 = 164,         /* QUALCOMM DSP6 Processor */
   e_8051 = 165,          /* Intel 8051 and variants */
   e_Stxp7x = 166,        /* STMicroelectronics STxP7x family */
-  e_Nds32 = 167,         /* Andes Technology compact code size embedded RISC processor family */
+  e_Nds32 = 167,         /* Andes Technology compact code size embedded RISC processor
+                            family */
   e_Ecog1x = 168,        /* Cyan Technology eCOG1X family */
   e_Maxq30 = 169,        /* Dallas Semiconductor MAXQ30 Core Micro-controllers */
   e_Ximo16 = 170,        /* New Japan Radio (NJR) 16-bit DSP Processor */
@@ -275,552 +279,551 @@ enum class SectionType : uint32_t {
 std::ostream &operator<<(std::ostream &os, const SectionType &sectionType);
 
 enum class SectionFlag : uint64_t {
-  e_Write = 0x1,     // Writable
-  e_Alloc = 0x2,     // Occupies memory at runtime
-  e_Execinstr = 0x4, // Executable
-  e_Merge = 0x10,    // Might be merged
-  e_Strings = 0x20,  // Contains C-style string
+  e_Write = 0x1,      // Writable
+  e_Alloc = 0x2,      // Occupies memory at runtime
+  e_Execinstr = 0x4,  // Executable
+  e_Merge = 0x10,     // Might be merged
+  e_Strings = 0x20,   // Contains C-style string
   e_Info_link = 0x40,
-  e_Link_order = 0x80, // Preserve order after combining
+  e_Link_order = 0x80,  // Preserve order after combining
   e_Os_nonconforming = 0x100,
   e_Group = 0x200,
-  e_Tls = 0x400, // Section hold thread local data
+  e_Tls = 0x400,  // Section hold thread local data
   e_Maskos = 0x0ff00000,
   e_Maskproc = 0xf0000000,
 };
 std::ostream &operator<<(std::ostream &os, const SectionFlag &sectionFlag);
 
-} // namespace NoobLink
+}  // namespace NoobLink
 
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const AddressClass &addressClass) {
   switch (addressClass) {
-
-  case AddressClass::e_32:
-    return os << "32bits";
-  case AddressClass::e_64:
-    return os << "64bits";
-  case AddressClass::e_Invalid:
-  default:
-    return os << "Invalid";
+    case AddressClass::e_32:
+      return os << "32bits";
+    case AddressClass::e_64:
+      return os << "64bits";
+    case AddressClass::e_Invalid:
+    default:
+      return os << "Invalid";
   }
 }
 
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const Endianness &endianness) {
   switch (endianness) {
-
-  case Endianness::e_LittleEndian:
-    return os << "LowEndian";
-  case Endianness::e_BigEndian:
-    return os << "HighEndian";
-  case Endianness::e_Invalid:
-  default:
-    return os << "Invalid";
+    case Endianness::e_LittleEndian:
+      return os << "LowEndian";
+    case Endianness::e_BigEndian:
+      return os << "HighEndian";
+    case Endianness::e_Invalid:
+    default:
+      return os << "Invalid";
   }
 }
 
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const ObjectFileType &objectFileType) {
   switch (objectFileType) {
-
-  case ObjectFileType::e_Relocatable:
-    return os << "Relocatable";
-  case ObjectFileType::e_Executable:
-    return os << "Executable";
-  case ObjectFileType::e_Shared:
-    return os << "Shared";
-  case ObjectFileType::e_Core:
-    return os << "Core";
-  default:
-    return os << "Unknown";
+    case ObjectFileType::e_Relocatable:
+      return os << "Relocatable";
+    case ObjectFileType::e_Executable:
+      return os << "Executable";
+    case ObjectFileType::e_Shared:
+      return os << "Shared";
+    case ObjectFileType::e_Core:
+      return os << "Core";
+    default:
+      return os << "Unknown";
   }
 }
 
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const Abi &abi) {
   switch (abi) {
-  case Abi::e_None:
-    return os << "None";
-  case Abi::e_Hpux:
-    return os << "Hpux";
-  case Abi::e_Netbsd:
-    return os << "Netbsd";
-  case Abi::e_Linux:
-    return os << "Linux";
-  case Abi::e_Solaris:
-    return os << "Solaris";
-  case Abi::e_Aix:
-    return os << "Aix";
-  case Abi::e_Irix:
-    return os << "Irix";
-  case Abi::e_Freebsd:
-    return os << "Freebsd";
-  case Abi::e_Tru64:
-    return os << "Tru64";
-  case Abi::e_Modesto:
-    return os << "Modesto";
-  case Abi::e_Openbsd:
-    return os << "Openbsd";
-  case Abi::e_Openvms:
-    return os << "Openvms";
-  case Abi::e_Nsk:
-    return os << "Nsk";
-  case Abi::e_Aros:
-    return os << "Aros";
-  case Abi::e_Fenixos:
-    return os << "Fenixos";
-  case Abi::e_C6000Elfabi:
-    return os << "C6000Elfabi";
-  case Abi::e_C6000Linux:
-    return os << "C6000Linux";
-  case Abi::e_Arm:
-    return os << "Arm";
-  default:
-    return os << "Unknown";
+    case Abi::e_None:
+      return os << "None";
+    case Abi::e_Hpux:
+      return os << "Hpux";
+    case Abi::e_Netbsd:
+      return os << "Netbsd";
+    case Abi::e_Linux:
+      return os << "Linux";
+    case Abi::e_Solaris:
+      return os << "Solaris";
+    case Abi::e_Aix:
+      return os << "Aix";
+    case Abi::e_Irix:
+      return os << "Irix";
+    case Abi::e_Freebsd:
+      return os << "Freebsd";
+    case Abi::e_Tru64:
+      return os << "Tru64";
+    case Abi::e_Modesto:
+      return os << "Modesto";
+    case Abi::e_Openbsd:
+      return os << "Openbsd";
+    case Abi::e_Openvms:
+      return os << "Openvms";
+    case Abi::e_Nsk:
+      return os << "Nsk";
+    case Abi::e_Aros:
+      return os << "Aros";
+    case Abi::e_Fenixos:
+      return os << "Fenixos";
+    case Abi::e_C6000Elfabi:
+      return os << "C6000Elfabi";
+    case Abi::e_C6000Linux:
+      return os << "C6000Linux";
+    case Abi::e_Arm:
+      return os << "Arm";
+    default:
+      return os << "Unknown";
   }
 }
 
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const Architecture &architecture) {
   switch (architecture) {
-  case Architecture::e_None:
-    return os << "No machine";
-  case Architecture::e_M32:
-    return os << "AT&T WE 32100";
-  case Architecture::e_Sparc:
-    return os << "SUN SPARC";
-  case Architecture::e_386:
-    return os << "Intel 80386";
-  case Architecture::e_68k:
-    return os << "Motorola m68k family";
-  case Architecture::e_88k:
-    return os << "Motorola m88k family";
-  case Architecture::e_486:
-    return os << "Intel 80486";
-  case Architecture::e_860:
-    return os << "Intel 80860";
-  case Architecture::e_Mips:
-    return os << "MIPS R3000 (officially, big-endian only)";
-  case Architecture::e_S370:
-    return os << "IBM System/370";
-  case Architecture::e_Mips_rs3_le:
-    return os << "MIPS R3000 little-endian (Oct 4 1999 Draft) Deprecated";
-  case Architecture::e_res011:
-  case Architecture::e_res012:
-  case Architecture::e_res013:
-  case Architecture::e_res014:
-    return os << "Reserved";
-  case Architecture::e_Parisc:
-    return os << "HPPA";
-  case Architecture::e_res016:
-    return os << "Reserved";
-  case Architecture::e_Vpp550:
-    return os << "Fujitsu VPP500";
-  case Architecture::e_Sparc32plus:
-    return os << "Sun's \"v8plus\"";
-  case Architecture::e_960:
-    return os << "Intel 80960";
-  case Architecture::e_Ppc:
-    return os << "PowerPC";
-  case Architecture::e_Ppc64:
-    return os << "64-bit PowerPC";
-  case Architecture::e_S390:
-    return os << "IBM S/390";
-  case Architecture::e_Spu:
-    return os << "Sony/Toshiba/IBM SPU";
-  case Architecture::e_res024:
-  case Architecture::e_res025:
-  case Architecture::e_res026:
-  case Architecture::e_res027:
-  case Architecture::e_res028:
-  case Architecture::e_res029:
-  case Architecture::e_res030:
-  case Architecture::e_res031:
-  case Architecture::e_res032:
-  case Architecture::e_res033:
-  case Architecture::e_res034:
-  case Architecture::e_res035:
-    return os << "Reserved";
-  case Architecture::e_V800:
-    return os << "NEC V800 series";
-  case Architecture::e_Fr20:
-    return os << "Fujitsu FR20";
-  case Architecture::e_Rh32:
-    return os << "TRW RH32";
-  case Architecture::e_Mcore:
-    return os << "MCore";
-  case Architecture::e_Arm:
-    return os << "ARM";
-  case Architecture::e_Old_alpha:
-    return os << "Digital Alpha";
-  case Architecture::e_Sh:
-    return os << "Renesas (formerly Hitachi) / SuperH SH";
-  case Architecture::e_Sparcv9:
-    return os << "SPARC v9 64-bit";
-  case Architecture::e_Tricore:
-    return os << "Siemens Tricore embedded processor";
-  case Architecture::e_Arc:
-    return os << "ARC Cores";
-  case Architecture::e_H8_300:
-    return os << "Renesas (formerly Hitachi) H8/300";
-  case Architecture::e_H8_300h:
-    return os << "Renesas (formerly Hitachi) H8/300H";
-  case Architecture::e_H8s:
-    return os << "Renesas (formerly Hitachi) H8S";
-  case Architecture::e_H8_500:
-    return os << "Renesas (formerly Hitachi) H8/500";
-  case Architecture::e_Ia_64:
-    return os << "Intel IA-64 Processor";
-  case Architecture::e_Mips_x:
-    return os << "Stanford MIPS-X";
-  case Architecture::e_Coldfire:
-    return os << "Motorola Coldfire";
-  case Architecture::e_68hc12:
-    return os << "Motorola M68HC12";
-  case Architecture::e_Mma:
-    return os << "Fujitsu Multimedia Accelerator";
-  case Architecture::e_Pcp:
-    return os << "Siemens PCP";
-  case Architecture::e_Ncpu:
-    return os << "Sony nCPU embedded RISC processor";
-  case Architecture::e_Ndr1:
-    return os << "Denso NDR1 microprocessor";
-  case Architecture::e_Starcore:
-    return os << "Motorola Star*Core processor";
-  case Architecture::e_Me16:
-    return os << "Toyota ME16 processor";
-  case Architecture::e_St100:
-    return os << "STMicroelectronics ST100 processor";
-  case Architecture::e_Tinyj:
-    return os << "Advanced Logic Corp. TinyJ embedded processor";
-  case Architecture::e_X86_64:
-    return os << "Advanced Micro Devices X86-64 processor";
-  case Architecture::e_Pdsp:
-    return os << "Sony DSP Processor";
-  case Architecture::e_Pdp10:
-    return os << "Digital Equipment Corp. PDP-10";
-  case Architecture::e_Pdp11:
-    return os << "Digital Equipment Corp. PDP-11";
-  case Architecture::e_Fx66:
-    return os << "Siemens FX66 microcontroller";
-  case Architecture::e_St9plus:
-    return os << "STMicroelectronics ST9+ 8/16 bit microcontroller";
-  case Architecture::e_St7:
-    return os << "STMicroelectronics ST7 8-bit microcontroller";
-  case Architecture::e_68hc16:
-    return os << "Motorola MC68HC16 Microcontroller";
-  case Architecture::e_68hc11:
-    return os << "Motorola MC68HC11 Microcontroller";
-  case Architecture::e_68hc08:
-    return os << "Motorola MC68HC08 Microcontroller";
-  case Architecture::e_68hc05:
-    return os << "Motorola MC68HC05 Microcontroller";
-  case Architecture::e_Svx:
-    return os << "Silicon Graphics SVx";
-  case Architecture::e_St19:
-    return os << "STMicroelectronics ST19 8-bit cpu";
-  case Architecture::e_Vax:
-    return os << "Digital VAX";
-  case Architecture::e_Cris:
-    return os << "Axis Communications 32-bit embedded processor";
-  case Architecture::e_Javelin:
-    return os << "Infineon Technologies 32-bit embedded cpu";
-  case Architecture::e_Firepath:
-    return os << "Element 14 64-bit DSP processor";
-  case Architecture::e_Zsp:
-    return os << "LSI Logic's 16-bit DSP processor";
-  case Architecture::e_Mmix:
-    return os << "Donald Knuth's educational 64-bit processor";
-  case Architecture::e_Huany:
-    return os << "Harvard's machine-independent raw";
-  case Architecture::e_Prism:
-    return os << "SiTera Prism";
-  case Architecture::e_Avr:
-    return os << "Atmel AVR 8-bit microcontroller";
-  case Architecture::e_Fr30:
-    return os << "Fujitsu FR30";
-  case Architecture::e_D10v:
-    return os << "Mitsubishi D10V";
-  case Architecture::e_D30v:
-    return os << "Mitsubishi D30V";
-  case Architecture::e_V850:
-    return os << "Renesas V850 (formerly NEC V850)";
-  case Architecture::e_M32r:
-    return os << "Renesas M32R (formerly Mitsubishi M32R)";
-  case Architecture::e_Mn10300:
-    return os << "Matsushita MN10300";
-  case Architecture::e_Mn10200:
-    return os << "Matsushita MN10200";
-  case Architecture::e_Pj:
-    return os << "picoJava";
-  case Architecture::e_Or1k:
-    return os << "OpenRISC 1000 32-bit embedded processor";
-  case Architecture::e_Arc_a5:
-    return os << "ARC Cores Tangent-A5";
-  case Architecture::e_Xtensa:
-    return os << "Tensilica Xtensa Architecture";
-  case Architecture::e_Videocore:
-    return os << "Alphamosaic VideoCore processor";
-  case Architecture::e_Tmm_gpp:
-    return os << "Thompson Multimedia General Purpose Processor";
-  case Architecture::e_Ns32k:
-    return os << "National Semiconductor 32000 series";
-  case Architecture::e_Tpc:
-    return os << "Tenor Network TPC processor";
-  case Architecture::e_Snp1k:
-    return os << "Trebia SNP 1000 processor";
-  case Architecture::e_St200:
-    return os << "STMicroelectronics ST200 microcontroller";
-  case Architecture::e_Ip2k:
-    return os << "Ubicom IP2022 micro controller";
-  case Architecture::e_Max:
-    return os << "MAX Processor";
-  case Architecture::e_Cr:
-    return os << "National Semiconductor CompactRISC";
-  case Architecture::e_F2mc16:
-    return os << "Fujitsu F2MC16";
-  case Architecture::e_Msp430:
-    return os << "TI msp430 micro controller";
-  case Architecture::e_Blackfin:
-    return os << "ADI Blackfin";
-  case Architecture::e_Se_c33:
-    return os << "S1C33 Family of Seiko Epson processors";
-  case Architecture::e_Sep:
-    return os << "Sharp embedded microprocessor";
-  case Architecture::e_Arca:
-    return os << "Arca RISC Microprocessor";
-  case Architecture::e_Unicore:
-    return os << "Microprocessor series from PKU-Unity Ltd. and MPRC of Peking University";
-  case Architecture::e_Excess:
-    return os << "eXcess: 16/32/64-bit configurable embedded CPU";
-  case Architecture::e_Dxp:
-    return os << "Icera Semiconductor Inc. Deep Execution Processor";
-  case Architecture::e_Altera_nios2:
-    return os << "Altera Nios II soft-core processor";
-  case Architecture::e_Crx:
-    return os << "National Semiconductor CRX";
-  case Architecture::e_Xgate:
-    return os << "Motorola XGATE embedded processor";
-  case Architecture::e_C166:
-    return os << "Infineon C16x/XC16x processor";
-  case Architecture::e_M16c:
-    return os << "Renesas M16C series microprocessors";
-  case Architecture::e_Dspic30f:
-    return os << "Microchip Technology dsPIC30F Digital Signal Controller";
-  case Architecture::e_Ce:
-    return os << "Freescale Communication Engine RISC core";
-  case Architecture::e_M32c:
-    return os << "Renesas M32C series microprocessors";
-  case Architecture::e_res121:
-  case Architecture::e_res122:
-  case Architecture::e_res123:
-  case Architecture::e_res124:
-  case Architecture::e_res125:
-  case Architecture::e_res126:
-  case Architecture::e_res127:
-  case Architecture::e_res128:
-  case Architecture::e_res129:
-  case Architecture::e_res130:
-    return os << "Reserved";
-  case Architecture::e_Tsk3000:
-    return os << "Altium TSK3000 core";
-  case Architecture::e_Rs08:
-    return os << "Freescale RS08 embedded processor";
-  case Architecture::e_res133:
-    return os << "Reserved";
-  case Architecture::e_Ecog2:
-    return os << "Cyan Technology eCOG2 microprocessor";
-  case Architecture::e_Score7:
-    return os << "Sunplus S+core7 RISC processor";
-  case Architecture::e_Dsp24:
-    return os << "New Japan Radio (NJR) 24-bit DSP Processor";
-  case Architecture::e_Videocore3:
-    return os << "Broadcom VideoCore III processor";
-  case Architecture::e_Latticemico32:
-    return os << "RISC processor for Lattice FPGA architecture";
-  case Architecture::e_Se_c17:
-    return os << "Seiko Epson C17 family";
-  case Architecture::e_Ti_c6000:
-    return os << "Texas Instruments TMS320C6000 DSP family";
-  case Architecture::e_Ti_c2000:
-    return os << "Texas Instruments TMS320C2000 DSP family";
-  case Architecture::e_Ti_c5500:
-    return os << "Texas Instruments TMS320C55x DSP family";
-  case Architecture::e_res143:
-  case Architecture::e_res144:
-  case Architecture::e_res145:
-  case Architecture::e_res146:
-  case Architecture::e_res147:
-  case Architecture::e_res148:
-  case Architecture::e_res149:
-  case Architecture::e_res150:
-  case Architecture::e_res151:
-  case Architecture::e_res152:
-  case Architecture::e_res153:
-  case Architecture::e_res154:
-  case Architecture::e_res155:
-  case Architecture::e_res156:
-  case Architecture::e_res157:
-  case Architecture::e_res158:
-  case Architecture::e_res159:
-    return os << "Reserved";
-  case Architecture::e_Mmdsp_plus:
-    return os << "STMicroelectronics 64bit VLIW Data Signal Processor";
-  case Architecture::e_Cypress_m8c:
-    return os << "Cypress M8C microprocessor";
-  case Architecture::e_R32c:
-    return os << "Renesas R32C series microprocessors";
-  case Architecture::e_Trimedia:
-    return os << "NXP Semiconductors TriMedia architecture family";
-  case Architecture::e_Qdsp6:
-    return os << "QUALCOMM DSP6 Processor";
-  case Architecture::e_8051:
-    return os << "Intel 8051 and variants";
-  case Architecture::e_Stxp7x:
-    return os << "STMicroelectronics STxP7x family";
-  case Architecture::e_Nds32:
-    return os << "Andes Technology compact code size embedded RISC processor family";
-  case Architecture::e_Ecog1x:
-    return os << "Cyan Technology eCOG1X family";
-  case Architecture::e_Maxq30:
-    return os << "Dallas Semiconductor MAXQ30 Core Micro-controllers";
-  case Architecture::e_Ximo16:
-    return os << "New Japan Radio (NJR) 16-bit DSP Processor";
-  case Architecture::e_Manik:
-    return os << "M2000 Reconfigurable RISC Microprocessor";
-  case Architecture::e_Craynv2:
-    return os << "Cray Inc. NV2 vector architecture";
-  case Architecture::e_Rx:
-    return os << "Renesas RX family";
-  case Architecture::e_Metag:
-    return os << "Imagination Technologies Meta processor architecture";
-  case Architecture::e_Mcst_elbrus:
-    return os << "MCST Elbrus general purpose hardware architecture";
-  case Architecture::e_Ecog16:
-    return os << "Cyan Technology eCOG16 family";
-  case Architecture::e_Cr16:
-    return os << "National Semiconductor CompactRISC 16-bit processor";
-  case Architecture::e_Etpu:
-    return os << "Freescale Extended Time Processing Unit";
-  case Architecture::e_Sle9x:
-    return os << "Infineon Technologies SLE9X core";
-  case Architecture::e_L1om:
-    return os << "Intel L1OM";
-  case Architecture::e_K1om:
-    return os << "Intel K1OM";
-  case Architecture::e_Intel182:
-    return os << "Reserved by Intel";
-  case Architecture::e_Aarch64:
-    return os << "ARM 64-bit architecture";
-  case Architecture::e_Arm184:
-    return os << "Reserved by ARM";
-  case Architecture::e_Avr32:
-    return os << "Atmel Corporation 32-bit microprocessor family";
-  case Architecture::e_Stm8:
-    return os << "STMicroeletronics STM8 8-bit microcontroller";
-  case Architecture::e_Tile64:
-    return os << "Tilera TILE64 multicore architecture family";
-  case Architecture::e_Tilepro:
-    return os << "Tilera TILEPro multicore architecture family";
-  case Architecture::e_Microblaze:
-    return os << "Xilinx MicroBlaze 32-bit RISC soft processor core";
-  case Architecture::e_Cuda:
-    return os << "NVIDIA CUDA architecture";
-  case Architecture::e_Tilegx:
-    return os << "Tilera TILE-Gx multicore architecture family";
-  case Architecture::e_Rl78:
-    return os << "Renesas RL78 family. ";
-  case Architecture::e_78k0r:
-    return os << "Renesas 78K0R. ";
-  case Architecture::e_Intel205:
-  case Architecture::e_Intel206:
-  case Architecture::e_Intel207:
-  case Architecture::e_Intel208:
-  case Architecture::e_Intel209:
-    return os << "Reserved by Intel";
-  case Architecture::e_Visium:
-    return os << "Controls and Data Services VISIUM core processor";
-  case Architecture::e_Moxie:
-    return os << "Moxie processor family";
-  default:
-    return os << "Unknown";
+    case Architecture::e_None:
+      return os << "No machine";
+    case Architecture::e_M32:
+      return os << "AT&T WE 32100";
+    case Architecture::e_Sparc:
+      return os << "SUN SPARC";
+    case Architecture::e_386:
+      return os << "Intel 80386";
+    case Architecture::e_68k:
+      return os << "Motorola m68k family";
+    case Architecture::e_88k:
+      return os << "Motorola m88k family";
+    case Architecture::e_486:
+      return os << "Intel 80486";
+    case Architecture::e_860:
+      return os << "Intel 80860";
+    case Architecture::e_Mips:
+      return os << "MIPS R3000 (officially, big-endian only)";
+    case Architecture::e_S370:
+      return os << "IBM System/370";
+    case Architecture::e_Mips_rs3_le:
+      return os << "MIPS R3000 little-endian (Oct 4 1999 Draft) Deprecated";
+    case Architecture::e_res011:
+    case Architecture::e_res012:
+    case Architecture::e_res013:
+    case Architecture::e_res014:
+      return os << "Reserved";
+    case Architecture::e_Parisc:
+      return os << "HPPA";
+    case Architecture::e_res016:
+      return os << "Reserved";
+    case Architecture::e_Vpp550:
+      return os << "Fujitsu VPP500";
+    case Architecture::e_Sparc32plus:
+      return os << "Sun's \"v8plus\"";
+    case Architecture::e_960:
+      return os << "Intel 80960";
+    case Architecture::e_Ppc:
+      return os << "PowerPC";
+    case Architecture::e_Ppc64:
+      return os << "64-bit PowerPC";
+    case Architecture::e_S390:
+      return os << "IBM S/390";
+    case Architecture::e_Spu:
+      return os << "Sony/Toshiba/IBM SPU";
+    case Architecture::e_res024:
+    case Architecture::e_res025:
+    case Architecture::e_res026:
+    case Architecture::e_res027:
+    case Architecture::e_res028:
+    case Architecture::e_res029:
+    case Architecture::e_res030:
+    case Architecture::e_res031:
+    case Architecture::e_res032:
+    case Architecture::e_res033:
+    case Architecture::e_res034:
+    case Architecture::e_res035:
+      return os << "Reserved";
+    case Architecture::e_V800:
+      return os << "NEC V800 series";
+    case Architecture::e_Fr20:
+      return os << "Fujitsu FR20";
+    case Architecture::e_Rh32:
+      return os << "TRW RH32";
+    case Architecture::e_Mcore:
+      return os << "MCore";
+    case Architecture::e_Arm:
+      return os << "ARM";
+    case Architecture::e_Old_alpha:
+      return os << "Digital Alpha";
+    case Architecture::e_Sh:
+      return os << "Renesas (formerly Hitachi) / SuperH SH";
+    case Architecture::e_Sparcv9:
+      return os << "SPARC v9 64-bit";
+    case Architecture::e_Tricore:
+      return os << "Siemens Tricore embedded processor";
+    case Architecture::e_Arc:
+      return os << "ARC Cores";
+    case Architecture::e_H8_300:
+      return os << "Renesas (formerly Hitachi) H8/300";
+    case Architecture::e_H8_300h:
+      return os << "Renesas (formerly Hitachi) H8/300H";
+    case Architecture::e_H8s:
+      return os << "Renesas (formerly Hitachi) H8S";
+    case Architecture::e_H8_500:
+      return os << "Renesas (formerly Hitachi) H8/500";
+    case Architecture::e_Ia_64:
+      return os << "Intel IA-64 Processor";
+    case Architecture::e_Mips_x:
+      return os << "Stanford MIPS-X";
+    case Architecture::e_Coldfire:
+      return os << "Motorola Coldfire";
+    case Architecture::e_68hc12:
+      return os << "Motorola M68HC12";
+    case Architecture::e_Mma:
+      return os << "Fujitsu Multimedia Accelerator";
+    case Architecture::e_Pcp:
+      return os << "Siemens PCP";
+    case Architecture::e_Ncpu:
+      return os << "Sony nCPU embedded RISC processor";
+    case Architecture::e_Ndr1:
+      return os << "Denso NDR1 microprocessor";
+    case Architecture::e_Starcore:
+      return os << "Motorola Star*Core processor";
+    case Architecture::e_Me16:
+      return os << "Toyota ME16 processor";
+    case Architecture::e_St100:
+      return os << "STMicroelectronics ST100 processor";
+    case Architecture::e_Tinyj:
+      return os << "Advanced Logic Corp. TinyJ embedded processor";
+    case Architecture::e_X86_64:
+      return os << "Advanced Micro Devices X86-64 processor";
+    case Architecture::e_Pdsp:
+      return os << "Sony DSP Processor";
+    case Architecture::e_Pdp10:
+      return os << "Digital Equipment Corp. PDP-10";
+    case Architecture::e_Pdp11:
+      return os << "Digital Equipment Corp. PDP-11";
+    case Architecture::e_Fx66:
+      return os << "Siemens FX66 microcontroller";
+    case Architecture::e_St9plus:
+      return os << "STMicroelectronics ST9+ 8/16 bit microcontroller";
+    case Architecture::e_St7:
+      return os << "STMicroelectronics ST7 8-bit microcontroller";
+    case Architecture::e_68hc16:
+      return os << "Motorola MC68HC16 Microcontroller";
+    case Architecture::e_68hc11:
+      return os << "Motorola MC68HC11 Microcontroller";
+    case Architecture::e_68hc08:
+      return os << "Motorola MC68HC08 Microcontroller";
+    case Architecture::e_68hc05:
+      return os << "Motorola MC68HC05 Microcontroller";
+    case Architecture::e_Svx:
+      return os << "Silicon Graphics SVx";
+    case Architecture::e_St19:
+      return os << "STMicroelectronics ST19 8-bit cpu";
+    case Architecture::e_Vax:
+      return os << "Digital VAX";
+    case Architecture::e_Cris:
+      return os << "Axis Communications 32-bit embedded processor";
+    case Architecture::e_Javelin:
+      return os << "Infineon Technologies 32-bit embedded cpu";
+    case Architecture::e_Firepath:
+      return os << "Element 14 64-bit DSP processor";
+    case Architecture::e_Zsp:
+      return os << "LSI Logic's 16-bit DSP processor";
+    case Architecture::e_Mmix:
+      return os << "Donald Knuth's educational 64-bit processor";
+    case Architecture::e_Huany:
+      return os << "Harvard's machine-independent raw";
+    case Architecture::e_Prism:
+      return os << "SiTera Prism";
+    case Architecture::e_Avr:
+      return os << "Atmel AVR 8-bit microcontroller";
+    case Architecture::e_Fr30:
+      return os << "Fujitsu FR30";
+    case Architecture::e_D10v:
+      return os << "Mitsubishi D10V";
+    case Architecture::e_D30v:
+      return os << "Mitsubishi D30V";
+    case Architecture::e_V850:
+      return os << "Renesas V850 (formerly NEC V850)";
+    case Architecture::e_M32r:
+      return os << "Renesas M32R (formerly Mitsubishi M32R)";
+    case Architecture::e_Mn10300:
+      return os << "Matsushita MN10300";
+    case Architecture::e_Mn10200:
+      return os << "Matsushita MN10200";
+    case Architecture::e_Pj:
+      return os << "picoJava";
+    case Architecture::e_Or1k:
+      return os << "OpenRISC 1000 32-bit embedded processor";
+    case Architecture::e_Arc_a5:
+      return os << "ARC Cores Tangent-A5";
+    case Architecture::e_Xtensa:
+      return os << "Tensilica Xtensa Architecture";
+    case Architecture::e_Videocore:
+      return os << "Alphamosaic VideoCore processor";
+    case Architecture::e_Tmm_gpp:
+      return os << "Thompson Multimedia General Purpose Processor";
+    case Architecture::e_Ns32k:
+      return os << "National Semiconductor 32000 series";
+    case Architecture::e_Tpc:
+      return os << "Tenor Network TPC processor";
+    case Architecture::e_Snp1k:
+      return os << "Trebia SNP 1000 processor";
+    case Architecture::e_St200:
+      return os << "STMicroelectronics ST200 microcontroller";
+    case Architecture::e_Ip2k:
+      return os << "Ubicom IP2022 micro controller";
+    case Architecture::e_Max:
+      return os << "MAX Processor";
+    case Architecture::e_Cr:
+      return os << "National Semiconductor CompactRISC";
+    case Architecture::e_F2mc16:
+      return os << "Fujitsu F2MC16";
+    case Architecture::e_Msp430:
+      return os << "TI msp430 micro controller";
+    case Architecture::e_Blackfin:
+      return os << "ADI Blackfin";
+    case Architecture::e_Se_c33:
+      return os << "S1C33 Family of Seiko Epson processors";
+    case Architecture::e_Sep:
+      return os << "Sharp embedded microprocessor";
+    case Architecture::e_Arca:
+      return os << "Arca RISC Microprocessor";
+    case Architecture::e_Unicore:
+      return os << "Microprocessor series from PKU-Unity Ltd. and MPRC of "
+                   "Peking University";
+    case Architecture::e_Excess:
+      return os << "eXcess: 16/32/64-bit configurable embedded CPU";
+    case Architecture::e_Dxp:
+      return os << "Icera Semiconductor Inc. Deep Execution Processor";
+    case Architecture::e_Altera_nios2:
+      return os << "Altera Nios II soft-core processor";
+    case Architecture::e_Crx:
+      return os << "National Semiconductor CRX";
+    case Architecture::e_Xgate:
+      return os << "Motorola XGATE embedded processor";
+    case Architecture::e_C166:
+      return os << "Infineon C16x/XC16x processor";
+    case Architecture::e_M16c:
+      return os << "Renesas M16C series microprocessors";
+    case Architecture::e_Dspic30f:
+      return os << "Microchip Technology dsPIC30F Digital Signal Controller";
+    case Architecture::e_Ce:
+      return os << "Freescale Communication Engine RISC core";
+    case Architecture::e_M32c:
+      return os << "Renesas M32C series microprocessors";
+    case Architecture::e_res121:
+    case Architecture::e_res122:
+    case Architecture::e_res123:
+    case Architecture::e_res124:
+    case Architecture::e_res125:
+    case Architecture::e_res126:
+    case Architecture::e_res127:
+    case Architecture::e_res128:
+    case Architecture::e_res129:
+    case Architecture::e_res130:
+      return os << "Reserved";
+    case Architecture::e_Tsk3000:
+      return os << "Altium TSK3000 core";
+    case Architecture::e_Rs08:
+      return os << "Freescale RS08 embedded processor";
+    case Architecture::e_res133:
+      return os << "Reserved";
+    case Architecture::e_Ecog2:
+      return os << "Cyan Technology eCOG2 microprocessor";
+    case Architecture::e_Score7:
+      return os << "Sunplus S+core7 RISC processor";
+    case Architecture::e_Dsp24:
+      return os << "New Japan Radio (NJR) 24-bit DSP Processor";
+    case Architecture::e_Videocore3:
+      return os << "Broadcom VideoCore III processor";
+    case Architecture::e_Latticemico32:
+      return os << "RISC processor for Lattice FPGA architecture";
+    case Architecture::e_Se_c17:
+      return os << "Seiko Epson C17 family";
+    case Architecture::e_Ti_c6000:
+      return os << "Texas Instruments TMS320C6000 DSP family";
+    case Architecture::e_Ti_c2000:
+      return os << "Texas Instruments TMS320C2000 DSP family";
+    case Architecture::e_Ti_c5500:
+      return os << "Texas Instruments TMS320C55x DSP family";
+    case Architecture::e_res143:
+    case Architecture::e_res144:
+    case Architecture::e_res145:
+    case Architecture::e_res146:
+    case Architecture::e_res147:
+    case Architecture::e_res148:
+    case Architecture::e_res149:
+    case Architecture::e_res150:
+    case Architecture::e_res151:
+    case Architecture::e_res152:
+    case Architecture::e_res153:
+    case Architecture::e_res154:
+    case Architecture::e_res155:
+    case Architecture::e_res156:
+    case Architecture::e_res157:
+    case Architecture::e_res158:
+    case Architecture::e_res159:
+      return os << "Reserved";
+    case Architecture::e_Mmdsp_plus:
+      return os << "STMicroelectronics 64bit VLIW Data Signal Processor";
+    case Architecture::e_Cypress_m8c:
+      return os << "Cypress M8C microprocessor";
+    case Architecture::e_R32c:
+      return os << "Renesas R32C series microprocessors";
+    case Architecture::e_Trimedia:
+      return os << "NXP Semiconductors TriMedia architecture family";
+    case Architecture::e_Qdsp6:
+      return os << "QUALCOMM DSP6 Processor";
+    case Architecture::e_8051:
+      return os << "Intel 8051 and variants";
+    case Architecture::e_Stxp7x:
+      return os << "STMicroelectronics STxP7x family";
+    case Architecture::e_Nds32:
+      return os << "Andes Technology compact code size embedded RISC processor "
+                   "family";
+    case Architecture::e_Ecog1x:
+      return os << "Cyan Technology eCOG1X family";
+    case Architecture::e_Maxq30:
+      return os << "Dallas Semiconductor MAXQ30 Core Micro-controllers";
+    case Architecture::e_Ximo16:
+      return os << "New Japan Radio (NJR) 16-bit DSP Processor";
+    case Architecture::e_Manik:
+      return os << "M2000 Reconfigurable RISC Microprocessor";
+    case Architecture::e_Craynv2:
+      return os << "Cray Inc. NV2 vector architecture";
+    case Architecture::e_Rx:
+      return os << "Renesas RX family";
+    case Architecture::e_Metag:
+      return os << "Imagination Technologies Meta processor architecture";
+    case Architecture::e_Mcst_elbrus:
+      return os << "MCST Elbrus general purpose hardware architecture";
+    case Architecture::e_Ecog16:
+      return os << "Cyan Technology eCOG16 family";
+    case Architecture::e_Cr16:
+      return os << "National Semiconductor CompactRISC 16-bit processor";
+    case Architecture::e_Etpu:
+      return os << "Freescale Extended Time Processing Unit";
+    case Architecture::e_Sle9x:
+      return os << "Infineon Technologies SLE9X core";
+    case Architecture::e_L1om:
+      return os << "Intel L1OM";
+    case Architecture::e_K1om:
+      return os << "Intel K1OM";
+    case Architecture::e_Intel182:
+      return os << "Reserved by Intel";
+    case Architecture::e_Aarch64:
+      return os << "ARM 64-bit architecture";
+    case Architecture::e_Arm184:
+      return os << "Reserved by ARM";
+    case Architecture::e_Avr32:
+      return os << "Atmel Corporation 32-bit microprocessor family";
+    case Architecture::e_Stm8:
+      return os << "STMicroeletronics STM8 8-bit microcontroller";
+    case Architecture::e_Tile64:
+      return os << "Tilera TILE64 multicore architecture family";
+    case Architecture::e_Tilepro:
+      return os << "Tilera TILEPro multicore architecture family";
+    case Architecture::e_Microblaze:
+      return os << "Xilinx MicroBlaze 32-bit RISC soft processor core";
+    case Architecture::e_Cuda:
+      return os << "NVIDIA CUDA architecture";
+    case Architecture::e_Tilegx:
+      return os << "Tilera TILE-Gx multicore architecture family";
+    case Architecture::e_Rl78:
+      return os << "Renesas RL78 family. ";
+    case Architecture::e_78k0r:
+      return os << "Renesas 78K0R. ";
+    case Architecture::e_Intel205:
+    case Architecture::e_Intel206:
+    case Architecture::e_Intel207:
+    case Architecture::e_Intel208:
+    case Architecture::e_Intel209:
+      return os << "Reserved by Intel";
+    case Architecture::e_Visium:
+      return os << "Controls and Data Services VISIUM core processor";
+    case Architecture::e_Moxie:
+      return os << "Moxie processor family";
+    default:
+      return os << "Unknown";
   }
 }
 
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const SectionType &sectionType) {
   switch (sectionType) {
-  case SectionType::e_Null:
-    return os << "Null";
-  case SectionType::e_Progbits:
-    return os << "Progbits";
-  case SectionType::e_Symtab:
-    return os << "Symtab"; // Symbol table
-  case SectionType::e_Strtab:
-    return os << "Strtab"; // String table
-  case SectionType::e_Rela:
-    return os << "Elf64_Rela"; // Relocation with addend
-  case SectionType::e_Hash:
-    return os << "Hash"; // Symbol hash table
-  case SectionType::e_Dynamic:
-    return os << "Dynamic"; // Dynmimc linking info
-  case SectionType::e_Note:
-    return os << "Note";
-  case SectionType::e_Nobits:
-    return os << "Nobits";
-  case SectionType::e_Rel:
-    return os << "Elf64_Rel";
-  case SectionType::e_Shlib:
-    return os << "Shlib";
-  case SectionType::e_Dynsym:
-    return os << "Dynsym";
-  case SectionType::e_Init_array:
-    return os << "Init_array";
-  case SectionType::e_Fini_array:
-    return os << "Fini_array";
-  case SectionType::e_Preinit_array:
-    return os << "Preinit_array";
-  case SectionType::e_Group:
-    return os << "Group";
-  case SectionType::e_Symtab_shndx:
-    return os << "Symtab_shndx";
-  case SectionType::e_Loos:
-    return os << "Loos";
-  case SectionType::e_Hios:
-    return os << "Hios";
-  case SectionType::e_Loproc:
-    return os << "Loproc";
-  case SectionType::e_Hiproc:
-    return os << "Hiproc";
-  case SectionType::e_Louser:
-    return os << "Louser";
-  case SectionType::e_Hiuser:
-    return os << "Hiuser";
+    case SectionType::e_Null:
+      return os << "Null";
+    case SectionType::e_Progbits:
+      return os << "Progbits";
+    case SectionType::e_Symtab:
+      return os << "Symtab";  // Symbol table
+    case SectionType::e_Strtab:
+      return os << "Strtab";  // String table
+    case SectionType::e_Rela:
+      return os << "Elf64_Rela";  // Relocation with addend
+    case SectionType::e_Hash:
+      return os << "Hash";  // Symbol hash table
+    case SectionType::e_Dynamic:
+      return os << "Dynamic";  // Dynmimc linking info
+    case SectionType::e_Note:
+      return os << "Note";
+    case SectionType::e_Nobits:
+      return os << "Nobits";
+    case SectionType::e_Rel:
+      return os << "Elf64_Rel";
+    case SectionType::e_Shlib:
+      return os << "Shlib";
+    case SectionType::e_Dynsym:
+      return os << "Dynsym";
+    case SectionType::e_Init_array:
+      return os << "Init_array";
+    case SectionType::e_Fini_array:
+      return os << "Fini_array";
+    case SectionType::e_Preinit_array:
+      return os << "Preinit_array";
+    case SectionType::e_Group:
+      return os << "Group";
+    case SectionType::e_Symtab_shndx:
+      return os << "Symtab_shndx";
+    case SectionType::e_Loos:
+      return os << "Loos";
+    case SectionType::e_Hios:
+      return os << "Hios";
+    case SectionType::e_Loproc:
+      return os << "Loproc";
+    case SectionType::e_Hiproc:
+      return os << "Hiproc";
+    case SectionType::e_Louser:
+      return os << "Louser";
+    case SectionType::e_Hiuser:
+      return os << "Hiuser";
   }
 }
 
 inline std::ostream &NoobLink::operator<<(std::ostream &os, const SectionFlag &sectionFlag) {
   switch (sectionFlag) {
-  case SectionFlag::e_Write:
-    return os << "Write";
-  case SectionFlag::e_Alloc:
-    return os << "Alloc";
-  case SectionFlag::e_Execinstr:
-    return os << "Execinstr";
-  case SectionFlag::e_Merge:
-    return os << "Merge";
-  case SectionFlag::e_Strings:
-    return os << "Strings";
-  case SectionFlag::e_Info_link:
-    return os << "Info_link";
-  case SectionFlag::e_Link_order:
-    return os << "Link_order";
-  case SectionFlag::e_Os_nonconforming:
-    return os << "Os_nonconforming";
-  case SectionFlag::e_Group:
-    return os << "Group";
-  case SectionFlag::e_Tls:
-    return os << "Tls";
-  case SectionFlag::e_Maskos:
-    return os << "Maskos";
-  case SectionFlag::e_Maskproc:
-    return os << "Maskproc";
+    case SectionFlag::e_Write:
+      return os << "Write";
+    case SectionFlag::e_Alloc:
+      return os << "Alloc";
+    case SectionFlag::e_Execinstr:
+      return os << "Execinstr";
+    case SectionFlag::e_Merge:
+      return os << "Merge";
+    case SectionFlag::e_Strings:
+      return os << "Strings";
+    case SectionFlag::e_Info_link:
+      return os << "Info_link";
+    case SectionFlag::e_Link_order:
+      return os << "Link_order";
+    case SectionFlag::e_Os_nonconforming:
+      return os << "Os_nonconforming";
+    case SectionFlag::e_Group:
+      return os << "Group";
+    case SectionFlag::e_Tls:
+      return os << "Tls";
+    case SectionFlag::e_Maskos:
+      return os << "Maskos";
+    case SectionFlag::e_Maskproc:
+      return os << "Maskproc";
   }
 }
 
-#endif // NOOBLINK_HEADER_CONSTANTS_H
+#endif  // NOOBLINK_HEADER_CONSTANTS_H

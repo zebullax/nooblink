@@ -1,7 +1,8 @@
+// -*-C++-*-
+//
 // nooblink
 #include "raw/raw_elf_header.h"
 #include "raw/raw_elf_header_util.h"
-#include "raw/raw_section_header.h"
 #include "raw/raw_section_header_util.h"
 #include "vocabulary/elf_header.h"
 // std
@@ -17,12 +18,12 @@
 namespace {
 // RAII class dealing with memory mapping a file
 class MMapFile {
-private:
+ private:
   int d_fileDescriptor;
   size_t d_fileSize;
   void *d_mappedRegionStart;
 
-public:
+ public:
   // Create this object mapping the specified 'filename' to memory. The behavior is undefined if the file does not exist
   explicit MMapFile(const std::string &filename) : d_fileDescriptor{}, d_fileSize{}, d_mappedRegionStart{} {
     namespace fs = std::filesystem;
@@ -50,7 +51,7 @@ public:
 
   void *getMappedRegionStart() const { return d_mappedRegionStart; }
 };
-} // namespace
+}  // namespace
 
 int main(int, char **argv) {
   namespace fs = std::filesystem;

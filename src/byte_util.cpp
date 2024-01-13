@@ -1,3 +1,5 @@
+// -*-C++-*-
+//
 // File: byte_util.cpp
 // Project: nooblink
 //

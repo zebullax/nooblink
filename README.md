@@ -21,4 +21,4 @@ Found 'Strtab' entry at: 0x1089fec18
 - Relocate entries
 
 ## Notes
-nop
+- Make this into a wasm + D3 UI drag & drop multiple obj files and see how they link into final task ?

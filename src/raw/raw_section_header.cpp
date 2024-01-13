@@ -1,3 +1,5 @@
+// -*-C++-*-
+//
 // File: raw_section_header.cpp
 // Project: nooblink
 //

@@ -1,9 +1,12 @@
-// File: elf_header_util.cpp
+// -*-C++-*-
+//
+// File: raw_elf_header_util.cpp
 // Project: nooblink
 //
 
 // nooblink
 #include "raw/raw_elf_header_util.h"
+
 #include "byte_util.h"
 // std
 #include <span>
@@ -11,9 +14,9 @@
 namespace NoobLink {
 
 // Macro to cast the specified 'FIELD_NAME' from the header to the specified 'TARGET_TYPE'
-#define RETURN_CAST_FIELD(TARGET_TYPE, FIELD_NAME)                                                                     \
-  std::span field =                                                                                                    \
-      header.subspan<Layout::FieldOffset::Header::k_##FIELD_NAME, Layout::FieldLength::Header::k_##FIELD_NAME>();      \
+#define RETURN_CAST_FIELD(TARGET_TYPE, FIELD_NAME)                                                                \
+  std::span field =                                                                                               \
+      header.subspan<Layout::FieldOffset::Header::k_##FIELD_NAME, Layout::FieldLength::Header::k_##FIELD_NAME>(); \
   return ByteUtil::convertTo<TARGET_TYPE>(field);
 
 bool RawElfHeaderUtil::isElf(RawElfHeader header) {
@@ -70,4 +73,4 @@ uint16_t RawElfHeaderUtil::sectionTableCount(RawElfHeader header) { RETURN_CAST_
 uint16_t RawElfHeaderUtil::sectionNameIndex(RawElfHeader header) { RETURN_CAST_FIELD(uint16_t, SectionNameIndex); }
 
 #undef RETURN_CAST_FIELD
-} // namespace NoobLink
+}  // namespace NoobLink

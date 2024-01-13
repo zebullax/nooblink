@@ -9,6 +9,8 @@ add_executable(nooblink
         vocabulary/elf_header.cpp
         raw/raw_elf_header.cpp
         raw/raw_section_header.cpp
+        vocabulary/elf_section_util.cpp
+        vocabulary/elf_section_util.h
 )
 find_package(nlohmann_json 3.11.3 REQUIRED)
 target_include_directories(nooblink PUBLIC .)

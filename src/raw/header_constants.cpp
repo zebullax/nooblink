@@ -1,3 +1,5 @@
+// -*-C++-*-
+//
 // File: header_constants.cpp
 // Project: nooblink
 //

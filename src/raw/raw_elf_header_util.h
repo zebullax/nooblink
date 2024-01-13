@@ -1,4 +1,6 @@
-// File: elf_header_util.h
+// -*-C++-*-
+//
+// File: raw_elf_header_util.h
 // Project: nooblink
 //
 
@@ -75,6 +77,6 @@ struct RawElfHeaderUtil {
   static uint16_t sectionNameIndex(RawElfHeader header);
 };
 
-} // namespace NoobLink
+}  // namespace NoobLink
 
-#endif // NOOBLINK_HEADER_UTIL_H
+#endif  // NOOBLINK_HEADER_UTIL_H

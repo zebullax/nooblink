@@ -1,18 +1,21 @@
+// -*-C++-*-
+//
 // File: section_header_util.cpp
 // Project: nooblink
 //
 
 // nooblink
 #include "raw/raw_section_header_util.h"
+
 #include "byte_util.h"
 
 namespace NoobLink {
 
 // Macro to cast the specified 'FIELD_NAME' from the section entry to the specified 'TARGET_TYPE'
-#define RETURN_CAST_FIELD(TARGET_TYPE, FIELD_NAME)                                                                     \
-  std::span field =                                                                                                    \
-      rawSectionHeader                                                                                                 \
-          .subspan<Layout::FieldOffset::Section::k_##FIELD_NAME, Layout::FieldLength::Section::k_##FIELD_NAME>();      \
+#define RETURN_CAST_FIELD(TARGET_TYPE, FIELD_NAME)                                                                \
+  std::span field =                                                                                               \
+      rawSectionHeader                                                                                            \
+          .subspan<Layout::FieldOffset::Section::k_##FIELD_NAME, Layout::FieldLength::Section::k_##FIELD_NAME>(); \
   return ByteUtil::convertTo<TARGET_TYPE>(field);
 
 std::vector<std::byte *> RawSectionHeaderUtil::findEntriesBySectionType(SectionTableBound sectionTableBound,
@@ -35,23 +38,23 @@ std::vector<std::byte *> RawSectionHeaderUtil::findEntriesBySectionType(SectionT
   return entries;
 }
 
-uint32_t RawSectionHeaderUtil::getNameIndex(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint32_t, NameIndex)}
+uint32_t RawSectionHeaderUtil::nameIndex(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint32_t, NameIndex)}
 
-uint64_t RawSectionHeaderUtil::getAddr(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, Addr)}
+uint64_t RawSectionHeaderUtil::addr(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, Addr)}
 
-uint64_t RawSectionHeaderUtil::getOffset(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, Offset)}
+uint64_t RawSectionHeaderUtil::offset(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, Offset)}
 
-uint64_t RawSectionHeaderUtil::getSize(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, Size)}
+uint64_t RawSectionHeaderUtil::size(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, Size)}
 
-uint32_t RawSectionHeaderUtil::getLink(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, Addr)}
+uint32_t RawSectionHeaderUtil::link(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, Addr)}
 
-uint32_t RawSectionHeaderUtil::getInfo(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint32_t, Info)}
+uint32_t RawSectionHeaderUtil::info(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint32_t, Info)}
 
-uint64_t RawSectionHeaderUtil::getAddrAlign(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, AddrAlign)}
+uint64_t RawSectionHeaderUtil::addrAlign(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, AddrAlign)}
 
-uint64_t RawSectionHeaderUtil::getEntrySize(RawSectionHeader rawSectionHeader) {
+uint64_t RawSectionHeaderUtil::entrySize(RawSectionHeader rawSectionHeader) {
   RETURN_CAST_FIELD(uint64_t, EntrySize)
 }
 
 #undef RETURN_CAST_FIELD
-} // namespace NoobLink
+}  // namespace NoobLink
