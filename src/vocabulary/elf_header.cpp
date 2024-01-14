@@ -74,7 +74,7 @@ uint16_t ElfHeader::getSectionTableCount() const { return d_sectionTableCount; }
 
 uint16_t ElfHeader::getSectionNameIndex() const { return d_sectionNameIndex; }
 
-std::ostream &ElfHeader::print(std::ostream &os) const {
+std::ostream& ElfHeader::print(std::ostream& os) const {
   auto toString = [](auto e) {
     std::ostringstream oss;
     oss << e;
@@ -112,5 +112,7 @@ std::ostream &ElfHeader::print(std::ostream &os) const {
   os << j;
   return os;
 }
+
+std::ostream& operator<<(std::ostream& os, const ElfHeader& elfHeader) { return elfHeader.print(os); }
 
 }  // namespace NoobLink

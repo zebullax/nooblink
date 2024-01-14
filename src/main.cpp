@@ -2,9 +2,8 @@
 //
 // nooblink
 #include "raw/raw_elf_header.h"
-#include "raw/raw_elf_header_util.h"
-#include "raw/raw_section_header_util.h"
 #include "vocabulary/elf_header.h"
+#include "vocabulary/elf_header_util.h"
 // std
 #include <cstdlib>
 #include <filesystem>
@@ -63,15 +62,9 @@ int main(int, char **argv) {
   // Demo starts here
   NoobLink::RawElfHeader rawElfHeader(objFileStart, k_ElfHeaderLength);
   NoobLink::ElfHeader elfHeader(rawElfHeader);
-  elfHeader.print(std::cout);
-
-  std::byte *sectionStart = objFileStart + elfHeader.getSectionTableAddress();
-  NoobLink::SectionTableBound sectionTableBound{elfHeader.getSectionTableCount(), elfHeader.getSectionTableSize(),
-                                                sectionStart};
-  std::cout << "\n";
-  for (auto entry :
-       NoobLink::RawSectionHeaderUtil::findEntriesBySectionType(sectionTableBound, NoobLink::SectionType::e_Strtab)) {
-    std::cout << "Found '" << NoobLink::SectionType::e_Strtab << "' entry at: " << entry << "\n";
+  std::cout << "=== Elf header ===" << '\n' << elfHeader << std::endl;
+  for (auto &&sectionHeader : NoobLink::ElfHeaderUtil::extractSections(elfHeader, objFileStart)) {
+    std::cout << "=== Section table header ===" << '\n' << sectionHeader << std::endl;
   }
 
   return EXIT_SUCCESS;

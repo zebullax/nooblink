@@ -35,21 +35,8 @@ struct Layout {
       static constexpr size_t k_HeaderSize = 0x34;
       static constexpr size_t k_ProgramTableSize = 0x36;
       static constexpr size_t k_ProgramTableCount = 0x38;
-      // This member holds a section header's size in bytes. A section header is one entry in the section
-      // header table; all entries are the same size.
       static constexpr size_t k_SectionTableSize = 0x3a;
-      // This member holds the number of entries in the section header table. Thus the product of HeaderTableSize and
-      // HeaderTableCount gives the section header table's size in bytes. If a file has no section header table,
-      // k_SectionTableSize holds the value zero. If the number of sections is greater than or equal to SHN_LORESERVE
-      // (0xff00), this member has the value zero and the actual number of section header table entries is contained
-      // in the Section::k_Size field of the section header at index 0. (Otherwise, the k_Size member of the initial
-      // entry contains 0.)
       static constexpr size_t k_SectionTableCount = 0x3c;
-      // This member holds the section header table index of the entry associated with the section name string table. If
-      // the file has no section name string table, this member holds the value SHN_UNDEF. If the section name string
-      // table section index is greater than or equal to SHN_LORESERVE (0xff00), this member has the value SHN_XINDEX
-      // (0xffff) and the actual index of the section name string table section is contained in the sh_link field of the
-      // section header at index 0. (Otherwise, the sh_link member of the initial entry contains 0.)
       static constexpr size_t k_SectionNameIndex = 0x3e;
     };
 
@@ -59,10 +46,7 @@ struct Layout {
       static constexpr size_t k_NameIndex = 0x00;
       static constexpr size_t k_Type = 0x04;
       static constexpr size_t k_Flags = 0x08;
-      // If section appear in final image of the process, this is the address where the section should start (otherwise
-      // 0)
       static constexpr size_t k_Addr = 0x10;
-      // Offset from the beginning of the file where first byte of this section appears
       static constexpr size_t k_Offset = 0x18;
       static constexpr size_t k_Size = 0x20;
       static constexpr size_t k_Link = 0x28;

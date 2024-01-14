@@ -8,6 +8,8 @@
 #include "raw/raw_section_header_util.h"
 
 #include "byte_util.h"
+// std
+#include <utility>
 
 namespace NoobLink {
 
@@ -23,7 +25,7 @@ std::vector<std::byte *> RawSectionHeaderUtil::findEntriesBySectionType(SectionT
   auto [nbSectionEntries, sectionEntrySize, sectionTableStart] = sectionTableBound;
   std::vector<std::byte *> entries;
   std::byte *start = sectionTableStart;
-  auto rawSectionType = static_cast<std::underlying_type_t<SectionType>>(sectionType);
+  auto rawSectionType = std::to_underlying(sectionType);
 
   for (size_t i = 0; i != nbSectionEntries; ++i) {
     std::span<std::byte, Layout::FieldLength::Section::k_Type> entryType(start + Layout::FieldOffset::Section::k_Type,
@@ -52,9 +54,13 @@ uint32_t RawSectionHeaderUtil::info(RawSectionHeader rawSectionHeader){RETURN_CA
 
 uint64_t RawSectionHeaderUtil::addrAlign(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, AddrAlign)}
 
-uint64_t RawSectionHeaderUtil::entrySize(RawSectionHeader rawSectionHeader) {
-  RETURN_CAST_FIELD(uint64_t, EntrySize)
+uint64_t RawSectionHeaderUtil::entrySize(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, EntrySize)}
+
+SectionType RawSectionHeaderUtil::type(RawSectionHeader rawSectionHeader) {
+  RETURN_CAST_FIELD(SectionType, Type);
 }
+
+uint64_t RawSectionHeaderUtil::flags(RawSectionHeader rawSectionHeader) { RETURN_CAST_FIELD(uint64_t, Flags); }
 
 #undef RETURN_CAST_FIELD
 }  // namespace NoobLink

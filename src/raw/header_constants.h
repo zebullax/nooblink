@@ -9,7 +9,9 @@
 
 // std
 #include <cstdint>
+#include <iomanip>
 #include <ostream>
+#include <utility>
 
 namespace NoobLink {
 
@@ -112,7 +114,7 @@ enum class Architecture : uint16_t {
   e_Pdp10 = 64,          /* Digital Equipment Corp. PDP-10 */
   e_Pdp11 = 65,          /* Digital Equipment Corp. PDP-11 */
   e_Fx66 = 66,           /* Siemens FX66 microcontroller */
-  e_St9plus = 67,        /* STMicroelectronics ST9+ 8/16 bit microcontroller */
+  e_St9plus = 67,        /* STMicroelectronics ST9+ 8/16-bit microcontroller */
   e_St7 = 68,            /* STMicroelectronics ST7 8-bit microcontroller */
   e_68hc16 = 69,         /* Motorola MC68HC16 Microcontroller */
   e_68hc11 = 70,         /* Motorola MC68HC11 Microcontroller */
@@ -264,17 +266,36 @@ enum class SectionType : uint32_t {
   e_Rel = 9,
   e_Shlib = 10,
   e_Dynsym = 11,
-  e_Init_array = 14,
-  e_Fini_array = 15,
-  e_Preinit_array = 16,
+  e_InitArray = 14,
+  e_FiniArray = 15,
+  e_PreinitArray = 16,
   e_Group = 17,
   e_Symtab_shndx = 18,
-  e_Loos = 0x60000000,
-  e_Hios = 0x6fffffff,
-  e_Loproc = 0x70000000,
-  e_Hiproc = 0x7fffffff,
-  e_Louser = 0x80000000,
-  e_Hiuser = 0xffffffff,
+  // Low bound for OS specific: e_LoOs = 0x60000000,
+  e_SunCapchain = 0x6fffffef,
+  e_SunCapInfo = 0x6ffffff0,
+  e_SunSymSort = 0x6ffffff1,
+  e_SunTlsSort = 0x6ffffff2,
+  e_SunLdynSym = 0x6ffffff3,
+  e_SunDof = 0x6ffffff4,
+  e_SunCap = 0x6ffffff5,
+  e_SunSignature = 0x6ffffff6,
+  e_SunAnnotate = 0x6ffffff7,
+  e_SunDebugStr = 0x6ffffff8,
+  e_SunDebug = 0x6ffffff9,
+  e_SunMove = 0x6ffffffa,
+  e_SunCOMDAT = 0x6ffffffb,
+  e_SunSymInfo = 0x6ffffffc,
+  e_SunVerDef = 0x6ffffffd,
+  e_SunVerneed = 0x6ffffffe,
+  e_SunVerSym = 0x6fffffff,
+  // Top bound for OS specific: e_HiOs = 0x6fffffff,
+  // Low bound for CPU specific: e_LoProc = 0x70000000,
+  e_SparcGotData = 0x70000000,
+  e_AMD64Unwind = 0x70000001,
+  // Top bound for CPU specific: e_HiProc = 0x7fffffff,
+  // Low bound for User specific: e_LoUser = 0x80000000,
+  // Top bound for User specific: e_HiUser = 0xffffffff,
 };
 std::ostream &operator<<(std::ostream &os, const SectionType &sectionType);
 
@@ -761,7 +782,7 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const SectionType &s
     case SectionType::e_Hash:
       return os << "Hash";  // Symbol hash table
     case SectionType::e_Dynamic:
-      return os << "Dynamic";  // Dynmimc linking info
+      return os << "Dynamic";  // Dynamic linking info
     case SectionType::e_Note:
       return os << "Note";
     case SectionType::e_Nobits:
@@ -772,28 +793,57 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const SectionType &s
       return os << "Shlib";
     case SectionType::e_Dynsym:
       return os << "Dynsym";
-    case SectionType::e_Init_array:
-      return os << "Init_array";
-    case SectionType::e_Fini_array:
-      return os << "Fini_array";
-    case SectionType::e_Preinit_array:
-      return os << "Preinit_array";
+    case SectionType::e_InitArray:
+      return os << "InitArray";
+    case SectionType::e_FiniArray:
+      return os << "FiniArray";
+    case SectionType::e_PreinitArray:
+      return os << "PreinitArray";
     case SectionType::e_Group:
       return os << "Group";
     case SectionType::e_Symtab_shndx:
       return os << "Symtab_shndx";
-    case SectionType::e_Loos:
-      return os << "Loos";
-    case SectionType::e_Hios:
-      return os << "Hios";
-    case SectionType::e_Loproc:
-      return os << "Loproc";
-    case SectionType::e_Hiproc:
-      return os << "Hiproc";
-    case SectionType::e_Louser:
-      return os << "Louser";
-    case SectionType::e_Hiuser:
-      return os << "Hiuser";
+    case SectionType::e_SunCapchain:
+      return os << "SunCapchain";
+    case SectionType::e_SunCapInfo:
+      return os << "SunCapInfo";
+    case SectionType::e_SunSymSort:
+      return os << "SunSymSort";
+    case SectionType::e_SunTlsSort:
+      return os << "SunTlsSort";
+    case SectionType::e_SunLdynSym:
+      return os << "SunLdynSym";
+    case SectionType::e_SunDof:
+      return os << "SunDof";
+    case SectionType::e_SunCap:
+      return os << "SunCap";
+    case SectionType::e_SunSignature:
+      return os << "SunSignature";
+    case SectionType::e_SunAnnotate:
+      return os << "SunAnnotate";
+    case SectionType::e_SunDebugStr:
+      return os << "SunDebugStr";
+    case SectionType::e_SunDebug:
+      return os << "SunDebug";
+    case SectionType::e_SunMove:
+      return os << "SunMove";
+    case SectionType::e_SunCOMDAT:
+      return os << "SunCOMDAT";
+    case SectionType::e_SunSymInfo:
+      return os << "SunSymInfo";
+    case SectionType::e_SunVerDef:
+      return os << "SunVerDef";
+    case SectionType::e_SunVerneed:
+      return os << "SunVerneed";
+    case SectionType::e_SunVerSym:
+      return os << "SunVerSym";
+    case SectionType::e_SparcGotData:
+      return os << "SparcGotData";
+    case SectionType::e_AMD64Unwind:
+      return os << "AMD64Unwind";
+    default:
+      return os << "Unknown (0x" << std::hex << std::setw(8) << std::setfill('0') << std::to_underlying(sectionType)
+                << ")";
   }
 }
 

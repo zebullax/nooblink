@@ -69,19 +69,35 @@ class ElfHeader {
   // return the programTableCount from this object
   uint16_t getProgramTableCount() const;
 
-  // return the sectionTableSize from this object
+  // return the sectionTableSize from this object. A section header is one entry in the section header table; all
+  // entries are the same size.
   uint16_t getSectionTableSize() const;
 
-  // return the sectionTableCount from this object
+  // return the sectionTableCount from this object.
+  // This member holds the number of entries in the section header table.
+  // Thus, the product of HeaderTableSize and HeaderTableCount gives the section header table's size in bytes. If a file
+  // has no section header table, SectionTableSize holds the value zero. If the number of sections is greater than or
+  // equal to SHN_LORESERVE (0xff00), this member has the value zero and the actual number of section header table
+  // entries is contained in the Section::k_Size field of the section header at index 0. (Otherwise, the k_Size member
+  // of the initial entry contains 0.)
   uint16_t getSectionTableCount() const;
 
-  // return the sectionNameIndex from this object
+  // return the sectionNameIndex from this object.
+  // This member holds the section header table index of the entry associated with the section name string table. If
+  // the file has no section name string table, this member holds the value SHN_UNDEF. If the section name string
+  // table section index is greater than or equal to SHN_LORESERVE (0xff00), this member has the value SHN_XINDEX
+  // (0xffff) and the actual index of the section name string table section is contained in the sh_link field of the
+  // section header at index 0. (Otherwise, the sh_link member of the initial entry contains 0.)
   uint16_t getSectionNameIndex() const;
 
   // Output to the specified 'os' a JSON representation of this object, return the stream
-  std::ostream &print(std::ostream &os) const;
+  std::ostream& print(std::ostream& os) const;
 
  private:
+  // FRIENDS
+  friend std::ostream& operator<<(std::ostream& os, const ElfHeader& elfHeade);
+
+  // DATA
   bool d_isSupported;
   AddressClass d_addressClass;
   Endianness d_endianness;
