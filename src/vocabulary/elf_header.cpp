@@ -5,9 +5,8 @@
 //
 
 // nooblink
-#include "vocabulary/elf_header.h"
-
-#include "raw/raw_elf_header_util.h"
+#include <raw/raw_elf_header_util.h>
+#include <vocabulary/elf_header.h>
 // json
 #include <nlohmann/json.hpp>
 // std
@@ -15,10 +14,11 @@
 #include <iomanip>
 #include <sstream>
 
-namespace NoobLink {
+namespace nooblink {
 
-ElfHeader::ElfHeader(NoobLink::RawElfHeader rawHeader)
-    : d_isSupported((assert(RawElfHeaderUtil::isElf(rawHeader)), true)),
+ElfHeader::ElfHeader(RawElfHeader rawHeader, uint64_t offset)
+    : d_offsetContent(offset),
+      d_isSupported((assert(RawElfHeaderUtil::isElf(rawHeader)), true)),
       d_addressClass(RawElfHeaderUtil::addressClass(rawHeader)),
       d_endianness(RawElfHeaderUtil::endianness(rawHeader)),
       d_headerVersion(RawElfHeaderUtil::headerVersion(rawHeader)),
@@ -38,43 +38,49 @@ ElfHeader::ElfHeader(NoobLink::RawElfHeader rawHeader)
       d_sectionTableCount(RawElfHeaderUtil::sectionTableCount(rawHeader)),
       d_sectionNameIndex(RawElfHeaderUtil::sectionNameIndex(rawHeader)) {}
 
-AddressClass ElfHeader::getAddressClass() const { return d_addressClass; }
+uint64_t ElfHeader::offsetContent() const { return d_offsetContent; }
 
-Endianness ElfHeader::getEndianness() const { return d_endianness; }
+AddressClass ElfHeader::addressClass() const { return d_addressClass; }
 
-uint8_t ElfHeader::getHeaderVersion() const { return d_headerVersion; }
+Endianness ElfHeader::endianness() const { return d_endianness; }
 
-Abi ElfHeader::getAbi() const { return d_abi; }
+uint8_t ElfHeader::headerVersion() const { return d_headerVersion; }
 
-uint8_t ElfHeader::getAbiVersion() const { return d_abiVersion; }
+Abi ElfHeader::abi() const { return d_abi; }
 
-ObjectFileType ElfHeader::getObjectFileType() const { return d_objectFileType; }
+uint8_t ElfHeader::abiVersion() const { return d_abiVersion; }
 
-Architecture ElfHeader::getArchitecture() const { return d_architecture; }
+ObjectFileType ElfHeader::objectFileType() const { return d_objectFileType; }
 
-uint32_t ElfHeader::getObjectFileVersion() const { return d_objectFileVersion; }
+Architecture ElfHeader::architecture() const { return d_architecture; }
 
-uint64_t ElfHeader::getEntry() const { return d_entry; }
+uint32_t ElfHeader::objectFileVersion() const { return d_objectFileVersion; }
 
-uint64_t ElfHeader::getProgramTableAddress() const { return d_programTableAddress; }
+uint64_t ElfHeader::entry() const { return d_entry; }
 
-uint64_t ElfHeader::getSectionTableAddress() const { return d_sectionTableAddress; }
+std::byte* ElfHeader::programTableAddress() const {
+  return reinterpret_cast<std::byte*>(d_programTableAddress) + d_offsetContent;
+}
 
-uint32_t ElfHeader::getFlags() const { return d_flags; }
+std::byte* ElfHeader::sectionTableAddress() const {
+  return reinterpret_cast<std::byte*>(d_sectionTableAddress) + d_offsetContent;
+}
 
-uint16_t ElfHeader::getHeaderSize() const { return d_headerSize; }
+uint32_t ElfHeader::flags() const { return d_flags; }
 
-uint16_t ElfHeader::getProgramTableSize() const { return d_programTableSize; }
+uint16_t ElfHeader::headerSize() const { return d_headerSize; }
 
-uint16_t ElfHeader::getProgramTableCount() const { return d_programTableCount; }
+uint16_t ElfHeader::programTableSize() const { return d_programTableSize; }
 
-uint16_t ElfHeader::getSectionTableSize() const { return d_sectionTableSize; }
+uint16_t ElfHeader::programTableCount() const { return d_programTableCount; }
 
-uint16_t ElfHeader::getSectionTableCount() const { return d_sectionTableCount; }
+uint16_t ElfHeader::sectionTableSize() const { return d_sectionTableSize; }
 
-uint16_t ElfHeader::getSectionNameIndex() const { return d_sectionNameIndex; }
+uint16_t ElfHeader::sectionTableCount() const { return d_sectionTableCount; }
 
-std::ostream& ElfHeader::print(std::ostream& os) const {
+uint16_t ElfHeader::sectionNameIndex() const { return d_sectionNameIndex; }
+
+nlohmann::json ElfHeader::json() const {
   auto toString = [](auto e) {
     std::ostringstream oss;
     oss << e;
@@ -90,29 +96,31 @@ std::ostream& ElfHeader::print(std::ostream& os) const {
   using json = nlohmann::json;
   json j;
 
-  j["AddressClass"] = toString(d_addressClass);
-  j["Endianness"] = toString(d_endianness);
-  j["HeaderVersion"] = d_headerVersion;
-  j["Abi"] = toString(d_abi);
-  j["AbiVersion"] = d_abiVersion;
-  j["Padding"] = "       ";
-  j["ObjectFileType"] = toString(d_objectFileType);
-  j["Architecture"] = toString(d_architecture);
-  j["ObjectFileVersion"] = d_objectFileVersion;
-  j["ExecutionAddress"] = toHex(d_entry);
-  j["ProgramTableAddress"] = toHex(d_programTableAddress);
-  j["SectionTableAddress"] = toHex(d_sectionTableAddress);
-  j["Flags"] = toHex(d_flags);
-  j["HeaderSize"] = d_headerSize;
-  j["ProgramTableSize"] = d_programTableSize;
-  j["ProgramTableCount"] = d_programTableCount;
-  j["SectionTableSize"] = d_sectionTableSize;
-  j["SectionTableCount"] = d_sectionTableCount;
-  j["SectionNameIndex"] = d_sectionNameIndex;
-  os << j;
+  j["addressClass"] = toString(d_addressClass);
+  j["endianness"] = toString(d_endianness);
+  j["headerVersion"] = d_headerVersion;
+  j["abi"] = toString(d_abi);
+  j["abiVersion"] = d_abiVersion;
+  j["padding"] = "       ";
+  j["objectFileType"] = toString(d_objectFileType);
+  j["architecture"] = toString(d_architecture);
+  j["objectFileVersion"] = d_objectFileVersion;
+  j["executionAddress"] = toHex(d_entry);
+  j["programTableAddress"] = toHex(d_programTableAddress);
+  j["sectionTableAddress"] = toHex(d_sectionTableAddress);
+  j["flags"] = toHex(d_flags);
+  j["headerSize"] = d_headerSize;
+  j["programTableSize"] = d_programTableSize;
+  j["programTableCount"] = d_programTableCount;
+  j["sectionTableSize"] = d_sectionTableSize;
+  j["sectionTableCount"] = d_sectionTableCount;
+  j["sectionNameIndex"] = d_sectionNameIndex;
+  return j;
+}
+
+std::ostream& operator<<(std::ostream& os, const ElfHeader& elfHeader) {
+  os << elfHeader.json();
   return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const ElfHeader& elfHeader) { return elfHeader.print(os); }
-
-}  // namespace NoobLink
+}  // namespace nooblink

@@ -8,13 +8,13 @@
 #define NOOBLINK_RAW_ELF_HEADER_UTIL_H
 
 // nooblink
-#include "raw/header_constants.h"
-#include "raw/layout.h"
-#include "raw/raw_elf_header.h"
+#include <raw/header_constants.h>
+#include <raw/layout.h>
+#include <raw/raw_elf_header.h>
 // std
 #include <cstdint>
 
-namespace NoobLink {
+namespace nooblink {
 
 struct RawElfHeaderUtil {
   RawElfHeaderUtil() = delete;
@@ -77,6 +77,6 @@ struct RawElfHeaderUtil {
   static uint16_t sectionNameIndex(RawElfHeader header);
 };
 
-}  // namespace NoobLink
+}  // namespace nooblink
 
 #endif  // NOOBLINK_HEADER_UTIL_H

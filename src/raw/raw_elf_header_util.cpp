@@ -5,13 +5,12 @@
 //
 
 // nooblink
-#include "raw/raw_elf_header_util.h"
-
-#include "byte_util.h"
+#include <raw/byte_util.h>
+#include <raw/raw_elf_header_util.h>
 // std
 #include <span>
 
-namespace NoobLink {
+namespace nooblink {
 
 // Macro to cast the specified 'FIELD_NAME' from the header to the specified 'TARGET_TYPE'
 #define RETURN_CAST_FIELD(TARGET_TYPE, FIELD_NAME)                                                                \
@@ -73,4 +72,4 @@ uint16_t RawElfHeaderUtil::sectionTableCount(RawElfHeader header) { RETURN_CAST_
 uint16_t RawElfHeaderUtil::sectionNameIndex(RawElfHeader header) { RETURN_CAST_FIELD(uint16_t, SectionNameIndex); }
 
 #undef RETURN_CAST_FIELD
-}  // namespace NoobLink
+}  // namespace nooblink

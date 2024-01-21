@@ -11,7 +11,7 @@
 #include <cstddef>
 #include <span>
 
-namespace NoobLink {
+namespace nooblink {
 
 struct Layout {
   // Describe offset of fields
@@ -96,6 +96,6 @@ struct Layout {
   };
 };
 
-}  // namespace NoobLink
+}  // namespace nooblink
 
 #endif  // NOOBLINK_LAYOUT_H

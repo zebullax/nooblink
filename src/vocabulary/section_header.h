@@ -10,15 +10,17 @@
 #define NOOBLINK_SECTION_HEADER_H
 
 // nooblink
-#include "raw/header_constants.h"
-#include "raw/layout.h"
-#include "raw/raw_section_header.h"
-#include "vocabulary/elf_header.h"
+#include <raw/header_constants.h>
+#include <raw/layout.h>
+#include <raw/raw_section_header.h>
+#include <vocabulary/elf_header.h>
+// nlohmann
+#include <nlohmann/json.hpp>
 // std
 #include <array>
 #include <cstddef>
 
-namespace NoobLink {
+namespace nooblink {
 
 class SectionHeader {
  public:
@@ -41,45 +43,48 @@ class SectionHeader {
 
   // CREATORS
 
-  // Construct this object using the specified 'rawSectionHeader' to decode from
-  SectionHeader(const RawSectionHeader& rawSectionHeader);
+  // Construct this object using the specified 'rawSectionHeader' to decode from.  Optionally specify an 'offset' to
+  // apply on all addresses that refer to content to be found inside the object file described by this section header
+  explicit SectionHeader(const RawSectionHeader& rawSectionHeader, uint64_t offset = 0);
 
   // ACCESSORS
 
   // Return the name index
-  uint32_t nameIndex() const;
+  [[nodiscard]] uint32_t nameIndex() const;
 
   // Return type
-  SectionType type() const;
+  [[nodiscard]] SectionType type() const;
 
   // Return flags
-  Flags flags() const;
+  [[nodiscard]] Flags flags() const;
 
-  // Return addr. If the section will appear in the memory image of a process, this member gives the address at which
-  // the section's first byte should reside. Otherwise, the member contains 0.
-  uint64_t addr() const;
+  // If the section will appear in the memory image of a process, this member gives the address at which the section's
+  // first byte should reside. Otherwise, the member contains 0.
+  [[nodiscard]] uint64_t addr() const;
 
-  // Return offset
-  uint64_t offset() const;
+  // This member's value gives the byte offset from the beginning of the file to the first byte in the section. One
+  // section type, 'SHT_NOBITS' occupies no space in the file, and its offset member locates the conceptual placement in
+  // the file.
+  [[nodiscard]] std::byte* offset() const;
 
   // Return size
-  uint64_t size() const;
+  [[nodiscard]] uint64_t size() const;
 
   // Return link index. This member holds a section header table index link, whose interpretation depends on the section
   // type.
-  uint32_t link() const;
+  [[nodiscard]] uint32_t link() const;
 
   // Return info
-  uint32_t info() const;
+  [[nodiscard]] uint32_t info() const;
 
   // Return addrAlign
-  uint64_t addrAlign() const;
+  [[nodiscard]] uint64_t addrAlign() const;
 
   // Return entrySize
-  uint64_t entrySize() const;
+  [[nodiscard]] uint64_t entrySize() const;
 
-  // Output to the specified 'os' a JSON representation of this object, return the stream
-  std::ostream& print(std::ostream& os) const;
+  // Render and return a json representation for this object
+  nlohmann::json json() const;
 
  private:
   // FRIENDS
@@ -87,6 +92,7 @@ class SectionHeader {
   friend std::ostream& operator<<(std::ostream& os, const SectionHeader& sectionHeader);
 
   // DATA
+  uint64_t d_offsetContent;
   uint32_t d_nameIndex;
   SectionType d_type;
   Flags d_flags;
@@ -99,6 +105,6 @@ class SectionHeader {
   uint64_t d_entrySize;
 };
 
-}  // namespace NoobLink
+}  // namespace nooblink
 
 #endif  // NOOBLINK_SECTION_HEADER_H

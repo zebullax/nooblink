@@ -8,15 +8,15 @@
 #define NOOBLINK_RAW_SECTION_HEADER_H
 
 // nooblink
-#include "raw/layout.h"
+#include <raw/layout.h>
 // std
 #include <span>
 
-namespace NoobLink {
+namespace nooblink {
 
 // Alias over sequence of bytes covering a section header in the section table
 using RawSectionHeader =
     std::span<std::byte, Layout::FieldOffset::Section::k_EntrySize + Layout::FieldLength::Section::k_EntrySize>;
 
-}  // namespace NoobLink
+}  // namespace nooblink
 #endif  // NOOBLINK_RAW_SECTION_HEADER_H

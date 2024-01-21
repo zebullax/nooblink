@@ -5,24 +5,24 @@
 //
 
 // nooblink
-#include "vocabulary/elf_header_util.h"
+#include <vocabulary/elf_header_util.h>
 
-namespace NoobLink {
+namespace nooblink {
 
-std::vector<SectionHeader> ElfHeaderUtil::extractSections(const ElfHeader &elfHeader, std::byte *offset) {
+std::vector<SectionHeader> ElfHeaderUtil::extractSections(const ElfHeader &elfHeader) {
   std::vector<SectionHeader> result;
-  std::byte *entryPtr = elfHeader.getSectionTableAddress() + (offset ? offset : 0);
-  const uint64_t nbSectionHeaders = elfHeader.getSectionTableCount();
-  const uint64_t sectionHeaderSize = elfHeader.getSectionTableSize();
-  result.reserve(elfHeader.getSectionTableCount());
+  std::byte *entryPtr = elfHeader.sectionTableAddress();
+  const uint64_t nbSectionHeaders = elfHeader.sectionTableCount();
+  const uint64_t sectionHeaderSize = elfHeader.sectionTableSize();
+  result.reserve(elfHeader.sectionTableCount());
 
   for (size_t i = 0; i != nbSectionHeaders; ++i) {
     RawSectionHeader sectionTableEntry(entryPtr, entryPtr + sectionHeaderSize);
-    result.push_back(SectionHeader(sectionTableEntry));
+    result.emplace_back(sectionTableEntry, elfHeader.offsetContent());
     entryPtr += sectionHeaderSize;
   }
 
   return result;
 }
 
-}  // namespace NoobLink
+}  // namespace nooblink

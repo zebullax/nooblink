@@ -5,16 +5,15 @@
 //
 
 // nooblink
-#include "vocabulary/section_header.h"
-
-#include "raw/raw_section_header_util.h"
+#include <raw/raw_section_header_util.h>
+#include <vocabulary/section_header.h>
 // json
 #include <nlohmann/json.hpp>
 // std
 #include <sstream>
 #include <utility>
 
-namespace NoobLink {
+namespace nooblink {
 namespace {
 SectionHeader::Flags decodeSectionFlags(uint64_t rawFlags) {
   return SectionHeader::Flags{
@@ -44,7 +43,7 @@ SectionHeader::Flags SectionHeader::flags() const { return d_flags; }
 
 uint64_t SectionHeader::addr() const { return d_addr; }
 
-uint64_t SectionHeader::offset() const { return d_offset; }
+std::byte* SectionHeader::offset() const { return reinterpret_cast<std::byte*>(d_offset) + d_offsetContent; }
 
 uint64_t SectionHeader::size() const { return d_size; }
 
@@ -56,8 +55,9 @@ uint64_t SectionHeader::addrAlign() const { return d_addrAlign; }
 
 uint64_t SectionHeader::entrySize() const { return d_entrySize; }
 
-SectionHeader::SectionHeader(const RawSectionHeader& rawSectionHeader)
-    : d_nameIndex{RawSectionHeaderUtil::nameIndex(rawSectionHeader)},
+SectionHeader::SectionHeader(const RawSectionHeader& rawSectionHeader, uint64_t offset)
+    : d_offsetContent(offset),
+      d_nameIndex{RawSectionHeaderUtil::nameIndex(rawSectionHeader)},
       d_type{RawSectionHeaderUtil::type(rawSectionHeader)},
       d_flags{decodeSectionFlags(RawSectionHeaderUtil::flags(rawSectionHeader))},
       d_addr{RawSectionHeaderUtil::addr(rawSectionHeader)},
@@ -68,7 +68,7 @@ SectionHeader::SectionHeader(const RawSectionHeader& rawSectionHeader)
       d_addrAlign{RawSectionHeaderUtil::addrAlign(rawSectionHeader)},
       d_entrySize{RawSectionHeaderUtil::entrySize(rawSectionHeader)} {}
 
-std::ostream& SectionHeader::print(std::ostream& os) const {
+nlohmann::json SectionHeader::json() const {
   using json = nlohmann::json;
 
   auto toString = [](auto e) {
@@ -108,10 +108,12 @@ std::ostream& SectionHeader::print(std::ostream& os) const {
   j["info"] = d_info;
   j["addrAlign"] = d_addrAlign;
   j["entrySize"] = d_entrySize;
-  os << j;
+  return j;
+}
+
+std::ostream& operator<<(std::ostream& os, const SectionHeader& sectionHeader) {
+  os << sectionHeader.json();
   return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const SectionHeader& sectionHeader) { return sectionHeader.print(os); }
-
-}  // namespace NoobLink
+}  // namespace nooblink

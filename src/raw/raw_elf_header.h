@@ -8,15 +8,15 @@
 #define NOOBLINK_RAW_ELF_HEADER_H
 
 // nooblink
-#include "raw/layout.h"
+#include <raw/layout.h>
 // std
 #include <span>
 
-namespace NoobLink {
+namespace nooblink {
 
 // Alias over sequence of bytes covering the Elf header
 using RawElfHeader = std::span<std::byte, Layout::FieldOffset::Header::k_SectionNameIndex +
                                               Layout::FieldLength::Header::k_SectionNameIndex>;
-}  // namespace NoobLink
+}  // namespace nooblink
 
 #endif  // NOOBLINK_RAW_ELF_HEADER_H

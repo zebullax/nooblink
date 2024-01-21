@@ -13,7 +13,7 @@
 #include <ostream>
 #include <utility>
 
-namespace NoobLink {
+namespace nooblink {
 
 enum class AddressClass : uint8_t { e_Invalid, e_32, e_64 };
 std::ostream &operator<<(std::ostream &os, const AddressClass &addressClass);
@@ -315,9 +315,9 @@ enum class SectionFlag : uint64_t {
 };
 std::ostream &operator<<(std::ostream &os, const SectionFlag &sectionFlag);
 
-}  // namespace NoobLink
+}  // namespace nooblink
 
-inline std::ostream &NoobLink::operator<<(std::ostream &os, const AddressClass &addressClass) {
+inline std::ostream &nooblink::operator<<(std::ostream &os, const AddressClass &addressClass) {
   switch (addressClass) {
     case AddressClass::e_32:
       return os << "32bits";
@@ -329,7 +329,7 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const AddressClass &
   }
 }
 
-inline std::ostream &NoobLink::operator<<(std::ostream &os, const Endianness &endianness) {
+inline std::ostream &nooblink::operator<<(std::ostream &os, const Endianness &endianness) {
   switch (endianness) {
     case Endianness::e_LittleEndian:
       return os << "LowEndian";
@@ -341,7 +341,7 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const Endianness &en
   }
 }
 
-inline std::ostream &NoobLink::operator<<(std::ostream &os, const ObjectFileType &objectFileType) {
+inline std::ostream &nooblink::operator<<(std::ostream &os, const ObjectFileType &objectFileType) {
   switch (objectFileType) {
     case ObjectFileType::e_Relocatable:
       return os << "Relocatable";
@@ -356,7 +356,7 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const ObjectFileType
   }
 }
 
-inline std::ostream &NoobLink::operator<<(std::ostream &os, const Abi &abi) {
+inline std::ostream &nooblink::operator<<(std::ostream &os, const Abi &abi) {
   switch (abi) {
     case Abi::e_None:
       return os << "None";
@@ -399,7 +399,7 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const Abi &abi) {
   }
 }
 
-inline std::ostream &NoobLink::operator<<(std::ostream &os, const Architecture &architecture) {
+inline std::ostream &nooblink::operator<<(std::ostream &os, const Architecture &architecture) {
   switch (architecture) {
     case Architecture::e_None:
       return os << "No machine";
@@ -767,7 +767,7 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const Architecture &
   }
 }
 
-inline std::ostream &NoobLink::operator<<(std::ostream &os, const SectionType &sectionType) {
+inline std::ostream &nooblink::operator<<(std::ostream &os, const SectionType &sectionType) {
   switch (sectionType) {
     case SectionType::e_Null:
       return os << "Null";
@@ -847,7 +847,7 @@ inline std::ostream &NoobLink::operator<<(std::ostream &os, const SectionType &s
   }
 }
 
-inline std::ostream &NoobLink::operator<<(std::ostream &os, const SectionFlag &sectionFlag) {
+inline std::ostream &nooblink::operator<<(std::ostream &os, const SectionFlag &sectionFlag) {
   switch (sectionFlag) {
     case SectionFlag::e_Write:
       return os << "Write";
