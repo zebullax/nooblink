@@ -1,17 +1,17 @@
 # Nooblink
 
-Write a simplified (:poop:) linker from more or less scratch
+Write a simplified (💩) linker from more or less scratch
 
 **Supported**
 ELF Low endian 64 bits
 
 ## Dev steps
 - :point_right: Decode header & sections
-- :bow: Display symbols defined and undefined 
-- :bow: Handle multiple object files 
-- :bow: Describe layout of the result file 
-- :bow: Resolve symbol references
-- :bow: Relocate entries
+- Display symbols defined and undefined 
+- Handle multiple object files 
+- Describe layout of the result file 
+- Resolve symbol references
+- Relocate entries
 
 ## Todo
 ~~- (WIP) Introduce an object file type to wrap over vocabulary types as they get vivifed from decoding the header~~
