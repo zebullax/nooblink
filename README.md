@@ -6,7 +6,7 @@ Write a simplified (💩) linker from more or less scratch
 ELF Low endian 64 bits
 
 ## Dev steps
-- :point_right: Decode header & sections
+- 👉 Decode header & sections
 - Display symbols defined and undefined 
 - Handle multiple object files 
 - Describe layout of the result file 
@@ -18,6 +18,7 @@ ELF Low endian 64 bits
 - Write a Context` component that keep state of current linking session, this should be passed around or installed, so that client can find out what offset to apply to object files for example...
 
 ## Timeline
+- 02/04 - Decode symbol table entries, w/o decoded symbol names
 
 - 01/21 - Decode name of section header from the string table
   ````json 
@@ -102,3 +103,9 @@ ELF Low endian 64 bits
   Found 'Strtab' entry at: 0x1089fe6d8
   Found 'Strtab' entry at: 0x1089fec18
   ````
+
+## Reference
+1. https://refspecs.linuxbase.org/elf/elf.pdf
+2. https://www.sco.com/developers/gabi/2000-07-17/contents.html
+3. https://en.m.wikipedia.org/wiki/Executable_and_Linkable_Format
+4. https://uclibc.org/docs/elf-64-gen.pdf

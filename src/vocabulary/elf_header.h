@@ -23,14 +23,10 @@ class ElfHeader {
   // CREATORS
 
   // Construct this object from the specified 'rawHeader', the behavior is undefined if 'rawHeader' does not cover a
-  // valid ELF raw header (ref. README).  Optionally specify an 'offset' to apply on all addresses that refer to content
-  // to be found inside the object file described by this header
-  explicit ElfHeader(RawElfHeader rawHeader, uint64_t offset = 0);
+  // valid ELF raw header (ref. README).
+  explicit ElfHeader(RawElfHeader rawHeader);
 
   // ACCESSORS
-
-  // Return the offset applied to address referring to internal content
-  [[nodiscard]] uint64_t offsetContent() const;
 
   // return the addressClass from this object
   [[nodiscard]] AddressClass addressClass() const;
@@ -104,11 +100,13 @@ class ElfHeader {
  private:
   // FRIENDS
 
-  friend std::ostream& operator<<(std::ostream& os, const ElfHeader& elfHeader);
+  friend std::ostream& operator<<(std::ostream& os, const ElfHeader& elfHeader) {
+    os << elfHeader.json();
+    return os;
+  }
 
   // DATA
 
-  uint64_t d_offsetContent;
   [[maybe_unused]] bool d_isSupported;
   AddressClass d_addressClass;
   Endianness d_endianness;

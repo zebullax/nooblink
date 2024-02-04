@@ -16,9 +16,8 @@
 
 namespace nooblink {
 
-ElfHeader::ElfHeader(RawElfHeader rawHeader, uint64_t offset)
-    : d_offsetContent(offset),
-      d_isSupported((assert(RawElfHeaderUtil::isElf(rawHeader)), true)),
+ElfHeader::ElfHeader(RawElfHeader rawHeader)
+    : d_isSupported((assert(RawElfHeaderUtil::isElf(rawHeader)), true)),
       d_addressClass(RawElfHeaderUtil::addressClass(rawHeader)),
       d_endianness(RawElfHeaderUtil::endianness(rawHeader)),
       d_headerVersion(RawElfHeaderUtil::headerVersion(rawHeader)),
@@ -38,8 +37,6 @@ ElfHeader::ElfHeader(RawElfHeader rawHeader, uint64_t offset)
       d_sectionTableCount(RawElfHeaderUtil::sectionTableCount(rawHeader)),
       d_sectionNameIndex(RawElfHeaderUtil::sectionNameIndex(rawHeader)) {}
 
-uint64_t ElfHeader::offsetContent() const { return d_offsetContent; }
-
 AddressClass ElfHeader::addressClass() const { return d_addressClass; }
 
 Endianness ElfHeader::endianness() const { return d_endianness; }
@@ -58,13 +55,9 @@ uint32_t ElfHeader::objectFileVersion() const { return d_objectFileVersion; }
 
 uint64_t ElfHeader::entry() const { return d_entry; }
 
-std::byte* ElfHeader::programTableAddress() const {
-  return reinterpret_cast<std::byte*>(d_programTableAddress) + d_offsetContent;
-}
+std::byte* ElfHeader::programTableAddress() const { return reinterpret_cast<std::byte*>(d_programTableAddress); }
 
-std::byte* ElfHeader::sectionTableAddress() const {
-  return reinterpret_cast<std::byte*>(d_sectionTableAddress) + d_offsetContent;
-}
+std::byte* ElfHeader::sectionTableAddress() const { return reinterpret_cast<std::byte*>(d_sectionTableAddress); }
 
 uint32_t ElfHeader::flags() const { return d_flags; }
 
@@ -116,11 +109,6 @@ nlohmann::json ElfHeader::json() const {
   j["sectionTableCount"] = d_sectionTableCount;
   j["sectionNameIndex"] = d_sectionNameIndex;
   return j;
-}
-
-std::ostream& operator<<(std::ostream& os, const ElfHeader& elfHeader) {
-  os << elfHeader.json();
-  return os;
 }
 
 }  // namespace nooblink

@@ -3,6 +3,8 @@
 // File: header_constants.h
 // Project: nooblink
 //
+// Description: This component provides values describing object file characteristics wrt architecture, file type, etc.
+//
 
 #ifndef NOOBLINK_HEADER_CONSTANTS_H
 #define NOOBLINK_HEADER_CONSTANTS_H
@@ -255,17 +257,17 @@ std::ostream &operator<<(std::ostream &os, const Architecture &architecture);
 
 enum class SectionType : uint32_t {
   e_Null = 0,
-  e_Progbits = 1,
-  e_Symtab = 2,
-  e_Strtab = 3,
-  e_Rela = 4,
-  e_Hash = 5,
-  e_Dynamic = 6,
-  e_Note = 7,
-  e_Nobits = 8,
-  e_Rel = 9,
-  e_Shlib = 10,
-  e_Dynsym = 11,
+  e_Progbits = 1,  // Info defined by the program
+  e_Symtab = 2,    // Linker symbol table
+  e_Strtab = 3,    // String table
+  e_Rela = 4,      // "Rela" type relocation
+  e_Hash = 5,      // Symbol hash table
+  e_Dynamic = 6,   // Dynamic linking table
+  e_Note = 7,      // Note info
+  e_Nobits = 8,    // Uninitialized space; does not occupy any space in the file
+  e_Rel = 9,       // "Rel" type relocation
+  e_Shlib = 10,    // Reserved
+  e_Dynsym = 11,   // Dynamic loader symbol table
   e_InitArray = 14,
   e_FiniArray = 15,
   e_PreinitArray = 16,
@@ -314,6 +316,71 @@ enum class SectionFlag : uint64_t {
   e_Maskproc = 0xf0000000,
 };
 std::ostream &operator<<(std::ostream &os, const SectionFlag &sectionFlag);
+
+enum class SymbolBinding : uint8_t {
+  e_Local = 0,   //  Local symbols are not visible outside the object file containing their definition. Local symbols of
+                 //  the same name may exist in multiple files without interfering with each other.
+  e_Global = 1,  //  Global symbols are visible to all object files being combined. One file's definition of a global
+                 //  symbol will satisfy another file's undefined reference to the same global symbol.
+  e_Weak = 2,    //  Weak symbols resemble global symbols, but their definitions have lower precedence.
+  // Low and upper bound for os specific
+  // e_LoOs = 10,
+  // e_HiOs = 12,
+  // Low and upper bound for CPU specific
+  // e_LoProc = 13,
+  // e_HiProc = 15,
+  e_Invalid,
+};
+std::ostream &operator<<(std::ostream &os, const SymbolBinding &symbolBinding);
+
+enum class SymbolType : uint8_t {
+  e_Notype = 0,   //  The symbol's type is not specified.
+  e_Object = 1,   //  The symbol is associated with a data object, such as a variable, an array, and so on.
+  e_Func = 2,     //  The symbol is associated with a function or other executable code.
+  e_Section = 3,  //  The symbol is associated with a section. Symbol table entries of this type exist primarily for
+                  //  relocation and normally have e_Local binding.
+  e_File = 4,  //  Conventionally, the symbol's name gives the name of the source file associated with the object file.
+               //  A file symbol has STB_LOCAL binding, its section index is SHN_ABS, and it precedes the other e_Local
+               //  symbols for the file, if it is present.
+  e_Common = 5,  //  The symbol labels an uninitialized common block
+  // Low and upper bound for OS specific
+  // e_LOOS = 10,
+  // e_HIOS = 12,
+  // Low and upper bound for CPU specific
+  // e_LOPROC = 13,
+  // e_HIPROC = 15,
+  e_Invalid,
+
+};
+std::ostream &operator<<(std::ostream &os, const SymbolType &symbolType);
+
+enum class SymbolVisibility : uint8_t {
+  e_Default =
+      0,  // The visibility of symbols with the e_Default attribute is as specified by the symbol's binding type. That
+          // is, global and weak symbols are visible outside their defining component (executable file or shared
+          // object). Local symbols are hidden, as described below. Global and weak symbols are also preemptable, that
+          // is, they may be preempted by definitions of the same name in another component.
+  e_Internal = 1,  // A symbol defined in the current component is protected if it is visible in other components but
+                   // not preemptable, meaning that any reference to such a symbol from within the defining component
+                   // must be resolved to the definition in that component, even if there is a definition in another
+                   // component that would preempt by the default rules. A symbol with e_Local binding may not have
+                   // e_Protected visibility. If a symbol definition with e_Protected visibility from a shared
+                   // object is taken as resolving a reference from an executable or another shared object, the
+                   // 'undef' symbol table entry created has e_Default visibility.
+  e_Hidden = 2,  // A symbol defined in the current component is hidden if its name is not visible to other components.
+                 // Such a symbol is necessarily protected. This attribute may be used to control the external interface
+                 // of a component. Note that an object named by such a symbol may still be referenced from another
+                 // component if its address is passed outside.
+  e_Protected = 3,  // A symbol defined in the current component is protected if it is visible in other components but
+                    // not preemptable, meaning that any reference to such a symbol from within the defining component
+                    // must be resolved to the definition in that component, even if there is a definition in another
+                    // component that would preempt by the default rules. A symbol with e_Local binding may not have
+                    // e_Protected visibility. If a symbol definition with e_Protected visibility from a shared
+                    // object is taken as resolving a reference from an executable or another shared object, the
+                    // 'undef' symbol table entry created has e_Default visibility.
+  e_Invalid,
+};
+std::ostream &operator<<(std::ostream &os, const SymbolVisibility &symbolVisibility);
 
 }  // namespace nooblink
 
@@ -873,6 +940,56 @@ inline std::ostream &nooblink::operator<<(std::ostream &os, const SectionFlag &s
       return os << "Maskos";
     case SectionFlag::e_Maskproc:
       return os << "Maskproc";
+  }
+}
+
+inline std::ostream &nooblink::operator<<(std::ostream &os, const SymbolBinding &symbolBinding) {
+  switch (symbolBinding) {
+    case SymbolBinding::e_Local:
+      return os << "Local";
+    case SymbolBinding::e_Global:
+      return os << "Global";
+    case SymbolBinding::e_Weak:
+      return os << "Weak";
+    case SymbolBinding::e_Invalid:
+    default:
+      return os << "Invalid";
+  }
+}
+
+inline std::ostream &nooblink::operator<<(std::ostream &os, const SymbolType &symbolType) {
+  switch (symbolType) {
+    case SymbolType::e_Notype:
+      return os << "Notype";
+    case SymbolType::e_Object:
+      return os << "Object";
+    case SymbolType::e_Func:
+      return os << "Func";
+    case SymbolType::e_Section:
+      return os << "Section";
+    case SymbolType::e_File:
+      return os << "File";
+    case SymbolType::e_Common:
+      return os << "Common";
+    default:
+    case SymbolType::e_Invalid:
+      return os << "Invalid";
+  }
+}
+
+inline std::ostream &nooblink::operator<<(std::ostream &os, const SymbolVisibility &symbolVisibility) {
+  switch (symbolVisibility) {
+    case SymbolVisibility::e_Default:
+      return os << "Default";
+    case SymbolVisibility::e_Internal:
+      return os << "Internal";
+    case SymbolVisibility::e_Hidden:
+      return os << "Hidden";
+    case SymbolVisibility::e_Protected:
+      return os << "Protected";
+    default:
+    case SymbolVisibility::e_Invalid:
+      return os << "Invalid";
   }
 }
 

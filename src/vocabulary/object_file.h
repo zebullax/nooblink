@@ -10,18 +10,24 @@
 #ifndef NOOBLINK_OBJECT_FILE_H
 #define NOOBLINK_OBJECT_FILE_H
 
-// std
-#include <cstddef>
-#include <filesystem>
-#include <memory>
-#include <string_view>
-#include <type_traits>
-#include <vector>
 // nooblink
 #include <io/mem_mapped_file.h>
 #include <raw/byte_util.h>
+#include <session/context.h>
 #include <vocabulary/elf_header.h>
-#include <vocabulary/section_header.h>
+#include <vocabulary/section_header_table_entry.h>
+#include <vocabulary/symbol_table_entry.h>
+// nlohmann
+#include <nlohmann/json.hpp>
+// std
+#include <cstddef>
+#include <filesystem>
+#include <functional>
+#include <memory>
+#include <ostream>
+#include <string_view>
+#include <type_traits>
+#include <vector>
 
 namespace nooblink {
 
@@ -39,22 +45,33 @@ class ObjectFile {
   // FRIENDS
 
   // Output to the specified 'os' a JSON representation of this object, return the stream
-  friend std::ostream& operator<<(std::ostream& os, const ObjectFile& objectFile);
+  friend std::ostream& operator<<(std::ostream& os, const ObjectFile& objectFile) {
+    os << objectFile.json();
+    return os;
+  }
 
   // DATA
 
   State d_currentState;
   std::filesystem::path d_backingFilePath;
   std::unique_ptr<MemMappedFile> d_mMapGuard;
-  std::byte* d_mappedRegionStart;  // Address where the backing file is being mapped to
-  uint64_t d_regionStartOffset;    // Numeric offset corresponding to `d_mappedRegionStart` for convenience
+  std::byte* d_begin;      // Address where the backing file is being mapped to
+  uint64_t d_offsetBegin;  // Numeric offset corresponding to `d_begin` for convenience
   std::unique_ptr<ElfHeader> d_elfHeader;
-  std::vector<SectionHeader> d_sectionHeaders;
+  std::vector<SectionHeaderTableEntry> d_sectionHeaders;
+  std::vector<SymbolTableEntry> d_symbolTableEntries;
   size_t d_strTabSectionIndex;
 
   // MANIPULATORS
+
+  // Load the content of the ELF main header
   void loadElfHeader();
+
+  // Load all section header entries from the section header table
   void loadSectionTable();
+
+  // Load all symbol table entries
+  void loadSymbolTable();
 
   // Extract from the string table the string pointed to by the specified 'stringIndex' and return a view over it
   [[nodiscard]] std::string_view extractStringFromTable(size_t stringIndex) const;
@@ -68,7 +85,7 @@ class ObjectFile {
   // MANIPULATORS
 
   // Load the backing specified 'filePath' into this object and return the new state
-  State load(const std::filesystem::path& filePath);
+  [[nodiscard]] State load(const std::filesystem::path& filePath);
 
   // ACCESSORS
 
@@ -76,7 +93,10 @@ class ObjectFile {
   [[nodiscard]] State currentState() const;
 
   // Render and return a json representation for this object
-  nlohmann::json json() const;
+  [[nodiscard]] nlohmann::json json() const;
+
+  // Return the backing filePath
+  [[nodiscard]] std::filesystem::path filePath() const;
 };
 
 }  // namespace nooblink

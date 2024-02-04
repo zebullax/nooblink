@@ -1,12 +1,12 @@
 // -*-C++-*-
 //
-// File: section_header.cpp
+// File: section_header_table_entry.cpp
 // Project: nooblink
 //
 
+#include <vocabulary/section_header_table_entry.h>
 // nooblink
 #include <raw/raw_section_header_util.h>
-#include <vocabulary/section_header.h>
 // json
 #include <nlohmann/json.hpp>
 // std
@@ -15,8 +15,8 @@
 
 namespace nooblink {
 namespace {
-SectionHeader::Flags decodeSectionFlags(uint64_t rawFlags) {
-  return SectionHeader::Flags{
+SectionHeaderTableEntry::Flags decodeSectionFlags(uint64_t rawFlags) {
+  return SectionHeaderTableEntry::Flags{
       (rawFlags & std::to_underlying(SectionFlag::e_Write)) == std::to_underlying(SectionFlag::e_Write),
       (rawFlags & std::to_underlying(SectionFlag::e_Alloc)) == std::to_underlying(SectionFlag::e_Alloc),
       (rawFlags & std::to_underlying(SectionFlag::e_Execinstr)) == std::to_underlying(SectionFlag::e_Execinstr),
@@ -35,29 +35,28 @@ SectionHeader::Flags decodeSectionFlags(uint64_t rawFlags) {
 
 }  // namespace
 
-uint32_t SectionHeader::nameIndex() const { return d_nameIndex; }
+uint32_t SectionHeaderTableEntry::nameIndex() const { return d_nameIndex; }
 
-SectionType SectionHeader::type() const { return d_type; }
+SectionType SectionHeaderTableEntry::type() const { return d_type; }
 
-SectionHeader::Flags SectionHeader::flags() const { return d_flags; }
+SectionHeaderTableEntry::Flags SectionHeaderTableEntry::flags() const { return d_flags; }
 
-uint64_t SectionHeader::addr() const { return d_addr; }
+uint64_t SectionHeaderTableEntry::addr() const { return d_addr; }
 
-std::byte* SectionHeader::offset() const { return reinterpret_cast<std::byte*>(d_offset) + d_offsetContent; }
+std::byte* SectionHeaderTableEntry::offset() const { return reinterpret_cast<std::byte*>(d_offset); }
 
-uint64_t SectionHeader::size() const { return d_size; }
+uint64_t SectionHeaderTableEntry::size() const { return d_size; }
 
-uint32_t SectionHeader::link() const { return d_link; }
+uint32_t SectionHeaderTableEntry::link() const { return d_link; }
 
-uint32_t SectionHeader::info() const { return d_info; }
+uint32_t SectionHeaderTableEntry::info() const { return d_info; }
 
-uint64_t SectionHeader::addrAlign() const { return d_addrAlign; }
+uint64_t SectionHeaderTableEntry::addrAlign() const { return d_addrAlign; }
 
-uint64_t SectionHeader::entrySize() const { return d_entrySize; }
+uint64_t SectionHeaderTableEntry::entrySize() const { return d_entrySize; }
 
-SectionHeader::SectionHeader(const RawSectionHeader& rawSectionHeader, uint64_t offset)
-    : d_offsetContent(offset),
-      d_nameIndex{RawSectionHeaderUtil::nameIndex(rawSectionHeader)},
+SectionHeaderTableEntry::SectionHeaderTableEntry(const RawSectionHeader& rawSectionHeader)
+    : d_nameIndex{RawSectionHeaderUtil::nameIndex(rawSectionHeader)},
       d_type{RawSectionHeaderUtil::type(rawSectionHeader)},
       d_flags{decodeSectionFlags(RawSectionHeaderUtil::flags(rawSectionHeader))},
       d_addr{RawSectionHeaderUtil::addr(rawSectionHeader)},
@@ -68,39 +67,36 @@ SectionHeader::SectionHeader(const RawSectionHeader& rawSectionHeader, uint64_t 
       d_addrAlign{RawSectionHeaderUtil::addrAlign(rawSectionHeader)},
       d_entrySize{RawSectionHeaderUtil::entrySize(rawSectionHeader)} {}
 
-nlohmann::json SectionHeader::json() const {
+nlohmann::json SectionHeaderTableEntry::json() const {
   using json = nlohmann::json;
 
   auto toString = [](auto e) {
     std::ostringstream oss;
-    if constexpr (std::is_same_v<decltype(e), SectionHeader::Flags>) {
-      std::vector<std::string> properties;
-      if (e.d_isWrite) properties.emplace_back("isWrite");
-      if (e.d_isAlloc) properties.emplace_back("isAlloc");
-      if (e.d_isExecinstr) properties.emplace_back("isExecinstr");
-      if (e.d_isMerge) properties.emplace_back("isMerge");
-      if (e.d_isStrings) properties.emplace_back("isStrings");
-      if (e.d_isInfo_link) properties.emplace_back("isInfo_link");
-      if (e.d_isLink_order) properties.emplace_back("isLink_order");
-      if (e.d_isOs_nonconforming) properties.emplace_back("isOs_nonconforming");
-      if (e.d_isGroup) properties.emplace_back("isGroup");
-      if (e.d_isTls) properties.emplace_back("isTls");
-      if (e.d_isMaskos) properties.emplace_back("isMaskos");
-      if (e.d_isMaskproc) properties.emplace_back("isMaskproc");
-      json j(properties);
-      oss << j;
-      return oss.str();
-    } else {
-      oss << e;
-      return oss.str();
-    }
+    oss << e;
+    return oss.str();
+  };
+  auto toVec = [](auto e) {
+    std::vector<std::string> properties;
+    if (e.d_isWrite) properties.emplace_back("isWrite");
+    if (e.d_isAlloc) properties.emplace_back("isAlloc");
+    if (e.d_isExecinstr) properties.emplace_back("isExecinstr");
+    if (e.d_isMerge) properties.emplace_back("isMerge");
+    if (e.d_isStrings) properties.emplace_back("isStrings");
+    if (e.d_isInfo_link) properties.emplace_back("isInfo_link");
+    if (e.d_isLink_order) properties.emplace_back("isLink_order");
+    if (e.d_isOs_nonconforming) properties.emplace_back("isOs_nonconforming");
+    if (e.d_isGroup) properties.emplace_back("isGroup");
+    if (e.d_isTls) properties.emplace_back("isTls");
+    if (e.d_isMaskos) properties.emplace_back("isMaskos");
+    if (e.d_isMaskproc) properties.emplace_back("isMaskproc");
+    return properties;
   };
 
   json j;
 
   j["nameIndex"] = d_nameIndex;
   j["type"] = toString(d_type);
-  j["flags"] = toString(d_flags);
+  j["flags"] = toVec(d_flags);
   j["addr"] = d_addr;
   j["offset"] = d_offset;
   j["size"] = d_size;
@@ -111,7 +107,7 @@ nlohmann::json SectionHeader::json() const {
   return j;
 }
 
-std::ostream& operator<<(std::ostream& os, const SectionHeader& sectionHeader) {
+std::ostream& operator<<(std::ostream& os, const SectionHeaderTableEntry& sectionHeader) {
   os << sectionHeader.json();
   return os;
 }

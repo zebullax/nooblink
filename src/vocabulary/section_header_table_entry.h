@@ -1,13 +1,13 @@
 // -*-C++-*-
 //
-// File: section_header.h
+// File: section_header_table_entry.h
 // Project: nooblink
 //
-// Description: This component provides a vocabulary type to describe a decoded section entry in the section table
+// Description: This component provides a vocabulary type to describe a section header
 //
 
-#ifndef NOOBLINK_SECTION_HEADER_H
-#define NOOBLINK_SECTION_HEADER_H
+#ifndef NOOBLINK_SECTION_HEADER_TABLE_ENTRY_H
+#define NOOBLINK_SECTION_HEADER_TABLE_ENTRY_H
 
 // nooblink
 #include <raw/header_constants.h>
@@ -22,7 +22,7 @@
 
 namespace nooblink {
 
-class SectionHeader {
+class SectionHeaderTableEntry {
  public:
   // TYPES
 
@@ -43,9 +43,8 @@ class SectionHeader {
 
   // CREATORS
 
-  // Construct this object using the specified 'rawSectionHeader' to decode from.  Optionally specify an 'offset' to
-  // apply on all addresses that refer to content to be found inside the object file described by this section header
-  explicit SectionHeader(const RawSectionHeader& rawSectionHeader, uint64_t offset = 0);
+  // Construct this object using the specified 'rawSectionHeader' to decode from
+  explicit SectionHeaderTableEntry(const RawSectionHeader& rawSectionHeader);
 
   // ACCESSORS
 
@@ -84,15 +83,14 @@ class SectionHeader {
   [[nodiscard]] uint64_t entrySize() const;
 
   // Render and return a json representation for this object
-  nlohmann::json json() const;
+  [[nodiscard]] nlohmann::json json() const;
 
  private:
   // FRIENDS
 
-  friend std::ostream& operator<<(std::ostream& os, const SectionHeader& sectionHeader);
+  friend std::ostream& operator<<(std::ostream& os, const SectionHeaderTableEntry& sectionHeader);
 
   // DATA
-  uint64_t d_offsetContent;
   uint32_t d_nameIndex;
   SectionType d_type;
   Flags d_flags;
@@ -107,4 +105,4 @@ class SectionHeader {
 
 }  // namespace nooblink
 
-#endif  // NOOBLINK_SECTION_HEADER_H
+#endif  // NOOBLINK_SECTION_HEADER_TABLE_ENTRY_H

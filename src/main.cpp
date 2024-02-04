@@ -4,7 +4,6 @@
 #include <io/mem_mapped_file.h>
 #include <raw/raw_elf_header.h>
 #include <vocabulary/elf_header.h>
-#include <vocabulary/elf_header_util.h>
 #include <vocabulary/object_file.h>
 // spdlog
 #include <spdlog/spdlog.h>

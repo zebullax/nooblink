@@ -3,9 +3,11 @@
 // File: layout.h
 // Project: nooblink
 //
+// Description: This component provides a description of the raw representation of structures related to ELF
+//
 
-#ifndef NOOBLINK_RAW_LAYOUT_H
-#define NOOBLINK_RAW_LAYOUT_H
+#ifndef NOOBLINK_LAYOUT_H
+#define NOOBLINK_LAYOUT_H
 
 // std
 #include <cstddef>
@@ -40,9 +42,8 @@ struct Layout {
       static constexpr size_t k_SectionNameIndex = 0x3e;
     };
 
-    // Offset of each fields from individual entry start
+    // Offset of each fields from individual entry start in the section header table
     struct Section {
-      // Index into section header string table
       static constexpr size_t k_NameIndex = 0x00;
       static constexpr size_t k_Type = 0x04;
       static constexpr size_t k_Flags = 0x08;
@@ -53,6 +54,16 @@ struct Layout {
       static constexpr size_t k_Info = 0x2c;
       static constexpr size_t k_AddrAlign = 0x30;
       static constexpr size_t k_EntrySize = 0x38;
+    };
+
+    // Offset of each fields from individual entry start in the symbol table
+    struct SymbolTableEntry {
+      static constexpr size_t k_NameIndex = 0x00;
+      static constexpr size_t k_Info = 0x04;
+      static constexpr size_t k_Other = 0x05;
+      static constexpr size_t k_Shndx = 0x06;
+      static constexpr size_t k_Value = 0x08;
+      static constexpr size_t k_Size = 0x10;
     };
   };  // Describe size (bytes) of fields
 
@@ -92,6 +103,15 @@ struct Layout {
       static constexpr size_t k_Info = 0x04;
       static constexpr size_t k_AddrAlign = 0x08;
       static constexpr size_t k_EntrySize = 0x08;
+    };
+
+    struct SymbolTableEntry {
+      static constexpr size_t k_NameIndex = 0x04;
+      static constexpr size_t k_Info = 0x01;
+      static constexpr size_t k_Other = 0x01;
+      static constexpr size_t k_Shndx = 0x02;
+      static constexpr size_t k_Value = 0x08;
+      static constexpr size_t k_Size = 0x08;
     };
   };
 };
