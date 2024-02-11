@@ -6,7 +6,7 @@ Write a simplified (💩) linker from more or less scratch
 ELF Low endian 64 bits
 
 ## Dev steps
-- 👉 Decode header & sections
+- 👉 Decode header, sections & symbols
 - Display symbols defined and undefined 
 - Handle multiple object files 
 - Describe layout of the result file 
@@ -18,6 +18,22 @@ ELF Low endian 64 bits
 - Write a Context` component that keep state of current linking session, this should be passed around or installed, so that client can find out what offset to apply to object files for example...
 
 ## Timeline
+- 02/11 - Decode symbol names
+````json
+    {
+      "content": {
+        "binding": "Global",
+        "nameIndex": 13238,
+        "sectionHeaderIndex": "0",
+        "size": 0,
+        "type": 2,
+        "value": "0x00000000",
+        "visibility": "Default"
+      },
+      "name": "xcb_render_create_picture"
+    }
+````
+
 - 02/04 - Decode symbol table entries, w/o decoded symbol names
 
 - 01/21 - Decode name of section header from the string table

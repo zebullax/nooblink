@@ -26,7 +26,9 @@
 #include <memory>
 #include <ostream>
 #include <string_view>
+#include <tuple>
 #include <type_traits>
+#include <unordered_map>
 #include <vector>
 
 namespace nooblink {
@@ -42,6 +44,19 @@ class ObjectFile {
   };
 
  private:
+  //  PRIVATE TYPES
+
+  using SectionIndex = size_t;
+  // Alias over section index as found in object file natural order
+
+  using SectionHeaderWithIndex = std::tuple<SectionIndex, SectionHeaderTableEntry>;
+  // Alias over a section header and its natural index in the object file
+
+  using IndexedSymbolTable = std::unordered_map<SectionIndex, std::vector<SymbolTableEntry>>;
+  // Alias over a section index and the sequence of related symbol table entries. The section index is critical to be
+  // able to reach the strings table via the 'link' attribute; this assumes that this index relates to a 'DynSym'
+  // or 'SymTab' section header
+
   // FRIENDS
 
   // Output to the specified 'os' a JSON representation of this object, return the stream
@@ -58,8 +73,8 @@ class ObjectFile {
   std::byte* d_begin;      // Address where the backing file is being mapped to
   uint64_t d_offsetBegin;  // Numeric offset corresponding to `d_begin` for convenience
   std::unique_ptr<ElfHeader> d_elfHeader;
-  std::vector<SectionHeaderTableEntry> d_sectionHeaders;
-  std::vector<SymbolTableEntry> d_symbolTableEntries;
+  std::vector<SectionHeaderWithIndex> d_sectionHeaders;
+  IndexedSymbolTable d_symbolTableEntries;
   size_t d_strTabSectionIndex;
 
   // MANIPULATORS
@@ -73,8 +88,9 @@ class ObjectFile {
   // Load all symbol table entries
   void loadSymbolTable();
 
-  // Extract from the string table the string pointed to by the specified 'stringIndex' and return a view over it
-  [[nodiscard]] std::string_view extractStringFromTable(size_t stringIndex) const;
+  // Extract from the string table the string pointed to by the specified 'stringIndex' and return a view over it.  The
+  // section containing the string table is given by the specified 'sectionHeaderIndex'
+  [[nodiscard]] std::string_view extractStringFromTable(size_t sectionHeaderIndex, size_t stringIndex) const;
 
  public:
   // CREATORS

@@ -25,7 +25,7 @@ uint64_t RawSectionHeaderUtil::offset(RawSectionHeader rawSectionHeader){RETURN_
 
 uint64_t RawSectionHeaderUtil::size(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, Size)}
 
-uint32_t RawSectionHeaderUtil::link(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint64_t, Addr)}
+uint32_t RawSectionHeaderUtil::link(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint32_t, Link)}
 
 uint32_t RawSectionHeaderUtil::info(RawSectionHeader rawSectionHeader){RETURN_CAST_FIELD(uint32_t, Info)}
 

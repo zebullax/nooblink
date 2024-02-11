@@ -14,6 +14,8 @@
 #include <ranges>
 #include <string>
 
+#include "vocabulary/symbol_table_entry.h"
+
 namespace nooblink {
 namespace {
 
@@ -66,7 +68,7 @@ void ObjectFile::loadSectionTable() {
 
   for (size_t i = 0; i != nbSectionHeaders; ++i) {
     RawSectionHeader sectionTableEntry(entryPtr, RawSectionHeader::extent);
-    d_sectionHeaders.emplace_back(sectionTableEntry);
+    d_sectionHeaders.emplace_back(i, sectionTableEntry);
     entryPtr += sectionHeaderSize;
   }
 
@@ -74,38 +76,46 @@ void ObjectFile::loadSectionTable() {
     spdlog::error("No sections found in the object file '"s + d_backingFilePath.c_str() + "'");
     return;
   }
-  // No need to loop over to find the strtab, the ELF header has the proper index set already
+  // ELF header has the index for the section header name string, stash that index
   if ((d_strTabSectionIndex = d_elfHeader->sectionNameIndex()) >= 0xff00) {
-    d_strTabSectionIndex = d_sectionHeaders[0].link();
+    d_strTabSectionIndex = std::get<1>(d_sectionHeaders[0]).link();
   }
 }
 
 void ObjectFile::loadSymbolTable() {
-  // Filter sections that describe symbol tables
-  for (const auto& symbolSectionHeader :
-       d_sectionHeaders | std::views::filter([](const SectionHeaderTableEntry& entry) {
-         return (entry.type() == SectionType::e_Symtab || entry.type() == SectionType::e_Dynsym);
+  // Filter in Symbol sections
+  for (const SectionHeaderWithIndex& sectionHeader :
+       d_sectionHeaders | std::views::filter([](const SectionHeaderWithIndex& sectionHeaderWithIndex) {
+         const auto& [index, header] = sectionHeaderWithIndex;
+         return (header.type() == SectionType::e_Symtab || header.type() == SectionType::e_Dynsym);
        })) {
-    size_t nbEntries = symbolSectionHeader.size() / RawSymbolTableEntry::extent;
+    const auto& [index, header] = sectionHeader;
+
+    size_t nbSymbolEntries = header.size() / RawSymbolTableEntry::extent;
+    std::vector<SymbolTableEntry> symbols;
+    symbols.reserve(nbSymbolEntries);
     constexpr size_t entrySize = RawSymbolTableEntry::extent;
-    auto* symbolStart = reinterpret_cast<std::byte*>(symbolSectionHeader.offset());
+    auto* symbolStart = reinterpret_cast<std::byte*>(header.offset());
     std::advance(symbolStart, d_offsetBegin);
-    for (size_t i = 0; i != nbEntries; ++i) {
+    for (size_t i = 0; i != nbSymbolEntries; ++i) {
       RawSymbolTableEntry rawSymbolTableEntry(symbolStart, entrySize);
-      d_symbolTableEntries.emplace_back(rawSymbolTableEntry);
+      symbols.emplace_back(rawSymbolTableEntry);
       symbolStart += entrySize;
     }
+    d_symbolTableEntries.emplace(index, std::move(symbols));
   }
 }
 
 ObjectFile::State ObjectFile::currentState() const { return d_currentState; }
 
-std::string_view ObjectFile::extractStringFromTable(size_t stringIndex) const {
-  auto* stringTableStart = reinterpret_cast<char*>(d_sectionHeaders[d_strTabSectionIndex].offset() + stringIndex);
-  std::advance(stringTableStart, d_offsetBegin);
+std::string_view ObjectFile::extractStringFromTable(size_t sectionHeaderIndex, size_t stringIndex) const {
+  const auto& [idx, strSectionHeader] = d_sectionHeaders[sectionHeaderIndex];
+  auto* stringStart = reinterpret_cast<char*>(strSectionHeader.offset());
+  std::advance(stringStart, d_offsetBegin);
+  std::advance(stringStart, stringIndex);
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "LocalValueEscapesScope"
-  return {stringTableStart};
+  return {stringStart};
 #pragma clang diagnostic pop
 }
 
@@ -118,23 +128,25 @@ nlohmann::json ObjectFile::json() const {
   std::vector<nlohmann::json> decodedSections;
 
   std::transform(d_sectionHeaders.begin(), d_sectionHeaders.end(), std::back_inserter(decodedSections), [this](auto e) {
+    const auto& [index, section] = e;
     json k;
-    k["name"] = extractStringFromTable(e.nameIndex());
-    k["content"] = e.json();
+    k["name"] = extractStringFromTable(d_strTabSectionIndex, section.nameIndex());
+    k["content"] = section.json();
     return k;
   });
 
   j["sectionHeaders"] = decodedSections;
 
   std::vector<nlohmann::json> decodedSymbolTableEntries;
-  std::transform(d_symbolTableEntries.begin(), d_symbolTableEntries.end(),
-                 std::back_inserter(decodedSymbolTableEntries), [this](auto e) {
-                   json k;
-                   // FIXME symbol string table is not the same as section, must look into sh_link
-                   //                   k["name"] = extractStringFromTable(e.nameIndex());
-                   k["content"] = e.json();
-                   return k;
-                 });
+  for (const auto& indexedSymbols : d_symbolTableEntries) {
+    const auto& [idx, symbols] = indexedSymbols;
+    std::transform(symbols.begin(), symbols.end(), std::back_inserter(decodedSymbolTableEntries), [this, idx](auto e) {
+      json k;
+      k["name"] = extractStringFromTable(std::get<1>(d_sectionHeaders[idx]).link(), e.nameIndex());
+      k["content"] = e.json();
+      return k;
+    });
+  }
   j["symbols"] = decodedSymbolTableEntries;
   return j;
 }
