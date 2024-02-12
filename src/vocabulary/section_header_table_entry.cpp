@@ -7,6 +7,7 @@
 #include <vocabulary/section_header_table_entry.h>
 // nooblink
 #include <raw/raw_section_header_util.h>
+#include <utility/conversion.h>
 // json
 #include <nlohmann/json.hpp>
 // std
@@ -70,11 +71,6 @@ SectionHeaderTableEntry::SectionHeaderTableEntry(const RawSectionHeader& rawSect
 nlohmann::json SectionHeaderTableEntry::json() const {
   using json = nlohmann::json;
 
-  auto toString = [](auto e) {
-    std::ostringstream oss;
-    oss << e;
-    return oss.str();
-  };
   auto toVec = [](auto e) {
     std::vector<std::string> properties;
     if (e.d_isWrite) properties.emplace_back("isWrite");
@@ -95,7 +91,7 @@ nlohmann::json SectionHeaderTableEntry::json() const {
   json j;
 
   j["nameIndex"] = d_nameIndex;
-  j["type"] = toString(d_type);
+  j["type"] = Conversion::toString(d_type);
   j["flags"] = toVec(d_flags);
   j["addr"] = d_addr;
   j["offset"] = d_offset;

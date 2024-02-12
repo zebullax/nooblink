@@ -4,9 +4,10 @@
 // Project: nooblink
 //
 
+#include <vocabulary/elf_header.h>
 // nooblink
 #include <raw/raw_elf_header_util.h>
-#include <vocabulary/elf_header.h>
+#include <utility/conversion.h>
 // json
 #include <nlohmann/json.hpp>
 // std
@@ -74,12 +75,6 @@ uint16_t ElfHeader::sectionTableCount() const { return d_sectionTableCount; }
 uint16_t ElfHeader::sectionNameIndex() const { return d_sectionNameIndex; }
 
 nlohmann::json ElfHeader::json() const {
-  auto toString = [](auto e) {
-    std::ostringstream oss;
-    oss << e;
-    return oss.str();
-  };
-
   auto toHex = [](auto e) {
     std::ostringstream oss;
     oss << "0x" << std::hex << std::setw(sizeof(e)) << std::setfill('0') << e;
@@ -89,14 +84,14 @@ nlohmann::json ElfHeader::json() const {
   using json = nlohmann::json;
   json j;
 
-  j["addressClass"] = toString(d_addressClass);
-  j["endianness"] = toString(d_endianness);
+  j["addressClass"] = Conversion::toString(d_addressClass);
+  j["endianness"] = Conversion::toString(d_endianness);
   j["headerVersion"] = d_headerVersion;
-  j["abi"] = toString(d_abi);
+  j["abi"] = Conversion::toString(d_abi);
   j["abiVersion"] = d_abiVersion;
   j["padding"] = "       ";
-  j["objectFileType"] = toString(d_objectFileType);
-  j["architecture"] = toString(d_architecture);
+  j["objectFileType"] = Conversion::toString(d_objectFileType);
+  j["architecture"] = Conversion::toString(d_architecture);
   j["objectFileVersion"] = d_objectFileVersion;
   j["executionAddress"] = toHex(d_entry);
   j["programTableAddress"] = toHex(d_programTableAddress);

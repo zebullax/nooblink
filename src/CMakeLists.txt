@@ -15,6 +15,7 @@ add_executable(nooblink
         vocabulary/symbol_table_entry.cpp
         raw/raw_symbol_table_entry.cpp
         raw/raw_symbol_table_entry_util.cpp
+        utility/conversion.cpp
 )
 find_package(nlohmann_json 3.11.3 REQUIRED)
 find_package(spdlog REQUIRED)

@@ -4,9 +4,10 @@
 // Project: nooblink
 //
 
+#include <vocabulary/symbol_table_entry.h>
 // nooblink
 #include <raw/raw_symbol_table_entry_util.h>
-#include <vocabulary/symbol_table_entry.h>
+#include <utility/conversion.h>
 // std
 #include <sstream>
 
@@ -62,12 +63,6 @@ bool SymbolTableEntry::isUndef() const {
 }
 
 nlohmann::json SymbolTableEntry::json() const {
-  auto toString = [](auto e) {
-    std::ostringstream oss;
-    oss << e;
-    return oss.str();
-  };
-
   auto toHex = [](auto e) {
     std::ostringstream oss;
     oss << "0x" << std::hex << std::setw(sizeof(e)) << std::setfill('0') << e;
@@ -77,9 +72,9 @@ nlohmann::json SymbolTableEntry::json() const {
   j["nameIndex"] = d_nameIndex;
   j["value"] = toHex(d_value);
   j["size"] = d_size;
-  j["sectionHeaderIndex"] = toString(d_sectionHeaderIndex);
-  j["visibility"] = toString(d_visibility);
-  j["binding"] = toString(d_binding);
+  j["sectionHeaderIndex"] = Conversion::toString(d_sectionHeaderIndex);
+  j["visibility"] = Conversion::toString(d_visibility);
+  j["binding"] = Conversion::toString(d_binding);
   j["type"] = d_type;
   return j;
 }

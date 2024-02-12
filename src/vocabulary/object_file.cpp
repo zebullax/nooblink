@@ -5,6 +5,9 @@
 //
 
 #include <vocabulary/object_file.h>
+// nooblink
+#include <utility/conversion.h>
+#include <vocabulary/symbol_table_entry.h>
 // spdlog
 #include <spdlog/spdlog.h>
 // std
@@ -13,8 +16,6 @@
 #include <memory>
 #include <ranges>
 #include <string>
-
-#include "vocabulary/symbol_table_entry.h"
 
 namespace nooblink {
 namespace {
@@ -131,7 +132,7 @@ nlohmann::json ObjectFile::json() const {
     const auto& [index, section] = e;
     json k;
     k["name"] = extractStringFromTable(d_strTabSectionIndex, section.nameIndex());
-    k["content"] = section.json();
+    k["section"] = section.json();
     return k;
   });
 
@@ -143,7 +144,8 @@ nlohmann::json ObjectFile::json() const {
     std::transform(symbols.begin(), symbols.end(), std::back_inserter(decodedSymbolTableEntries), [this, idx](auto e) {
       json k;
       k["name"] = extractStringFromTable(std::get<1>(d_sectionHeaders[idx]).link(), e.nameIndex());
-      k["content"] = e.json();
+      k["section"] = Conversion::toString(std::get<1>(d_sectionHeaders[idx]).type());
+      k["symbol"] = e.json();
       return k;
     });
   }
