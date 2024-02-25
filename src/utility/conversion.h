@@ -27,6 +27,10 @@ class Conversion {
   static std::string toString(auto raw);
 };
 
+// =======================================================================
+//                          INLINE DEFINITIONS
+// =======================================================================
+
 std::string Conversion::toString(auto raw) {
   std::ostringstream oss;
   oss << raw;

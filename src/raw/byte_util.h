@@ -19,6 +19,10 @@ struct ByteUtil {
   static Target convertTo(std::span<std::byte, NbBytes> source);
 };
 
+// =======================================================================
+//                          INLINE DEFINITIONS
+// =======================================================================
+
 template <class Target, size_t NbBytes>
 Target ByteUtil::convertTo(std::span<std::byte, NbBytes> source) {
   static_assert(sizeof(Target) == NbBytes);

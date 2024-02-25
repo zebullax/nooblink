@@ -1,0 +1,1 @@
+TARGET_SOURCES(nooblink PUBLIC mem_mapped_file.cpp)
