@@ -5,19 +5,53 @@ Write a simplified (💩) linker from more or less scratch
 **Supported**
 ELF Low endian 64 bits
 
-## Dev steps
-- 👉 Decode header, sections & symbols
-- Display symbols defined and undefined 
-- Handle multiple object files 
+## Dev steps ☕
+- ~~Decode header, sections & symbols~~
+- ~~Display symbols defined and undefined~~ 
+- 👉 Handle multiple object files 
 - Describe layout of the result file 
 - Resolve symbol references
 - Relocate entries
 
-## Todo
+## Todo 📝
 ~~- (WIP) Introduce an object file type to wrap over vocabulary types as they get vivifed from decoding the header~~
-- Write a Context` component that keep state of current linking session, this should be passed around or installed, so that client can find out what offset to apply to object files for example...
+- Write a `Context` component that keep state of current linking session, this should be passed around or installed, so that client can find out what offset to apply to object files for example...
 
-## Timeline
+## Bug 🐛
+- Symbol name `.init` isn't found (vs`readelf -s`)
+
+## Timeline ⌛
+- 02/25 - Fix interpretation of section index in symbols, confirm (eyeball) vs readelf
+````txt
+{
+  "name": "__gmon_start__",
+  "section": "Dynsym",
+  "symbol": {
+    "binding": "Weak",
+    "nameIndex": 1,
+    "sectionHeaderIndex": "Undef",
+    "size": 0,
+    "type": "NoType",
+    "value": "0x00000000",
+    "visibility": "Default"
+}
+61: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND __gmon_start__
+
+{
+  "name": "cairo_clip_preserve",
+  "section": "Dynsym",
+  "symbol": {
+    "binding": "Global",
+    "nameIndex": 1421,
+    "sectionHeaderIndex": 11,
+    "size": 38,
+    "type": "Func",
+    "value": "0x000236b0",
+    "visibility": "Default"
+}
+404: 00000000000236b0    38 FUNC    GLOBAL DEFAULT   11 cairo_clip_preserve
+````
+
 - 02/11 - Decode symbol names
 ````json
     {

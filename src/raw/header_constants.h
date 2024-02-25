@@ -255,6 +255,16 @@ enum class Architecture : uint16_t {
 };
 std::ostream &operator<<(std::ostream &os, const Architecture &architecture);
 
+enum class SpecialSectionIndex : uint16_t {
+  e_Undefined = 0,  // This value marks an undefined, missing, irrelevant, or otherwise meaningless section reference.
+                    // For example, a symbol `defined' relative to section number SHN_UNDEF is an undefined symbol
+  e_Abs = 0xfff1,  // This value specifies absolute values for the corresponding reference. For example, symbols defined
+                   // relative to section number SHN_ABS have absolute values and are not affected by relocation.
+  e_Common = 0xfff2,  // Symbols defined relative to this section are common symbols, such as FORTRAN COMMON or
+                      // unallocated C external variables.
+};
+std::ostream &operator<<(std::ostream &os, const SpecialSectionIndex &sectionIndex);
+
 enum class SectionType : uint32_t {
   e_Null = 0,
   e_Progbits = 1,  // Info defined by the program
@@ -334,7 +344,7 @@ enum class SymbolBinding : uint8_t {
 std::ostream &operator<<(std::ostream &os, const SymbolBinding &symbolBinding);
 
 enum class SymbolType : uint8_t {
-  e_Notype = 0,   //  The symbol's type is not specified.
+  e_NoType = 0,   //  The symbol's type is not specified.
   e_Object = 1,   //  The symbol is associated with a data object, such as a variable, an array, and so on.
   e_Func = 2,     //  The symbol is associated with a function or other executable code.
   e_Section = 3,  //  The symbol is associated with a section. Symbol table entries of this type exist primarily for
@@ -834,6 +844,19 @@ inline std::ostream &nooblink::operator<<(std::ostream &os, const Architecture &
   }
 }
 
+inline std::ostream &nooblink::operator<<(std::ostream &os, const SpecialSectionIndex &sectionIndex) {
+  switch (sectionIndex) {
+    case SpecialSectionIndex::e_Undefined:
+      return os << "Undef";
+    case SpecialSectionIndex::e_Abs:
+      return os << "Abs";
+    case SpecialSectionIndex::e_Common:
+      return os << "Common";
+    default:
+      break;
+  }
+}
+
 inline std::ostream &nooblink::operator<<(std::ostream &os, const SectionType &sectionType) {
   switch (sectionType) {
     case SectionType::e_Null:
@@ -959,8 +982,8 @@ inline std::ostream &nooblink::operator<<(std::ostream &os, const SymbolBinding 
 
 inline std::ostream &nooblink::operator<<(std::ostream &os, const SymbolType &symbolType) {
   switch (symbolType) {
-    case SymbolType::e_Notype:
-      return os << "Notype";
+    case SymbolType::e_NoType:
+      return os << "NoType";
     case SymbolType::e_Object:
       return os << "Object";
     case SymbolType::e_Func:

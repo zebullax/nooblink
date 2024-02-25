@@ -72,10 +72,17 @@ nlohmann::json SymbolTableEntry::json() const {
   j["nameIndex"] = d_nameIndex;
   j["value"] = toHex(d_value);
   j["size"] = d_size;
-  j["sectionHeaderIndex"] = Conversion::toString(d_sectionHeaderIndex);
+  if (d_sectionHeaderIndex == std::to_underlying(SpecialSectionIndex::e_Abs) ||
+      d_sectionHeaderIndex == std::to_underlying(SpecialSectionIndex::e_Common) ||
+      d_sectionHeaderIndex == std::to_underlying(SpecialSectionIndex::e_Undefined)) {
+    j["sectionHeaderIndex"] = Conversion::toString(static_cast<SpecialSectionIndex>(d_sectionHeaderIndex));
+
+  } else {
+    j["sectionHeaderIndex"] = d_sectionHeaderIndex;
+  }
   j["visibility"] = Conversion::toString(d_visibility);
   j["binding"] = Conversion::toString(d_binding);
-  j["type"] = d_type;
+  j["type"] = Conversion::toString(d_type);
   return j;
 }
 
