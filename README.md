@@ -8,7 +8,8 @@ ELF Low endian 64 bits
 ## Dev steps ☕
 - ~~Decode header, sections & symbols~~
 - ~~Display symbols defined and undefined~~ 
-- 👉 Handle multiple object files 
+- 👉 Display relocation info 
+- Handle multiple object files 
 - Describe layout of the result file 
 - Resolve symbol references
 - Relocate entries

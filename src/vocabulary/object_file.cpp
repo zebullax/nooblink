@@ -155,4 +155,12 @@ nlohmann::json ObjectFile::json() const {
 
 std::filesystem::path ObjectFile::filePath() const { return d_backingFilePath; }
 
+std::vector<SymbolTableEntry> ObjectFile::symbols() const {
+  std::vector<SymbolTableEntry> result;
+  for (const auto& [key, val] : d_symbolTableEntries) {
+    result.insert(result.end(), val.begin(), val.end());
+  }
+  return result;
+}
+
 }  // namespace nooblink

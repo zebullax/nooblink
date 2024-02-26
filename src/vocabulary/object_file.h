@@ -54,8 +54,8 @@ class ObjectFile {
 
   using IndexedSymbolTable = std::unordered_map<SectionIndex, std::vector<SymbolTableEntry>>;
   // Alias over a section index and the sequence of related symbol table entries. The section index is critical to be
-  // able to reach the strings table via the 'link' attribute; this assumes that this index relates to a 'DynSym'
-  // or 'SymTab' section header
+  // able to reach the strings table via the 'link' attribute; The section index should point to a 'DynSym' or 'SymTab'
+  // section header
 
   // FRIENDS
 
@@ -113,6 +113,10 @@ class ObjectFile {
 
   // Return the backing filePath
   [[nodiscard]] std::filesystem::path filePath() const;
+
+  // Return all symbols references or defined in this object file
+  // TODO write some view that can iterate over all bucket elements `bucket_explorer`
+  [[nodiscard]] std::vector<SymbolTableEntry> symbols() const;
 };
 
 }  // namespace nooblink
