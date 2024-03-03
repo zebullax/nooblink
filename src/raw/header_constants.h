@@ -49,235 +49,448 @@ enum class Abi : uint8_t {
 std::ostream &operator<<(std::ostream &os, const Abi &abi);
 
 enum class Architecture : uint16_t {
-  e_None = 0,            /* No machine */
-  e_M32 = 1,             /* AT&T WE 32100 */
-  e_Sparc = 2,           /* SUN SPARC */
-  e_386 = 3,             /* Intel 80386 */
-  e_68k = 4,             /* Motorola m68k family */
-  e_88k = 5,             /* Motorola m88k family */
-  e_486 = 6,             /* Intel 80486 */
-  e_860 = 7,             /* Intel 80860 */
-  e_Mips = 8,            /* MIPS R3000 (officially, big-endian only) */
-  e_S370 = 9,            /* IBM System/370 */
-  e_Mips_rs3_le = 10,    /* MIPS R3000 little-endian (Oct 4 1999 Draft) Deprecated */
-  e_res011 = 11,         /* Reserved */
-  e_res012 = 12,         /* Reserved */
-  e_res013 = 13,         /* Reserved */
-  e_res014 = 14,         /* Reserved */
-  e_Parisc = 15,         /* HPPA */
-  e_res016 = 16,         /* Reserved */
-  e_Vpp550 = 17,         /* Fujitsu VPP500 */
-  e_Sparc32plus = 18,    /* Sun's "v8plus" */
-  e_960 = 19,            /* Intel 80960 */
-  e_Ppc = 20,            /* PowerPC */
-  e_Ppc64 = 21,          /* 64-bit PowerPC */
-  e_S390 = 22,           /* IBM S/390 */
-  e_Spu = 23,            /* Sony/Toshiba/IBM SPU */
-  e_res024 = 24,         /* Reserved */
-  e_res025 = 25,         /* Reserved */
-  e_res026 = 26,         /* Reserved */
-  e_res027 = 27,         /* Reserved */
-  e_res028 = 28,         /* Reserved */
-  e_res029 = 29,         /* Reserved */
-  e_res030 = 30,         /* Reserved */
-  e_res031 = 31,         /* Reserved */
-  e_res032 = 32,         /* Reserved */
-  e_res033 = 33,         /* Reserved */
-  e_res034 = 34,         /* Reserved */
-  e_res035 = 35,         /* Reserved */
-  e_V800 = 36,           /* NEC V800 series */
-  e_Fr20 = 37,           /* Fujitsu FR20 */
-  e_Rh32 = 38,           /* TRW RH32 */
-  e_Mcore = 39,          /* MCore */
-  e_Arm = 40,            /* ARM */
-  e_Old_alpha = 41,      /* Digital Alpha */
-  e_Sh = 42,             /* Renesas (formerly Hitachi) / SuperH SH */
-  e_Sparcv9 = 43,        /* SPARC v9 64-bit */
-  e_Tricore = 44,        /* Siemens Tricore embedded processor */
-  e_Arc = 45,            /* ARC Cores */
-  e_H8_300 = 46,         /* Renesas (formerly Hitachi) H8/300 */
-  e_H8_300h = 47,        /* Renesas (formerly Hitachi) H8/300H */
-  e_H8s = 48,            /* Renesas (formerly Hitachi) H8S */
-  e_H8_500 = 49,         /* Renesas (formerly Hitachi) H8/500 */
-  e_Ia_64 = 50,          /* Intel IA-64 Processor */
-  e_Mips_x = 51,         /* Stanford MIPS-X */
-  e_Coldfire = 52,       /* Motorola Coldfire */
-  e_68hc12 = 53,         /* Motorola M68HC12 */
-  e_Mma = 54,            /* Fujitsu Multimedia Accelerator */
-  e_Pcp = 55,            /* Siemens PCP */
-  e_Ncpu = 56,           /* Sony nCPU embedded RISC processor */
-  e_Ndr1 = 57,           /* Denso NDR1 microprocessor */
-  e_Starcore = 58,       /* Motorola Star*Core processor */
-  e_Me16 = 59,           /* Toyota ME16 processor */
-  e_St100 = 60,          /* STMicroelectronics ST100 processor */
-  e_Tinyj = 61,          /* Advanced Logic Corp. TinyJ embedded processor */
-  e_X86_64 = 62,         /* Advanced Micro Devices X86-64 processor */
-  e_Pdsp = 63,           /* Sony DSP Processor */
-  e_Pdp10 = 64,          /* Digital Equipment Corp. PDP-10 */
-  e_Pdp11 = 65,          /* Digital Equipment Corp. PDP-11 */
-  e_Fx66 = 66,           /* Siemens FX66 microcontroller */
-  e_St9plus = 67,        /* STMicroelectronics ST9+ 8/16-bit microcontroller */
-  e_St7 = 68,            /* STMicroelectronics ST7 8-bit microcontroller */
-  e_68hc16 = 69,         /* Motorola MC68HC16 Microcontroller */
-  e_68hc11 = 70,         /* Motorola MC68HC11 Microcontroller */
-  e_68hc08 = 71,         /* Motorola MC68HC08 Microcontroller */
-  e_68hc05 = 72,         /* Motorola MC68HC05 Microcontroller */
-  e_Svx = 73,            /* Silicon Graphics SVx */
-  e_St19 = 74,           /* STMicroelectronics ST19 8-bit cpu */
-  e_Vax = 75,            /* Digital VAX */
-  e_Cris = 76,           /* Axis Communications 32-bit embedded processor */
-  e_Javelin = 77,        /* Infineon Technologies 32-bit embedded cpu */
-  e_Firepath = 78,       /* Element 14 64-bit DSP processor */
-  e_Zsp = 79,            /* LSI Logic's 16-bit DSP processor */
-  e_Mmix = 80,           /* Donald Knuth's educational 64-bit processor */
-  e_Huany = 81,          /* Harvard's machine-independent raw */
-  e_Prism = 82,          /* SiTera Prism */
-  e_Avr = 83,            /* Atmel AVR 8-bit microcontroller */
-  e_Fr30 = 84,           /* Fujitsu FR30 */
-  e_D10v = 85,           /* Mitsubishi D10V */
-  e_D30v = 86,           /* Mitsubishi D30V */
-  e_V850 = 87,           /* Renesas V850 (formerly NEC V850) */
-  e_M32r = 88,           /* Renesas M32R (formerly Mitsubishi M32R) */
-  e_Mn10300 = 89,        /* Matsushita MN10300 */
-  e_Mn10200 = 90,        /* Matsushita MN10200 */
-  e_Pj = 91,             /* picoJava */
-  e_Or1k = 92,           /* OpenRISC 1000 32-bit embedded processor */
-  e_Arc_a5 = 93,         /* ARC Cores Tangent-A5 */
-  e_Xtensa = 94,         /* Tensilica Xtensa Architecture */
-  e_Videocore = 95,      /* Alphamosaic VideoCore processor */
-  e_Tmm_gpp = 96,        /* Thompson Multimedia General Purpose Processor */
-  e_Ns32k = 97,          /* National Semiconductor 32000 series */
-  e_Tpc = 98,            /* Tenor Network TPC processor */
-  e_Snp1k = 99,          /* Trebia SNP 1000 processor */
-  e_St200 = 100,         /* STMicroelectronics ST200 microcontroller */
-  e_Ip2k = 101,          /* Ubicom IP2022 micro controller */
-  e_Max = 102,           /* MAX Processor */
-  e_Cr = 103,            /* National Semiconductor CompactRISC */
-  e_F2mc16 = 104,        /* Fujitsu F2MC16 */
-  e_Msp430 = 105,        /* TI msp430 micro controller */
-  e_Blackfin = 106,      /* ADI Blackfin */
-  e_Se_c33 = 107,        /* S1C33 Family of Seiko Epson processors */
-  e_Sep = 108,           /* Sharp embedded microprocessor */
-  e_Arca = 109,          /* Arca RISC Microprocessor */
-  e_Unicore = 110,       /* Microprocessor series from PKU-Unity Ltd. and MPRC of
-                            Peking University */
-  e_Excess = 111,        /* eXcess: 16/32/64-bit configurable embedded CPU */
-  e_Dxp = 112,           /* Icera Semiconductor Inc. Deep Execution Processor */
-  e_Altera_nios2 = 113,  /* Altera Nios II soft-core processor */
-  e_Crx = 114,           /* National Semiconductor CRX */
-  e_Xgate = 115,         /* Motorola XGATE embedded processor */
-  e_C166 = 116,          /* Infineon C16x/XC16x processor */
-  e_M16c = 117,          /* Renesas M16C series microprocessors */
-  e_Dspic30f = 118,      /* Microchip Technology dsPIC30F Digital Signal Controller */
-  e_Ce = 119,            /* Freescale Communication Engine RISC core */
-  e_M32c = 120,          /* Renesas M32C series microprocessors */
-  e_res121 = 121,        /* Reserved */
-  e_res122 = 122,        /* Reserved */
-  e_res123 = 123,        /* Reserved */
-  e_res124 = 124,        /* Reserved */
-  e_res125 = 125,        /* Reserved */
-  e_res126 = 126,        /* Reserved */
-  e_res127 = 127,        /* Reserved */
-  e_res128 = 128,        /* Reserved */
-  e_res129 = 129,        /* Reserved */
-  e_res130 = 130,        /* Reserved */
-  e_Tsk3000 = 131,       /* Altium TSK3000 core */
-  e_Rs08 = 132,          /* Freescale RS08 embedded processor */
-  e_res133 = 133,        /* Reserved */
-  e_Ecog2 = 134,         /* Cyan Technology eCOG2 microprocessor */
-  e_Score7 = 135,        /* Sunplus S+core7 RISC processor */
-  e_Dsp24 = 136,         /* New Japan Radio (NJR) 24-bit DSP Processor */
-  e_Videocore3 = 137,    /* Broadcom VideoCore III processor */
-  e_Latticemico32 = 138, /* RISC processor for Lattice FPGA architecture */
-  e_Se_c17 = 139,        /* Seiko Epson C17 family */
-  e_Ti_c6000 = 140,      /* Texas Instruments TMS320C6000 DSP family */
-  e_Ti_c2000 = 141,      /* Texas Instruments TMS320C2000 DSP family */
-  e_Ti_c5500 = 142,      /* Texas Instruments TMS320C55x DSP family */
-  e_res143 = 143,        /* Reserved */
-  e_res144 = 144,        /* Reserved */
-  e_res145 = 145,        /* Reserved */
-  e_res146 = 146,        /* Reserved */
-  e_res147 = 147,        /* Reserved */
-  e_res148 = 148,        /* Reserved */
-  e_res149 = 149,        /* Reserved */
-  e_res150 = 150,        /* Reserved */
-  e_res151 = 151,        /* Reserved */
-  e_res152 = 152,        /* Reserved */
-  e_res153 = 153,        /* Reserved */
-  e_res154 = 154,        /* Reserved */
-  e_res155 = 155,        /* Reserved */
-  e_res156 = 156,        /* Reserved */
-  e_res157 = 157,        /* Reserved */
-  e_res158 = 158,        /* Reserved */
-  e_res159 = 159,        /* Reserved */
-  e_Mmdsp_plus = 160,    /* STMicroelectronics 64bit VLIW Data Signal Processor */
-  e_Cypress_m8c = 161,   /* Cypress M8C microprocessor */
-  e_R32c = 162,          /* Renesas R32C series microprocessors */
-  e_Trimedia = 163,      /* NXP Semiconductors TriMedia architecture family */
-  e_Qdsp6 = 164,         /* QUALCOMM DSP6 Processor */
-  e_8051 = 165,          /* Intel 8051 and variants */
-  e_Stxp7x = 166,        /* STMicroelectronics STxP7x family */
-  e_Nds32 = 167,         /* Andes Technology compact code size embedded RISC processor
-                            family */
-  e_Ecog1x = 168,        /* Cyan Technology eCOG1X family */
-  e_Maxq30 = 169,        /* Dallas Semiconductor MAXQ30 Core Micro-controllers */
-  e_Ximo16 = 170,        /* New Japan Radio (NJR) 16-bit DSP Processor */
-  e_Manik = 171,         /* M2000 Reconfigurable RISC Microprocessor */
-  e_Craynv2 = 172,       /* Cray Inc. NV2 vector architecture */
-  e_Rx = 173,            /* Renesas RX family */
-  e_Metag = 174,         /* Imagination Technologies Meta processor architecture */
-  e_Mcst_elbrus = 175,   /* MCST Elbrus general purpose hardware architecture */
-  e_Ecog16 = 176,        /* Cyan Technology eCOG16 family */
-  e_Cr16 = 177,          /* National Semiconductor CompactRISC 16-bit processor */
-  e_Etpu = 178,          /* Freescale Extended Time Processing Unit */
-  e_Sle9x = 179,         /* Infineon Technologies SLE9X core */
-  e_L1om = 180,          /* Intel L1OM */
-  e_K1om = 181,          /* Intel K1OM */
-  e_Intel182 = 182,      /* Reserved by Intel */
-  e_Aarch64 = 183,       /* ARM 64-bit architecture */
-  e_Arm184 = 184,        /* Reserved by ARM */
-  e_Avr32 = 185,         /* Atmel Corporation 32-bit microprocessor family */
-  e_Stm8 = 186,          /* STMicroeletronics STM8 8-bit microcontroller */
-  e_Tile64 = 187,        /* Tilera TILE64 multicore architecture family */
-  e_Tilepro = 188,       /* Tilera TILEPro multicore architecture family */
-  e_Microblaze = 189,    /* Xilinx MicroBlaze 32-bit RISC soft processor core */
-  e_Cuda = 190,          /* NVIDIA CUDA architecture */
-  e_Tilegx = 191,        /* Tilera TILE-Gx multicore architecture family */
-  e_Rl78 = 197,          /* Renesas RL78 family.  */
-  e_78k0r = 199,         /* Renesas 78K0R.  */
-  e_Intel205 = 205,      /* Reserved by Intel */
-  e_Intel206 = 206,      /* Reserved by Intel */
-  e_Intel207 = 207,      /* Reserved by Intel */
-  e_Intel208 = 208,      /* Reserved by Intel */
-  e_Intel209 = 209,      /* Reserved by Intel */
-  e_Visium = 221,        /* Controls and Data Services VISIUM core processor */
-  e_Moxie = 223,         /* Moxie processor family */
+  // No machine
+  e_None = 0,
+  // AT&T WE 32100
+  e_M32 = 1,
+  // SUN SPARC
+  e_Sparc = 2,
+  // Intel 80386
+  e_386 = 3,
+  // Motorola m68k family
+  e_68k = 4,
+  // Motorola m88k family
+  e_88k = 5,
+  // Intel 80486
+  e_486 = 6,
+  // Intel 80860
+  e_860 = 7,
+  // MIPS R3000 (officially, big-endian only)
+  e_Mips = 8,
+  // IBM System/370
+  e_S370 = 9,
+  // MIPS R3000 little-endian (Oct 4 1999 Draft) Deprecated
+  e_Mips_rs3_le = 10,
+  // Reserved
+  e_res011 = 11,
+  // Reserved
+  e_res012 = 12,
+  // Reserved
+  e_res013 = 13,
+  // Reserved
+  e_res014 = 14,
+  // HPPA
+  e_Parisc = 15,
+  // Reserved
+  e_res016 = 16,
+  // Fujitsu VPP500
+  e_Vpp550 = 17,
+  // Sun's "v8plus"
+  e_Sparc32plus = 18,
+  // Intel 80960
+  e_960 = 19,
+  // PowerPC
+  e_Ppc = 20,
+  // 64-bit PowerPC
+  e_Ppc64 = 21,
+  // IBM S/390
+  e_S390 = 22,
+  // Sony/Toshiba/IBM SPU
+  e_Spu = 23,
+  // Reserved
+  e_res024 = 24,
+  // Reserved
+  e_res025 = 25,
+  // Reserved
+  e_res026 = 26,
+  // Reserved
+  e_res027 = 27,
+  // Reserved
+  e_res028 = 28,
+  // Reserved
+  e_res029 = 29,
+  // Reserved
+  e_res030 = 30,
+  // Reserved
+  e_res031 = 31,
+  // Reserved
+  e_res032 = 32,
+  // Reserved
+  e_res033 = 33,
+  // Reserved
+  e_res034 = 34,
+  // Reserved
+  e_res035 = 35,
+  // NEC V800 series
+  e_V800 = 36,
+  // Fujitsu FR20
+  e_Fr20 = 37,
+  // TRW RH32
+  e_Rh32 = 38,
+  // MCore
+  e_Mcore = 39,
+  // ARM
+  e_Arm = 40,
+  // Digital Alpha
+  e_Old_alpha = 41,
+  // Renesas (formerly Hitachi) / SuperH SH
+  e_Sh = 42,
+  // SPARC v9 64-bit
+  e_Sparcv9 = 43,
+  // Siemens Tricore embedded processor
+  e_Tricore = 44,
+  // ARC Cores
+  e_Arc = 45,
+  // Renesas (formerly Hitachi) H8/300
+  e_H8_300 = 46,
+  // Renesas (formerly Hitachi) H8/300H
+  e_H8_300h = 47,
+  // Renesas (formerly Hitachi) H8S
+  e_H8s = 48,
+  // Renesas (formerly Hitachi) H8/500
+  e_H8_500 = 49,
+  // Intel IA-64 Processor
+  e_Ia_64 = 50,
+  // Stanford MIPS-X
+  e_Mips_x = 51,
+  // Motorola Coldfire
+  e_Coldfire = 52,
+  // Motorola M68HC12
+  e_68hc12 = 53,
+  // Fujitsu Multimedia Accelerator
+  e_Mma = 54,
+  // Siemens PCP
+  e_Pcp = 55,
+  // Sony nCPU embedded RISC processor
+  e_Ncpu = 56,
+  // Denso NDR1 microprocessor
+  e_Ndr1 = 57,
+  // Motorola Star*Core processor
+  e_Starcore = 58,
+  // Toyota ME16 processor
+  e_Me16 = 59,
+  // STMicroelectronics ST100 processor
+  e_St100 = 60,
+  // Advanced Logic Corp. TinyJ embedded processor
+  e_Tinyj = 61,
+  // Advanced Micro Devices X86-64 processor
+  e_X86_64 = 62,
+  // Sony DSP Processor
+  e_Pdsp = 63,
+  // Digital Equipment Corp. PDP-10
+  e_Pdp10 = 64,
+  // Digital Equipment Corp. PDP-11
+  e_Pdp11 = 65,
+  // Siemens FX66 microcontroller
+  e_Fx66 = 66,
+  // STMicroelectronics ST9+ 8/16-bit microcontroller
+  e_St9plus = 67,
+  // STMicroelectronics ST7 8-bit microcontroller
+  e_St7 = 68,
+  // Motorola MC68HC16 Microcontroller
+  e_68hc16 = 69,
+  // Motorola MC68HC11 Microcontroller
+  e_68hc11 = 70,
+  // Motorola MC68HC08 Microcontroller
+  e_68hc08 = 71,
+  // Motorola MC68HC05 Microcontroller
+  e_68hc05 = 72,
+  // Silicon Graphics SVx
+  e_Svx = 73,
+  // STMicroelectronics ST19 8-bit cpu
+  e_St19 = 74,
+  // Digital VAX
+  e_Vax = 75,
+  // Axis Communications 32-bit embedded processor
+  e_Cris = 76,
+  // Infineon Technologies 32-bit embedded cpu
+  e_Javelin = 77,
+  // Element 14 64-bit DSP processor
+  e_Firepath = 78,
+  // LSI Logic's 16-bit DSP processor
+  e_Zsp = 79,
+  // Donald Knuth's educational 64-bit processor
+  e_Mmix = 80,
+  // Harvard's machine-independent raw
+  e_Huany = 81,
+  // SiTera Prism
+  e_Prism = 82,
+  // Atmel AVR 8-bit microcontroller
+  e_Avr = 83,
+  // Fujitsu FR30
+  e_Fr30 = 84,
+  // Mitsubishi D10V
+  e_D10v = 85,
+  // Mitsubishi D30V
+  e_D30v = 86,
+  // Renesas V850 (formerly NEC V850)
+  e_V850 = 87,
+  // Renesas M32R (formerly Mitsubishi M32R)
+  e_M32r = 88,
+  // Matsushita MN10300
+  e_Mn10300 = 89,
+  // Matsushita MN10200
+  e_Mn10200 = 90,
+  // picoJava
+  e_Pj = 91,
+  // OpenRISC 1000 32-bit embedded processor
+  e_Or1k = 92,
+  // ARC Cores Tangent-A5
+  e_Arc_a5 = 93,
+  // Tensilica Xtensa Architecture
+  e_Xtensa = 94,
+  // Alphamosaic VideoCore processor
+  e_Videocore = 95,
+  // Thompson Multimedia General Purpose Processor
+  e_Tmm_gpp = 96,
+  // National Semiconductor 32000 series
+  e_Ns32k = 97,
+  // Tenor Network TPC processor
+  e_Tpc = 98,
+  // Trebia SNP 1000 processor
+  e_Snp1k = 99,
+  // STMicroelectronics ST200 microcontroller
+  e_St200 = 100,
+  // Ubicom IP2022 micro controller
+  e_Ip2k = 101,
+  // MAX Processor
+  e_Max = 102,
+  // National Semiconductor CompactRISC
+  e_Cr = 103,
+  // Fujitsu F2MC16
+  e_F2mc16 = 104,
+  // TI msp430 micro controller
+  e_Msp430 = 105,
+  // ADI Blackfin
+  e_Blackfin = 106,
+  // S1C33 Family of Seiko Epson processors
+  e_Se_c33 = 107,
+  // Sharp embedded microprocessor
+  e_Sep = 108,
+  // Arca RISC Microprocessor
+  e_Arca = 109,
+  // Microprocessor series from PKU-Unity Ltd. and MPRC of Peking University
+  e_Unicore = 110,
+  // eXcess: 16/32/64-bit configurable embedded CPU
+  e_Excess = 111,
+  // Icera Semiconductor Inc. Deep Execution Processor
+  e_Dxp = 112,
+  // Altera Nios II soft-core processor
+  e_Altera_nios2 = 113,
+  // National Semiconductor CRX
+  e_Crx = 114,
+  // Motorola XGATE embedded processor
+  e_Xgate = 115,
+  // Infineon C16x/XC16x processor
+  e_C166 = 116,
+  // Renesas M16C series microprocessors
+  e_M16c = 117,
+  // Microchip Technology dsPIC30F Digital Signal Controller
+  e_Dspic30f = 118,
+  // Freescale Communication Engine RISC core
+  e_Ce = 119,
+  // Renesas M32C series microprocessors
+  e_M32c = 120,
+  // Reserved
+  e_res121 = 121,
+  // Reserved
+  e_res122 = 122,
+  // Reserved
+  e_res123 = 123,
+  // Reserved
+  e_res124 = 124,
+  // Reserved
+  e_res125 = 125,
+  // Reserved
+  e_res126 = 126,
+  // Reserved
+  e_res127 = 127,
+  // Reserved
+  e_res128 = 128,
+  // Reserved
+  e_res129 = 129,
+  // Reserved
+  e_res130 = 130,
+  // Altium TSK3000 core
+  e_Tsk3000 = 131,
+  // Freescale RS08 embedded processor
+  e_Rs08 = 132,
+  // Reserved
+  e_res133 = 133,
+  // Cyan Technology eCOG2 microprocessor
+  e_Ecog2 = 134,
+  // Sunplus S+core7 RISC processor
+  e_Score7 = 135,
+  // New Japan Radio (NJR) 24-bit DSP Processor
+  e_Dsp24 = 136,
+  // Broadcom VideoCore III processor
+  e_Videocore3 = 137,
+  // RISC processor for Lattice FPGA architecture
+  e_Latticemico32 = 138,
+  // Seiko Epson C17 family
+  e_Se_c17 = 139,
+  // Texas Instruments TMS320C6000 DSP family
+  e_Ti_c6000 = 140,
+  // Texas Instruments TMS320C2000 DSP family
+  e_Ti_c2000 = 141,
+  // Texas Instruments TMS320C55x DSP family
+  e_Ti_c5500 = 142,
+  // Reserved
+  e_res143 = 143,
+  // Reserved
+  e_res144 = 144,
+  // Reserved
+  e_res145 = 145,
+  // Reserved
+  e_res146 = 146,
+  // Reserved
+  e_res147 = 147,
+  // Reserved
+  e_res148 = 148,
+  // Reserved
+  e_res149 = 149,
+  // Reserved
+  e_res150 = 150,
+  // Reserved
+  e_res151 = 151,
+  // Reserved
+  e_res152 = 152,
+  // Reserved
+  e_res153 = 153,
+  // Reserved
+  e_res154 = 154,
+  // Reserved
+  e_res155 = 155,
+  // Reserved
+  e_res156 = 156,
+  // Reserved
+  e_res157 = 157,
+  // Reserved
+  e_res158 = 158,
+  // Reserved
+  e_res159 = 159,
+  // STMicroelectronics 64bit VLIW Data Signal Processor
+  e_Mmdsp_plus = 160,
+  // Cypress M8C microprocessor
+  e_Cypress_m8c = 161,
+  // Renesas R32C series microprocessors
+  e_R32c = 162,
+  // NXP Semiconductors TriMedia architecture family
+  e_Trimedia = 163,
+  // QUALCOMM DSP6 Processor
+  e_Qdsp6 = 164,
+  // Intel 8051 and variants
+  e_8051 = 165,
+  // STMicroelectronics STxP7x family
+  e_Stxp7x = 166,
+  // Andes Technology compact code size embedded RISC processor family
+  e_Nds32 = 167,
+  // Cyan Technology eCOG1X family
+  e_Ecog1x = 168,
+  // Dallas Semiconductor MAXQ30 Core Micro-controllers
+  e_Maxq30 = 169,
+  // New Japan Radio (NJR) 16-bit DSP Processor
+  e_Ximo16 = 170,
+  // M2000 Reconfigurable RISC Microprocessor
+  e_Manik = 171,
+  // Cray Inc. NV2 vector architecture
+  e_Craynv2 = 172,
+  // Renesas RX family
+  e_Rx = 173,
+  // Imagination Technologies Meta processor architecture
+  e_Metag = 174,
+  // MCST Elbrus general purpose hardware architecture
+  e_Mcst_elbrus = 175,
+  // Cyan Technology eCOG16 family
+  e_Ecog16 = 176,
+  // National Semiconductor CompactRISC 16-bit processor
+  e_Cr16 = 177,
+  // Freescale Extended Time Processing Unit
+  e_Etpu = 178,
+  // Infineon Technologies SLE9X core
+  e_Sle9x = 179,
+  // Intel L1OM
+  e_L1om = 180,
+  // Intel K1OM
+  e_K1om = 181,
+  // Reserved by Intel
+  e_Intel182 = 182,
+  // ARM 64-bit architecture
+  e_Aarch64 = 183,
+  // Reserved by ARM
+  e_Arm184 = 184,
+  // Atmel Corporation 32-bit microprocessor family
+  e_Avr32 = 185,
+  // STMicroeletronics STM8 8-bit microcontroller
+  e_Stm8 = 186,
+  // Tilera TILE64 multicore architecture family
+  e_Tile64 = 187,
+  // Tilera TILEPro multicore architecture family
+  e_Tilepro = 188,
+  // Xilinx MicroBlaze 32-bit RISC soft processor core
+  e_Microblaze = 189,
+  // NVIDIA CUDA architecture
+  e_Cuda = 190,
+  // Tilera TILE-Gx multicore architecture family
+  e_Tilegx = 191,
+  // Renesas RL78 family.
+  e_Rl78 = 197,
+  // Renesas 78K0R.
+  e_78k0r = 199,
+  // Reserved by Intel
+  e_Intel205 = 205,
+  // Reserved by Intel
+  e_Intel206 = 206,
+  // Reserved by Intel
+  e_Intel207 = 207,
+  // Reserved by Intel
+  e_Intel208 = 208,
+  // Reserved by Intel
+  e_Intel209 = 209,
+  // Controls and Data Services VISIUM core processor
+  e_Visium = 221,
+  // Moxie processor family
+  e_Moxie = 223,
 };
 std::ostream &operator<<(std::ostream &os, const Architecture &architecture);
 
 enum class SpecialSectionIndex : uint16_t {
-  e_Undefined = 0,  // This value marks an undefined, missing, irrelevant, or otherwise meaningless section reference.
-                    // For example, a symbol `defined' relative to section number SHN_UNDEF is an undefined symbol
-  e_Abs = 0xfff1,  // This value specifies absolute values for the corresponding reference. For example, symbols defined
-                   // relative to section number SHN_ABS have absolute values and are not affected by relocation.
-  e_Common = 0xfff2,  // Symbols defined relative to this section are common symbols, such as FORTRAN COMMON or
-                      // unallocated C external variables.
+  // This value marks an undefined, missing, irrelevant, or otherwise meaningless section reference. For example, a
+  // symbol `defined' relative to section number SHN_UNDEF is an undefined symbol
+  e_Undefined = 0,
+  // This value specifies absolute values for the corresponding reference. For example, symbols defined relative to
+  // section number SHN_ABS have absolute values and are not affected by relocation.
+  e_Abs = 0xfff1,
+  // Symbols defined relative to this section are common symbols, such as FORTRAN COMMON or unallocated C external
+  // variables.
+  e_Common = 0xfff2,
 };
 std::ostream &operator<<(std::ostream &os, const SpecialSectionIndex &sectionIndex);
 
 enum class SectionType : uint32_t {
   e_Null = 0,
-  e_Progbits = 1,  // Info defined by the program
-  e_Symtab = 2,    // Linker symbol table
-  e_Strtab = 3,    // String table
-  e_Rela = 4,      // "Rela" type relocation
-  e_Hash = 5,      // Symbol hash table
-  e_Dynamic = 6,   // Dynamic linking table
-  e_Note = 7,      // Note info
-  e_Nobits = 8,    // Uninitialized space; does not occupy any space in the file
-  e_Rel = 9,       // "Rel" type relocation
-  e_Shlib = 10,    // Reserved
-  e_Dynsym = 11,   // Dynamic loader symbol table
+  // Info defined by the program
+  e_Progbits = 1,
+  // Linker symbol table
+  e_Symtab = 2,
+  // String table
+  e_Strtab = 3,
+  // "Rela" type relocation
+  e_Rela = 4,
+  // Symbol hash table
+  e_Hash = 5,
+  // Dynamic linking table
+  e_Dynamic = 6,
+  // Note info
+  e_Note = 7,
+  // Uninitialized space; does not occupy any space in the file
+  e_Nobits = 8,
+  // "Rel" type relocation
+  e_Rel = 9,
+  // Reserved
+  e_Shlib = 10,
+  // Dynamic loader symbol table
+  e_Dynsym = 11,
   e_InitArray = 14,
   e_FiniArray = 15,
   e_PreinitArray = 16,
@@ -312,27 +525,37 @@ enum class SectionType : uint32_t {
 std::ostream &operator<<(std::ostream &os, const SectionType &sectionType);
 
 enum class SectionFlag : uint64_t {
-  e_Write = 0x1,      // Writable
-  e_Alloc = 0x2,      // Occupies memory at runtime
-  e_Execinstr = 0x4,  // Executable
-  e_Merge = 0x10,     // Might be merged
-  e_Strings = 0x20,   // Contains C-style string
+  // Writable
+  e_Write = 0x1,
+  // Occupies memory at runtime
+  e_Alloc = 0x2,
+  // Executable
+  e_Execinstr = 0x4,
+  // Might be merged
+  e_Merge = 0x10,
+  // Contains C-style string
+  e_Strings = 0x20,
   e_Info_link = 0x40,
-  e_Link_order = 0x80,  // Preserve order after combining
+  // Preserve order after combining
+  e_Link_order = 0x80,
   e_Os_nonconforming = 0x100,
   e_Group = 0x200,
-  e_Tls = 0x400,  // Section hold thread local data
+  // Section hold thread local data
+  e_Tls = 0x400,
   e_Maskos = 0x0ff00000,
   e_Maskproc = 0xf0000000,
 };
 std::ostream &operator<<(std::ostream &os, const SectionFlag &sectionFlag);
 
 enum class SymbolBinding : uint8_t {
-  e_Local = 0,   //  Local symbols are not visible outside the object file containing their definition. Local symbols of
-                 //  the same name may exist in multiple files without interfering with each other.
-  e_Global = 1,  //  Global symbols are visible to all object files being combined. One file's definition of a global
-                 //  symbol will satisfy another file's undefined reference to the same global symbol.
-  e_Weak = 2,    //  Weak symbols resemble global symbols, but their definitions have lower precedence.
+  // Local symbols are not visible outside the object file containing their definition. Local symbols of the same name
+  // may exist in multiple files without interfering with each other.
+  e_Local = 0,
+  // Global symbols are visible to all object files being combined. One file's definition of a global symbol will
+  // satisfy another file's undefined reference to the same global symbol.
+  e_Global = 1,
+  // Weak symbols resemble global symbols, but their definitions have lower precedence.
+  e_Weak = 2,
   // Low and upper bound for os specific
   // e_LoOs = 10,
   // e_HiOs = 12,
@@ -344,15 +567,21 @@ enum class SymbolBinding : uint8_t {
 std::ostream &operator<<(std::ostream &os, const SymbolBinding &symbolBinding);
 
 enum class SymbolType : uint8_t {
-  e_NoType = 0,   //  The symbol's type is not specified.
-  e_Object = 1,   //  The symbol is associated with a data object, such as a variable, an array, and so on.
-  e_Func = 2,     //  The symbol is associated with a function or other executable code.
-  e_Section = 3,  //  The symbol is associated with a section. Symbol table entries of this type exist primarily for
-                  //  relocation and normally have e_Local binding.
-  e_File = 4,  //  Conventionally, the symbol's name gives the name of the source file associated with the object file.
-               //  A file symbol has STB_LOCAL binding, its section index is SHN_ABS, and it precedes the other e_Local
-               //  symbols for the file, if it is present.
-  e_Common = 5,  //  The symbol labels an uninitialized common block
+  // The symbol's type is not specified.
+  e_NoType = 0,
+  // The symbol is associated with a data object, such as a variable, an array, and so on.
+  e_Object = 1,
+  // The symbol is associated with a function or other executable code.
+  e_Func = 2,
+  // The symbol is associated with a section. Symbol table entries of this type exist primarily for
+  // relocation and normally have e_Local binding.
+  e_Section = 3,
+  // Conventionally, the symbol's name gives the name of the source file associated with the object file. A file symbol
+  // has STB_LOCAL binding, its section index is SHN_ABS, and it precedes the other e_Local symbols for the file, if it
+  // is present.
+  e_File = 4,
+  // The symbol labels an uninitialized common block
+  e_Common = 5,
   // Low and upper bound for OS specific
   // e_LOOS = 10,
   // e_HIOS = 12,
@@ -365,29 +594,27 @@ enum class SymbolType : uint8_t {
 std::ostream &operator<<(std::ostream &os, const SymbolType &symbolType);
 
 enum class SymbolVisibility : uint8_t {
-  e_Default =
-      0,  // The visibility of symbols with the e_Default attribute is as specified by the symbol's binding type. That
-          // is, global and weak symbols are visible outside their defining component (executable file or shared
-          // object). Local symbols are hidden, as described below. Global and weak symbols are also preemptable, that
-          // is, they may be preempted by definitions of the same name in another component.
-  e_Internal = 1,  // A symbol defined in the current component is protected if it is visible in other components but
-                   // not preemptable, meaning that any reference to such a symbol from within the defining component
-                   // must be resolved to the definition in that component, even if there is a definition in another
-                   // component that would preempt by the default rules. A symbol with e_Local binding may not have
-                   // e_Protected visibility. If a symbol definition with e_Protected visibility from a shared
-                   // object is taken as resolving a reference from an executable or another shared object, the
-                   // 'undef' symbol table entry created has e_Default visibility.
-  e_Hidden = 2,  // A symbol defined in the current component is hidden if its name is not visible to other components.
-                 // Such a symbol is necessarily protected. This attribute may be used to control the external interface
-                 // of a component. Note that an object named by such a symbol may still be referenced from another
-                 // component if its address is passed outside.
-  e_Protected = 3,  // A symbol defined in the current component is protected if it is visible in other components but
-                    // not preemptable, meaning that any reference to such a symbol from within the defining component
-                    // must be resolved to the definition in that component, even if there is a definition in another
-                    // component that would preempt by the default rules. A symbol with e_Local binding may not have
-                    // e_Protected visibility. If a symbol definition with e_Protected visibility from a shared
-                    // object is taken as resolving a reference from an executable or another shared object, the
-                    // 'undef' symbol table entry created has e_Default visibility.
+  // The visibility of symbols with the e_Default attribute is as specified by the symbol's binding type. That is,
+  // global and weak symbols are visible outside their defining component (executable file or shared object). Local
+  // symbols are hidden, as described below. Global and weak symbols are also preemptable, that is, they may be
+  // preempted by definitions of the same name in another component.
+  e_Default = 0,
+  // The meaning of this visibility attribute may be defined by processor supplements to further constrain hidden
+  // symbols. A processor supplement's definition should be such that generic tools can safely treat internal symbols as
+  // hidden. An internal symbol contained in a relocatable object must be either removed or converted to STB_LOCAL
+  // binding by the link-editor when the relocatable object is included in an executable file or shared object.
+  e_Internal = 1,
+  // A symbol defined in the current component is hidden if its name is not visible to other components. Such a symbol
+  // is necessarily protected. This attribute may be used to control the external interface of a component. Note that an
+  // object named by such a symbol may still be referenced from another component if its address is passed outside.
+  e_Hidden = 2,
+  // A symbol defined in the current component is protected if it is visible in other components but not preemptable,
+  // meaning that any reference to such a symbol from within the defining component must be resolved to the definition
+  // in that component, even if there is a definition in another component that would preempt by the default rules. A
+  // symbol with e_Local binding may not have e_Protected visibility. If a symbol definition with e_Protected visibility
+  // from a shared object is taken as resolving a reference from an executable or another shared object, the 'undef'
+  // symbol table entry created has e_Default visibility.
+  e_Protected = 3,
   e_Invalid,
 };
 std::ostream &operator<<(std::ostream &os, const SymbolVisibility &symbolVisibility);

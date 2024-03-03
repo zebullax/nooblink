@@ -28,8 +28,6 @@ constexpr const size_t k_ElfHeaderLength = RawElfHeader::extent;
 
 ObjectFile::ObjectFile()
     : d_currentState{State::e_Idle},
-      d_backingFilePath{},
-      d_mMapGuard{},
       d_begin{},
       d_offsetBegin{},
       d_elfHeader{},
@@ -37,22 +35,21 @@ ObjectFile::ObjectFile()
       d_symbolTableEntries{},
       d_strTabSectionIndex{} {}
 
-ObjectFile::State ObjectFile::load(const std::filesystem::path& filePath) {
-  d_backingFilePath = filePath;
+ObjectFile::State ObjectFile::load(std::byte* begin) {
   try {
-    spdlog::info("Loading '"s + filePath.c_str() + "'");
-    d_mMapGuard = std::make_unique<MemMappedFile>(d_backingFilePath.c_str());
-    d_begin = reinterpret_cast<std::byte*>(d_mMapGuard->mappedRegionStart());
-    d_offsetBegin = reinterpret_cast<uint64_t>(d_begin);
+    d_begin = begin;
+    d_offsetBegin = reinterpret_cast<uint64_t>(begin);
     loadElfHeader();
     loadSectionTable();
     loadSymbolTable();
-    return State::e_Loaded;
+    d_currentState = State::e_Loaded;
   } catch (const std::exception& e) {
     spdlog::error("Error while loading the object file: "s + e.what());
-    return State::e_Error;
+    d_currentState = State::e_Error;
   }
+  return d_currentState;
 }
+
 void ObjectFile::loadElfHeader() {
   spdlog::debug("Loading ELF header");
   RawElfHeader rawElfHeader(d_begin, k_ElfHeaderLength);
@@ -74,7 +71,7 @@ void ObjectFile::loadSectionTable() {
   }
 
   if (d_sectionHeaders.empty()) {
-    spdlog::error("No sections found in the object file '"s + d_backingFilePath.c_str() + "'");
+    spdlog::error("No sections found in the object file");
     return;
   }
   // ELF header has the index for the section header name string, stash that index
@@ -152,8 +149,6 @@ nlohmann::json ObjectFile::json() const {
   j["symbols"] = decodedSymbolTableEntries;
   return j;
 }
-
-std::filesystem::path ObjectFile::filePath() const { return d_backingFilePath; }
 
 std::vector<SymbolTableEntry> ObjectFile::symbols() const {
   std::vector<SymbolTableEntry> result;

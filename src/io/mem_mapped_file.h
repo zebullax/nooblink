@@ -11,6 +11,7 @@
 
 // std
 #include <cstdlib>
+#include <filesystem>
 #include <string>
 // C
 #include <fcntl.h>
@@ -30,7 +31,7 @@ class MemMappedFile {
   // CREATORS
 
   // Create this object mapping the specified 'filename' to memory. The behavior is undefined if the file does not exist
-  explicit MemMappedFile(const std::string &filename);
+  explicit MemMappedFile(const std::filesystem::path &filename);
 
   ~MemMappedFile();
 

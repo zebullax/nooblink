@@ -160,3 +160,4 @@ ELF Low endian 64 bits
 2. https://www.sco.com/developers/gabi/2000-07-17/contents.html
 3. https://en.m.wikipedia.org/wiki/Executable_and_Linkable_Format
 4. https://uclibc.org/docs/elf-64-gen.pdf
+5. https://lwn.net/Articles/276782/

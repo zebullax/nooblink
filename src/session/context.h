@@ -4,26 +4,43 @@
 // Project: nooblink
 //
 // Description: This component provides context for the linking session that needs to be maintained during the process
-// FIXME Vocab types may need this but then this component likely will also use some vocab types, so there is likely
-// FIXME some issue...
 
 #ifndef NOOBLINK_CONTEXT_H
 #define NOOBLINK_CONTEXT_H
 
 // std
+#include <filesystem>
 #include <memory>
+#include <string>
+#include <unordered_map>
+// nooblink
+#include <io/mem_mapped_file.h>
+#include <vocabulary/object_file.h>
 
 namespace nooblink {
 
 class Context {
- private:
-  struct Impl {
-    size_t offset;
+ public:
+  // TYPES
+
+  struct ObjectFileCookie {
+    std::unique_ptr<MemMappedFile> d_backingFile;
+    std::unique_ptr<ObjectFile> d_objectFile;
   };
 
- public:
-  Context() = delete;
-  static Impl* instance();
+  // CREATORS
+
+  Context() = default;
+
+  // MANIPULATORS
+
+  ObjectFile* loadObjectFile(const std::filesystem::path& path);
+  ObjectFile* getObjectFile(const std::filesystem::path& path);
+
+ private:
+  // DATA
+
+  std::unordered_map<std::string, ObjectFileCookie> d_objectFiles;
 };
 
 }  // namespace nooblink

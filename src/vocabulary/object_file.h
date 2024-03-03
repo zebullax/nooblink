@@ -3,17 +3,17 @@
 // File: object_file.h
 // Project: nooblink
 //
-// Description: This component wraps over and articulate the subcomponents (e.g. ELF header, sections) that make up an
-// object file
+// Description: This component wraps over and articulate the subcomponents (e.g. header, sections) that make up an
+// ELF object file
+//
+// FIXME now it uses mem map to load the file but we should allow other schemes...
 //
 
 #ifndef NOOBLINK_OBJECT_FILE_H
 #define NOOBLINK_OBJECT_FILE_H
 
 // nooblink
-#include <io/mem_mapped_file.h>
 #include <raw/byte_util.h>
-#include <session/context.h>
 #include <vocabulary/elf_header.h>
 #include <vocabulary/section_header_table_entry.h>
 #include <vocabulary/symbol_table_entry.h>
@@ -21,7 +21,6 @@
 #include <nlohmann/json.hpp>
 // std
 #include <cstddef>
-#include <filesystem>
 #include <functional>
 #include <memory>
 #include <ostream>
@@ -38,24 +37,27 @@ class ObjectFile {
   // TYPES
 
   enum class State {
-    e_Idle,    // This object does not back any loaded object file
-    e_Loaded,  // This object backs a successfully loaded object file
-    e_Error,   // This object is not in a usable state
+    // This object does not back any loaded object file
+    e_Idle,
+    // This object backs a successfully loaded object file
+    e_Loaded,
+    // This object is not in a usable state
+    e_Error,
   };
 
  private:
   //  PRIVATE TYPES
 
-  using SectionIndex = size_t;
   // Alias over section index as found in object file natural order
+  using SectionIndex = size_t;
 
-  using SectionHeaderWithIndex = std::tuple<SectionIndex, SectionHeaderTableEntry>;
   // Alias over a section header and its natural index in the object file
+  using SectionHeaderWithIndex = std::tuple<SectionIndex, SectionHeaderTableEntry>;
 
-  using IndexedSymbolTable = std::unordered_map<SectionIndex, std::vector<SymbolTableEntry>>;
   // Alias over a section index and the sequence of related symbol table entries. The section index is critical to be
   // able to reach the strings table via the 'link' attribute; The section index should point to a 'DynSym' or 'SymTab'
   // section header
+  using IndexedSymbolTable = std::unordered_map<SectionIndex, std::vector<SymbolTableEntry>>;
 
   // FRIENDS
 
@@ -68,9 +70,7 @@ class ObjectFile {
   // DATA
 
   State d_currentState;
-  std::filesystem::path d_backingFilePath;
-  std::unique_ptr<MemMappedFile> d_mMapGuard;
-  std::byte* d_begin;      // Address where the backing file is being mapped to
+  std::byte* d_begin;      // Starting address for the loaded objectFile
   uint64_t d_offsetBegin;  // Numeric offset corresponding to `d_begin` for convenience
   std::unique_ptr<ElfHeader> d_elfHeader;
   std::vector<SectionHeaderWithIndex> d_sectionHeaders;
@@ -101,7 +101,7 @@ class ObjectFile {
   // MANIPULATORS
 
   // Load the backing specified 'filePath' into this object and return the new state
-  [[nodiscard]] State load(const std::filesystem::path& filePath);
+  [[nodiscard]] State load(std::byte* start);
 
   // ACCESSORS
 
@@ -111,11 +111,8 @@ class ObjectFile {
   // Render and return a json representation for this object
   [[nodiscard]] nlohmann::json json() const;
 
-  // Return the backing filePath
-  [[nodiscard]] std::filesystem::path filePath() const;
-
   // Return all symbols references or defined in this object file
-  // TODO write some view that can iterate over all bucket elements `bucket_explorer`
+  // TODO write some range adaptor that can iterate over all bucket elements.. `bucket_explorer` ?
   [[nodiscard]] std::vector<SymbolTableEntry> symbols() const;
 };
 
