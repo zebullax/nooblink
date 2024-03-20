@@ -69,11 +69,16 @@ class SectionHeaderTableEntry {
   // Return size
   [[nodiscard]] uint64_t size() const;
 
-  // Return link index. This member holds a section header table index link, whose interpretation depends on the section
-  // type.
+  // Return link index.
+  // This member holds a section header table index link, whose interpretation depends on the section
+  // type. For DYNAMIC, SYMTAB and DYNSYM this points to a string table (section index) used by entries in that section.
+  // For HASH this points to the symbol table to which the hash table applies. For REL and RELA this points to the
+  // symbol table referenced by relocations
   [[nodiscard]] uint32_t link() const;
 
   // Return info
+  // For REL and RELA this is the section index of section to which relocations apply. For SYMTAB and DYNSYM it is the
+  // index of the first non-local symbols (= number of local symbols)
   [[nodiscard]] uint32_t info() const;
 
   // Return addrAlign

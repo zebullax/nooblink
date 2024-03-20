@@ -79,4 +79,4 @@ struct RawElfHeaderUtil {
 
 }  // namespace nooblink
 
-#endif  // NOOBLINK_HEADER_UTIL_H
+#endif  // NOOBLINK_RAW_ELF_HEADER_UTIL_H

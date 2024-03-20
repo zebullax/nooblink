@@ -34,7 +34,10 @@ class Context {
 
   // MANIPULATORS
 
+  // Load and return an object file from the specified 'path'
   ObjectFile* loadObjectFile(const std::filesystem::path& path);
+
+  // Return the object file that was previously loaded, using the specified 'path' as identifier
   ObjectFile* getObjectFile(const std::filesystem::path& path);
 
  private:

@@ -55,11 +55,9 @@ class SymbolTableEntry {
   [[nodiscard]] SymbolVisibility visibility() const;
 
   // Return the value of this symbol
-  // In relocatable files, this holds alignment constraints for a symbol whose section index is e_Common.
-  // In relocatable files, this holds a section offset for a defined symbol. st_value is an offset from the
-  // beginning of the section that sectionHeaderIndex identifies. In executable and shared object files, this holds a
-  // virtual address. To make these files' symbols more useful for the dynamic linker, the section offset (file
-  // interpretation) gives way to a virtual address (memory interpretation) for which the section number is irrelevant.
+  // In relocatable files, this field contains the alignment constraint for common symbols, and a section-relative
+  // offset for defined relocatable symbols.
+  // In executable and shared object files, this field contains a virtual address for defined relocatable symbols.
   [[nodiscard]] uint64_t value() const;
 
   // Return whether the symbol is undefined

@@ -1,6 +1,7 @@
 find_package(nlohmann_json 3.11.3 REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(GTest REQUIRED)
+find_package(Boost 1.62 COMPONENTS program_options REQUIRED)
 
 add_executable(nooblink main.cpp)
 target_include_directories(nooblink PUBLIC .)
@@ -14,7 +15,7 @@ add_subdirectory(session)
 add_subdirectory(utility)
 
 
-target_link_libraries(nooblink PRIVATE nlohmann_json::nlohmann_json spdlog::spdlog )
+target_link_libraries(nooblink PRIVATE nlohmann_json::nlohmann_json spdlog::spdlog Boost::program_options)
 target_link_libraries(nooblink_test PRIVATE nlohmann_json::nlohmann_json spdlog::spdlog GTest::gtest GTest::gtest_main)
 
 include(GoogleTest)

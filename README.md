@@ -8,18 +8,20 @@ ELF Low endian 64 bits
 ## Dev steps ☕
 - ~~Decode header, sections & symbols~~
 - ~~Display symbols defined and undefined~~ 
+- ~~Handle multiple object files~~ 
 - 👉 Display relocation info 
-- Handle multiple object files 
 - Describe layout of the result file 
 - Resolve symbol references
 - Relocate entries
 
 ## Todo 📝
-~~- (WIP) Introduce an object file type to wrap over vocabulary types as they get vivifed from decoding the header~~
-- Write a `Context` component that keep state of current linking session, this should be passed around or installed, so that client can find out what offset to apply to object files for example...
+- ~~(WIP) Introduce an object file type to wrap over vocabulary types as they get vivifed from decoding the header~~
+- ~~Write a `Context` component that keep state of current linking session, this should be passed around or installed, so that client can find out what offset to apply to object files for example...~~
+- `ObjectFile` should rely on an `AddressLoader` facility that knows how to fix address based on whether they need offset correction or not
+- Y no UT ?
+- Lot of redundant identical objects in `ObjectFile`, the containers should hold shared ptr instead
 
 ## Bug 🐛
-- Symbol name `.init` isn't found (vs`readelf -s`)
 
 ## Timeline ⌛
 - 02/25 - Fix interpretation of section index in symbols, confirm (eyeball) vs readelf
@@ -154,6 +156,14 @@ ELF Low endian 64 bits
   Found 'Strtab' entry at: 0x1089fe6d8
   Found 'Strtab' entry at: 0x1089fec18
   ````
+## Note
+### PLT (Procedure Linkage Table)
+There is no PLT in .O files as this is created by the linker. If an object file needs PLT , it will create a special relocation entries, which the linker will use to populate the PLT.
+*What does it do , when do you need it , draw me a PLT , what uses it*
+
+### GOT (Global Offset Table)
+There is no GOT in .O files as this is created by the linker. Usually the address is held in a register for efficient access.
+
 
 ## Reference
 1. https://refspecs.linuxbase.org/elf/elf.pdf

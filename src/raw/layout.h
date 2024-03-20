@@ -16,7 +16,7 @@
 namespace nooblink {
 
 struct Layout {
-  // Describe offset of fields
+  // Describe offset (bytes) of fields for various raw structure
   struct FieldOffset {
     // Offset of each fields from file start
     struct Header {
@@ -65,8 +65,22 @@ struct Layout {
       static constexpr size_t k_Value = 0x08;
       static constexpr size_t k_Size = 0x10;
     };
-  };  // Describe size (bytes) of fields
 
+    // Offset of fields in a relocation entry
+    struct RelocationEntry {
+      static constexpr size_t k_Offset = 0x00;
+      static constexpr size_t k_Info = 0x08;
+    };
+
+    // Offset of fields in a relocation entry
+    struct RelocationEntryWithAddend {
+      static constexpr size_t k_Offset = 0x00;
+      static constexpr size_t k_Info = 0x08;
+      static constexpr size_t k_Addend = 0x16;
+    };
+  };
+
+  // Describe size (bytes) of fields in various raw structures
   struct FieldLength {
     struct Header {
       static constexpr size_t k_Ident = 4;
@@ -112,6 +126,17 @@ struct Layout {
       static constexpr size_t k_Shndx = 0x02;
       static constexpr size_t k_Value = 0x08;
       static constexpr size_t k_Size = 0x08;
+    };
+
+    struct RelocationEntry {
+      static constexpr size_t k_Offset = 0x08;
+      static constexpr size_t k_Info = 0x08;
+    };
+
+    struct RelocationEntryWithAddend {
+      static constexpr size_t k_Offset = 0x08;
+      static constexpr size_t k_Info = 0x08;
+      static constexpr size_t k_Addend = 0x08;
     };
   };
 };
