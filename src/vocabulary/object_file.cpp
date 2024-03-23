@@ -128,24 +128,26 @@ void ObjectFile::loadRelocationEntries() {
     std::advance(relocationStart, d_offsetBegin);
     // For rel sections, info() will point to the section where the relocations apply, link() point to the
     // symbol section containing the symbol the relocation applies to
-    const bool hasAppend = header.type() == SectionType::e_Rela;
+    const bool hasAddend = header.type() == SectionType::e_Rela;
     size_t nbSymbolEntries =
-        header.size() / (hasAppend ? RawRelocationEntryWithAddend ::extent : RawRelocationEntry::extent);
+        header.size() / (hasAddend ? RawRelocationEntryWithAddend ::extent : RawRelocationEntry::extent);
     size_t relocatedSectionIndex = header.info();
     size_t symbolSectionIndex = header.link();
     d_relocationsEntries[relocatedSectionIndex] = {};
     for (size_t i = 0; i != nbSymbolEntries; ++i) {
-      if (hasAppend) {
+      if (hasAddend) {
         RawRelocationEntry rawEntry(relocationStart, RawRelocationEntry::extent);
         uint64_t symbolIndex = RawRelocationEntryUtil::offset(rawEntry);
         RelocationEntry entry{symbolIndex, RawRelocationEntryUtil::info(rawEntry)};
         d_relocationsEntries[relocatedSectionIndex].push_back(std::move(entry));
+        relocationStart += RawRelocationEntryWithAddend ::extent;
       } else {
         RawRelocationEntryWithAddend rawEntry(relocationStart, RawRelocationEntryWithAddend ::extent);
         uint64_t symbolIndex = RawRelocationEntryUtil::offset(rawEntry);
         RelocationEntryWithAddend entry{symbolIndex, RawRelocationEntryUtil::info(rawEntry),
                                         RawRelocationEntryUtil::addend(rawEntry)};
         d_relocationsEntries[relocatedSectionIndex].push_back(std::move(entry));
+        relocationStart += RawRelocationEntry ::extent;
       }
     }
   }

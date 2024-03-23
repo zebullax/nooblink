@@ -12,11 +12,6 @@
 // std
 #include <cstdlib>
 #include <filesystem>
-#include <string>
-// C
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <unistd.h>
 
 namespace nooblink {
 

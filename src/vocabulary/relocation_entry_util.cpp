@@ -8,10 +8,14 @@
 // std
 #include <bit>
 
+#include "raw/header_constants.h"
+
 namespace nooblink {
 
 size_t RelocationEntryUtil::symbolIndex(uint64_t infoField) { return std::bit_cast<int64_t>(infoField) >> 32; }
 
-size_t RelocationEntryUtil::type(uint64_t infoField) { return std::bit_cast<int64_t>(infoField) & (0xffff); }
+RelocationType RelocationEntryUtil::type(uint64_t infoField) {
+  return static_cast<RelocationType>((infoField) & (0xffff));
+}
 
 }  // namespace nooblink

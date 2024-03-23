@@ -11,7 +11,6 @@
 
 // std
 #include <cstddef>
-#include <span>
 
 namespace nooblink {
 

@@ -6,7 +6,7 @@
 
 #include <raw/raw_symbol_table_entry_util.h>
 // nooblink
-#include <raw/byte_util.h>
+#include <utility/byte_util.h>
 
 namespace nooblink {
 

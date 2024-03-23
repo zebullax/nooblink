@@ -11,7 +11,6 @@
 // json
 #include <nlohmann/json.hpp>
 // std
-#include <sstream>
 #include <utility>
 
 namespace nooblink {

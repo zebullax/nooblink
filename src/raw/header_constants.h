@@ -619,7 +619,91 @@ enum class SymbolVisibility : uint8_t {
 };
 std::ostream &operator<<(std::ostream &os, const SymbolVisibility &symbolVisibility);
 
+enum class RelocationType : uint64_t {
+  // Relocation types on X86_64
+  R_X86_64_NONE = 0,       // No relocation.
+  R_X86_64_64 = 1,         // Add 64 bit symbol value.
+  R_X86_64_PC32 = 2,       // PC-relative 32 bit signed sym value.
+  R_X86_64_GOT32 = 3,      // PC-relative 32 bit GOT offset.
+  R_X86_64_PLT32 = 4,      // PC-relative 32 bit PLT offset.
+  R_X86_64_COPY = 5,       // Copy data from shared object.
+  R_X86_64_GLOB_DAT = 6,   // Set GOT entry to data address.
+  R_X86_64_JMP_SLOT = 7,   // Set GOT entry to code address.
+  R_X86_64_RELATIVE = 8,   // Add load address of shared object.
+  R_X86_64_GOTPCREL = 9,   // Add 32 bit signed pcrel offset to GOT.
+  R_X86_64_32 = 10,        // Add 32 bit zero extended symbol value
+  R_X86_64_32S = 11,       // Add 32 bit sign extended symbol value
+  R_X86_64_16 = 12,        // Add 16 bit zero extended symbol value
+  R_X86_64_PC16 = 13,      // Add 16 bit signed extended pc relative symbol value
+  R_X86_64_8 = 14,         // Add 8 bit zero extended symbol value
+  R_X86_64_PC8 = 15,       // Add 8 bit signed extended pc relative symbol value
+  R_X86_64_DTPMOD64 = 16,  // ID of module containing symbol
+  R_X86_64_DTPOFF64 = 17,  // Offset in TLS block
+  R_X86_64_TPOFF64 = 18,   // Offset in static TLS block
+  R_X86_64_TLSGD = 19,     // PC relative offset to GD GOT entry
+  R_X86_64_TLSLD = 20,     // PC relative offset to LD GOT entry
+  R_X86_64_DTPOFF32 = 21,  // Offset in TLS block
+  R_X86_64_GOTTPOFF = 22,  // PC relative offset to IE GOT entry
+  R_X86_64_TPOFF32 = 23,   // Offset in static TLS block
+};
+std::ostream &operator<<(std::ostream &os, const RelocationType &relocationType);
+
 }  // namespace nooblink
+
+inline std::ostream &nooblink::operator<<(std::ostream &os, const RelocationType &relocationType) {
+  switch (relocationType) {
+    case RelocationType::R_X86_64_NONE:
+      return os << "R_X86_64_NONE";
+    case RelocationType::R_X86_64_64:
+      return os << "R_X86_64_64";
+    case RelocationType::R_X86_64_PC32:
+      return os << "R_X86_64_PC32";
+    case RelocationType::R_X86_64_GOT32:
+      return os << "R_X86_64_GOT32";
+    case RelocationType::R_X86_64_PLT32:
+      return os << "R_X86_64_PLT32";
+    case RelocationType::R_X86_64_COPY:
+      return os << "R_X86_64_COPY";
+    case RelocationType::R_X86_64_GLOB_DAT:
+      return os << "R_X86_64_GLOB_DAT";
+    case RelocationType::R_X86_64_JMP_SLOT:
+      return os << "R_X86_64_JMP_SLOT";
+    case RelocationType::R_X86_64_RELATIVE:
+      return os << "R_X86_64_RELATIVE";
+    case RelocationType::R_X86_64_GOTPCREL:
+      return os << "R_X86_64_GOTPCREL";
+    case RelocationType::R_X86_64_32:
+      return os << "R_X86_64_32";
+    case RelocationType::R_X86_64_32S:
+      return os << "R_X86_64_32S";
+    case RelocationType::R_X86_64_16:
+      return os << "R_X86_64_16";
+    case RelocationType::R_X86_64_PC16:
+      return os << "R_X86_64_PC16";
+    case RelocationType::R_X86_64_8:
+      return os << "R_X86_64_8";
+    case RelocationType::R_X86_64_PC8:
+      return os << "R_X86_64_PC8";
+    case RelocationType::R_X86_64_DTPMOD64:
+      return os << "R_X86_64_DTPMOD64";
+    case RelocationType::R_X86_64_DTPOFF64:
+      return os << "R_X86_64_DTPOFF64";
+    case RelocationType::R_X86_64_TPOFF64:
+      return os << "R_X86_64_TPOFF64";
+    case RelocationType::R_X86_64_TLSGD:
+      return os << "R_X86_64_TLSGD";
+    case RelocationType::R_X86_64_TLSLD:
+      return os << "R_X86_64_TLSLD";
+    case RelocationType::R_X86_64_DTPOFF32:
+      return os << "R_X86_64_DTPOFF32";
+    case RelocationType::R_X86_64_GOTTPOFF:
+      return os << "R_X86_64_GOTTPOFF";
+    case RelocationType::R_X86_64_TPOFF32:
+      return os << "R_X86_64_TPOFF32";
+    default:
+      return os << "Unknown";
+  }
+}
 
 inline std::ostream &nooblink::operator<<(std::ostream &os, const AddressClass &addressClass) {
   switch (addressClass) {

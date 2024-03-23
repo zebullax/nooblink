@@ -9,6 +9,8 @@
 #ifndef NOOBLINK_RELOCATION_ENTRY_UTIL_H
 #define NOOBLINK_RELOCATION_ENTRY_UTIL_H
 
+// nooblink
+#include <raw/header_constants.h>
 // std
 #include <cstddef>
 #include <cstdint>
@@ -20,7 +22,8 @@ struct RelocationEntryUtil {
   static size_t symbolIndex(uint64_t infoField);
 
   // Decode and return the relocation type as found in the specified 'infoField'
-  static size_t type(uint64_t infoField);
+  // The behavior is undefined if the relocation type is not supported on x86_64
+  static RelocationType type(uint64_t infoField);
 };
 
 }  // namespace nooblink

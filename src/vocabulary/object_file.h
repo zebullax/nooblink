@@ -11,7 +11,7 @@
 #define NOOBLINK_OBJECT_FILE_H
 
 // nooblink
-#include <raw/byte_util.h>
+#include <utility/byte_util.h>
 #include <vocabulary/elf_header.h>
 #include <vocabulary/relocation_entry.h>
 #include <vocabulary/section_header_table_entry.h>

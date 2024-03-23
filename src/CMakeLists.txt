@@ -15,6 +15,7 @@ add_subdirectory(io)
 add_subdirectory(raw)
 add_subdirectory(vocabulary)
 add_subdirectory(session)
+add_subdirectory(storage)
 add_subdirectory(utility)
 
 target_link_libraries(nooblink 

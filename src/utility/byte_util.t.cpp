@@ -4,7 +4,7 @@
 // Project: nooblink
 //
 
-#include <raw/byte_util.h>
+#include <utility/byte_util.h>
 // std
 #include <span>
 // gtest

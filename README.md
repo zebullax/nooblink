@@ -14,6 +14,29 @@ ELF Low endian 64 bits
 - Resolve symbol references
 - Relocate entries
 
+## Components logical layering
+```mermaid
+graph TD;
+    subgraph level3
+        session
+    end
+    subgraph level2
+        vocabulary
+    end
+    subgraph level1
+        raw
+    end
+    subgraph level0
+        io
+        utility
+    end
+    raw-->utility
+    vocabulary-->raw
+    vocabulary-->utility
+    session-->io
+    session-->vocabulary
+```
+
 ## Todo 📝
 - ~~(WIP) Introduce an object file type to wrap over vocabulary types as they get vivifed from decoding the header~~
 - ~~Write a `Context` component that keep state of current linking session, this should be passed around or installed, so that client can find out what offset to apply to object files for example...~~
@@ -163,7 +186,6 @@ There is no PLT in .O files as this is created by the linker. If an object file 
 
 ### GOT (Global Offset Table)
 There is no GOT in .O files as this is created by the linker. Usually the address is held in a register for efficient access.
-
 
 ## Reference
 1. https://refspecs.linuxbase.org/elf/elf.pdf
