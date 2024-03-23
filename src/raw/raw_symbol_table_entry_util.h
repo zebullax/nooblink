@@ -11,6 +11,8 @@
 
 // nooblink
 #include <raw/raw_symbol_table_entry.h>
+// std
+#include <cstdint>
 
 namespace nooblink {
 

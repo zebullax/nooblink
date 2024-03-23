@@ -1080,7 +1080,7 @@ inline std::ostream &nooblink::operator<<(std::ostream &os, const SpecialSection
     case SpecialSectionIndex::e_Common:
       return os << "Common";
     default:
-      break;
+      return os << "Unknown";
   }
 }
 

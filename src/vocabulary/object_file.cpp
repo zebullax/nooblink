@@ -139,15 +139,13 @@ void ObjectFile::loadRelocationEntries() {
         RawRelocationEntry rawEntry(relocationStart, RawRelocationEntry::extent);
         uint64_t symbolIndex = RawRelocationEntryUtil::offset(rawEntry);
         RelocationEntry entry{symbolIndex, RawRelocationEntryUtil::info(rawEntry)};
-        d_relocationsEntries[relocatedSectionIndex].emplace_back(d_symbolTableEntries[symbolSectionIndex][symbolIndex],
-                                                                 entry);
+        d_relocationsEntries[relocatedSectionIndex].push_back(std::move(entry));
       } else {
         RawRelocationEntryWithAddend rawEntry(relocationStart, RawRelocationEntryWithAddend ::extent);
         uint64_t symbolIndex = RawRelocationEntryUtil::offset(rawEntry);
         RelocationEntryWithAddend entry{symbolIndex, RawRelocationEntryUtil::info(rawEntry),
                                         RawRelocationEntryUtil::addend(rawEntry)};
-        d_relocationsEntries[relocatedSectionIndex].emplace_back(d_symbolTableEntries[symbolSectionIndex][symbolIndex],
-                                                                 entry);
+        d_relocationsEntries[relocatedSectionIndex].push_back(std::move(entry));
       }
     }
   }
@@ -197,19 +195,22 @@ nlohmann::json ObjectFile::json() const {
   }
   objFileJson["symbols"] = decodedSymbolTableEntries;
 
-  json relocEntriesPerSectionJson;
-  for (auto&& relocEntries : d_relocationsEntries) {
+  std::vector<json> relEntriesPerSectionsJson;
+  for (auto&& relEntries : d_relocationsEntries) {
     std::vector<nlohmann::json> decodedRelocations;
-    std::transform(relocEntries.second.begin(), relocEntries.second.end(), std::back_inserter(decodedRelocations),
-                   [this](auto e) {
+    std::transform(relEntries.second.begin(), relEntries.second.end(), std::back_inserter(decodedRelocations),
+                   [](auto e) {
                      json k;
-                     k["symbol"] = std::get<0>(e).json();
-                     std::visit([&k](auto e) { k["relocationEntry"] = e.json(); }, std::get<1>(e));
+                     std::visit([&k](auto e) { k["relocation"] = e.json(); }, e);
                      return k;
                    });
-    relocEntriesPerSectionJson[std::to_string(relocEntries.first)] = decodedRelocations;
+    nlohmann::json entry;
+    entry["section"] = relEntries.first;
+    entry["relocationEntries"] = decodedRelocations;
+    relEntriesPerSectionsJson.push_back(std::move(entry));
   }
-  objFileJson["relocations"] = relocEntriesPerSectionJson;
+  objFileJson["relocations"] = relEntriesPerSectionsJson;
+
   return objFileJson;
 }
 

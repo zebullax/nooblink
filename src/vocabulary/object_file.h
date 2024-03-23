@@ -51,11 +51,11 @@ class ObjectFile {
   // strings table via the 'link' attribute; The section index should point to a 'DynSym' or 'SymTab' section header
   using IndexedSymbolTable = std::unordered_map<SectionIndex, std::vector<SymbolTableEntry>>;
 
-  // Alias over a bundle containing a relocation entry and the symbol it refers to
-  using SymbolRelocationEntry = std::tuple<SymbolTableEntry, std::variant<RelocationEntry, RelocationEntryWithAddend>>;
+  // Alias over both kind of possible relocation entry
+  using AnyRelocationEntry = std::variant<RelocationEntry, RelocationEntryWithAddend>;
 
   // Alias over a lookup table from section index to relocation entries related to this section
-  using IndexedRelocationEntries = std::unordered_map<SectionIndex, std::vector<SymbolRelocationEntry>>;
+  using IndexedRelocationEntries = std::unordered_map<SectionIndex, std::vector<AnyRelocationEntry>>;
 
  private:
   //  PRIVATE TYPES
@@ -94,7 +94,6 @@ class ObjectFile {
   void loadSymbolTable();
 
   // Load all relocation entries
-  // The behavior is undefined if the symbols table has not been loaded first
   void loadRelocationEntries();
 
   // Extract from the string table the string pointed to by the specified 'stringIndex' and return a view over it.  The
