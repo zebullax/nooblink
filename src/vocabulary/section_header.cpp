@@ -1,10 +1,10 @@
 // -*-C++-*-
 //
-// File: section_header_table_entry.cpp
+// File: section_header.cpp
 // Project: nooblink
 //
 
-#include <vocabulary/section_header_table_entry.h>
+#include <vocabulary/section_header.h>
 // nooblink
 #include <raw/raw_section_header_util.h>
 #include <utility/conversion.h>
@@ -15,8 +15,8 @@
 
 namespace nooblink {
 namespace {
-SectionHeaderTableEntry::Flags decodeSectionFlags(uint64_t rawFlags) {
-  return SectionHeaderTableEntry::Flags{
+SectionHeader::Flags decodeSectionFlags(uint64_t rawFlags) {
+  return SectionHeader::Flags{
       (rawFlags & std::to_underlying(SectionFlag::e_Write)) == std::to_underlying(SectionFlag::e_Write),
       (rawFlags & std::to_underlying(SectionFlag::e_Alloc)) == std::to_underlying(SectionFlag::e_Alloc),
       (rawFlags & std::to_underlying(SectionFlag::e_Execinstr)) == std::to_underlying(SectionFlag::e_Execinstr),
@@ -35,27 +35,27 @@ SectionHeaderTableEntry::Flags decodeSectionFlags(uint64_t rawFlags) {
 
 }  // namespace
 
-uint32_t SectionHeaderTableEntry::nameIndex() const { return d_nameIndex; }
+uint32_t SectionHeader::nameIndex() const { return d_nameIndex; }
 
-SectionType SectionHeaderTableEntry::type() const { return d_type; }
+SectionType SectionHeader::type() const { return d_type; }
 
-SectionHeaderTableEntry::Flags SectionHeaderTableEntry::flags() const { return d_flags; }
+SectionHeader::Flags SectionHeader::flags() const { return d_flags; }
 
-uint64_t SectionHeaderTableEntry::addr() const { return d_addr; }
+uint64_t SectionHeader::addr() const { return d_addr; }
 
-std::byte* SectionHeaderTableEntry::offset() const { return reinterpret_cast<std::byte*>(d_offset); }
+std::byte* SectionHeader::offset() const { return reinterpret_cast<std::byte*>(d_offset); }
 
-uint64_t SectionHeaderTableEntry::size() const { return d_size; }
+uint64_t SectionHeader::size() const { return d_size; }
 
-uint32_t SectionHeaderTableEntry::link() const { return d_link; }
+uint32_t SectionHeader::link() const { return d_link; }
 
-uint32_t SectionHeaderTableEntry::info() const { return d_info; }
+uint32_t SectionHeader::info() const { return d_info; }
 
-uint64_t SectionHeaderTableEntry::addrAlign() const { return d_addrAlign; }
+uint64_t SectionHeader::addrAlign() const { return d_addrAlign; }
 
-uint64_t SectionHeaderTableEntry::entrySize() const { return d_entrySize; }
+uint64_t SectionHeader::entrySize() const { return d_entrySize; }
 
-SectionHeaderTableEntry::SectionHeaderTableEntry(const RawSectionHeader& rawSectionHeader)
+SectionHeader::SectionHeader(const RawSectionHeader& rawSectionHeader)
     : d_nameIndex{RawSectionHeaderUtil::nameIndex(rawSectionHeader)},
       d_type{RawSectionHeaderUtil::type(rawSectionHeader)},
       d_flags{decodeSectionFlags(RawSectionHeaderUtil::flags(rawSectionHeader))},
@@ -67,7 +67,7 @@ SectionHeaderTableEntry::SectionHeaderTableEntry(const RawSectionHeader& rawSect
       d_addrAlign{RawSectionHeaderUtil::addrAlign(rawSectionHeader)},
       d_entrySize{RawSectionHeaderUtil::entrySize(rawSectionHeader)} {}
 
-nlohmann::json SectionHeaderTableEntry::json() const {
+nlohmann::json SectionHeader::json() const {
   using json = nlohmann::json;
 
   auto toVec = [](auto e) {
@@ -102,7 +102,7 @@ nlohmann::json SectionHeaderTableEntry::json() const {
   return j;
 }
 
-std::ostream& operator<<(std::ostream& os, const SectionHeaderTableEntry& sectionHeader) {
+std::ostream& operator<<(std::ostream& os, const SectionHeader& sectionHeader) {
   os << sectionHeader.json();
   return os;
 }

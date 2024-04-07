@@ -1,5 +1,5 @@
 TARGET_SOURCES(nooblink
-        PUBLIC section_header_table_entry.cpp
+        PUBLIC section_header.cpp
         PUBLIC elf_header.cpp
         PUBLIC relocation_entry.cpp
         PUBLIC relocation_entry_util.cpp

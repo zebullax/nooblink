@@ -7,23 +7,24 @@
 // ELF object file
 //
 
-#ifndef NOOBLINK_OBJECT_FILE_H
-#define NOOBLINK_OBJECT_FILE_H
+#ifndef NOOBLINK_VOCABULARY_OBJECT_FILE_H
+#define NOOBLINK_VOCABULARY_OBJECT_FILE_H
 
 // nooblink
 #include <utility/byte_util.h>
+#include <utility/string_table.h>
 #include <vocabulary/elf_header.h>
 #include <vocabulary/relocation_entry.h>
-#include <vocabulary/section_header_table_entry.h>
+#include <vocabulary/section_header.h>
 #include <vocabulary/symbol_table_entry.h>
 // nlohmann
 #include <nlohmann/json.hpp>
 // std
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <ostream>
 #include <string_view>
-#include <tuple>
 #include <unordered_map>
 #include <variant>
 #include <vector>
@@ -44,25 +45,21 @@ class ObjectFile {
   };
 
   // Alias over section index as found in object file natural order
-  using SectionIndex = size_t;
+  using SectionIndex = uint32_t;
 
   // Alias over a section index and the sequence of related symbol table entries. The order of symbols for a given
   // section index is left as per the original object file. The section index is critical to be able to reach the
   // strings table via the 'link' attribute; The section index should point to a 'DynSym' or 'SymTab' section header
-  using IndexedSymbolTable = std::unordered_map<SectionIndex, std::vector<SymbolTableEntry>>;
+  using IndexedSymbols = std::unordered_map<SectionIndex, std::vector<SymbolTableEntry>>;
 
   // Alias over both kind of possible relocation entry
   using AnyRelocationEntry = std::variant<RelocationEntry, RelocationEntryWithAddend>;
 
   // Alias over a lookup table from section index to relocation entries related to this section
-  using IndexedRelocationEntries = std::unordered_map<SectionIndex, std::vector<AnyRelocationEntry>>;
+  // {2: [rel1, rel2]} mean that 'rel1' and 'rel2' are relocations taking place in section 2
+  using IndexedRelocations = std::unordered_map<SectionIndex, std::vector<AnyRelocationEntry>>;
 
  private:
-  //  PRIVATE TYPES
-
-  // Alias over a section header and its natural index in the object file
-  using SectionHeaderWithIndex = std::tuple<SectionIndex, SectionHeaderTableEntry>;
-
   // FRIENDS
 
   // Output to the specified 'os' a JSON representation of this object, return the stream
@@ -77,10 +74,11 @@ class ObjectFile {
   std::byte* d_begin;      // Starting address for the loaded objectFile
   uint64_t d_offsetBegin;  // Numeric offset corresponding to `d_begin` for convenience
   std::unique_ptr<ElfHeader> d_elfHeader;
-  std::vector<SectionHeaderWithIndex> d_sectionHeaders;
-  IndexedRelocationEntries d_relocationsEntries;
-  IndexedSymbolTable d_symbolTableEntries;
-  size_t d_strTabSectionIndex;
+  std::unordered_map<SectionIndex, SectionHeader> d_sectionHeaders;
+  IndexedRelocations d_relocationsEntries;
+  IndexedSymbols d_symbolEntries;
+  SectionIndex d_strTabSectionIndex;
+  StringTable d_names;
 
   // MANIPULATORS
 
@@ -96,9 +94,8 @@ class ObjectFile {
   // Load all relocation entries
   void loadRelocationEntries();
 
-  // Extract from the string table the string pointed to by the specified 'stringIndex' and return a view over it.  The
-  // section containing the string table is given by the specified 'sectionHeaderIndex'
-  [[nodiscard]] std::string_view extractStringFromTable(size_t sectionHeaderIndex, size_t stringIndex) const;
+  // Load all names for section and symbols
+  void loadNames();
 
  public:
   // CREATORS
@@ -121,12 +118,12 @@ class ObjectFile {
   [[nodiscard]] nlohmann::json json() const;
 
   // Return all symbols referenced or defined in this object file, indexed by their related section index
-  [[nodiscard]] const IndexedSymbolTable& symbols() const;
+  [[nodiscard]] const IndexedSymbols& symbols() const;
 
   // Return all relocation entries, indexed by their related section index
-  [[nodiscard]] const IndexedRelocationEntries& relocations() const;
+  [[nodiscard]] const IndexedRelocations& relocations() const;
 };
 
 }  // namespace nooblink
 
-#endif  // NOOBLINK_OBJECT_FILE_H
+#endif  // NOOBLINK_VOCABULARY_OBJECT_FILE_H

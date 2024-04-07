@@ -187,6 +187,9 @@ There is no PLT in .O files as this is created by the linker. If an object file 
 ### GOT (Global Offset Table)
 There is no GOT in .O files as this is created by the linker. Usually the address is held in a register for efficient access.
 
+### Strings
+Two fundamental entities require names in an object file: sections, and symbols. For symbols, the symbol (SymTab, DynSym) section header point to the strings table via the link field.  For sections, the object file directly point to the string table via the section header string index field
+
 ## Reference
 1. https://refspecs.linuxbase.org/elf/elf.pdf
 2. https://www.sco.com/developers/gabi/2000-07-17/contents.html

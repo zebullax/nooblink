@@ -6,8 +6,8 @@
 // Description: This component provides utility dedicated to relocation entry
 //
 
-#ifndef NOOBLINK_RELOCATION_ENTRY_UTIL_H
-#define NOOBLINK_RELOCATION_ENTRY_UTIL_H
+#ifndef NOOBLINK_VOCABULARY_RELOCATION_ENTRY_UTIL_H
+#define NOOBLINK_VOCABULARY_RELOCATION_ENTRY_UTIL_H
 
 // nooblink
 #include <raw/header_constants.h>
@@ -28,4 +28,4 @@ struct RelocationEntryUtil {
 
 }  // namespace nooblink
 
-#endif  // NOOBLINK_RELOCATION_ENTRY_UTIL_H
+#endif  // NOOBLINK_VOCABULARY_RELOCATION_ENTRY_UTIL_H

@@ -1,7 +1,8 @@
 TARGET_SOURCES(nooblink
     PUBLIC conversion.cpp
     PUBLIC byte_util.cpp
+    PUBLIC string_table.cpp
 )
 
 TARGET_SOURCES(nooblink_test
-        PRIVATE byte_util.t.cpp)
+        PUBLIC byte_util.t.cpp)

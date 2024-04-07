@@ -12,7 +12,7 @@
 #include <utility/conversion.h>
 #include <vocabulary/relocation_entry.h>
 #include <vocabulary/relocation_entry_util.h>
-#include <vocabulary/section_header_table_entry.h>
+#include <vocabulary/section_header.h>
 #include <vocabulary/symbol_table_entry.h>
 // spdlog
 #include <spdlog/spdlog.h>
@@ -24,6 +24,7 @@
 #include <memory>
 #include <ranges>
 #include <string>
+#include <string_view>
 
 namespace nooblink {
 namespace {
@@ -34,11 +35,10 @@ constexpr const size_t k_ElfHeaderLength = RawElfHeader::extent;
 
 // Utility to filter the specified 'sections' indexed section header on specified 'sectionTypes' section types
 auto filteredSections(std::ranges::range auto&& sections, std::same_as<SectionType> auto&&... sectionTypes) {
-  return sections |
-         std::views::filter(
-             [sectionTypes...](const std::tuple<ObjectFile::SectionIndex, SectionHeaderTableEntry>& sectionHeader) {
-               return ((std::get<1>(sectionHeader).type() == sectionTypes) || ...);
-             });
+  return sections | std::views::filter(
+                        [sectionTypes...](const std::tuple<ObjectFile::SectionIndex, SectionHeader>& sectionHeader) {
+                          return ((std::get<1>(sectionHeader).type() == sectionTypes) || ...);
+                        });
 }
 
 }  // namespace
@@ -49,8 +49,9 @@ ObjectFile::ObjectFile()
       d_offsetBegin{},
       d_elfHeader{},
       d_sectionHeaders{},
-      d_symbolTableEntries{},
-      d_strTabSectionIndex{} {}
+      d_symbolEntries{},
+      d_strTabSectionIndex{},
+      d_names{} {}
 
 ObjectFile::State ObjectFile::load(std::byte* begin) {
   try {
@@ -60,6 +61,7 @@ ObjectFile::State ObjectFile::load(std::byte* begin) {
     loadSectionTable();
     loadSymbolTable();
     loadRelocationEntries();
+    loadNames();
     d_currentState = State::e_Loaded;
   } catch (const std::exception& e) {
     spdlog::error("Error while loading the object file: "s + e.what());
@@ -84,7 +86,7 @@ void ObjectFile::loadSectionTable() {
 
   for (size_t i = 0; i != nbSectionHeaders; ++i) {
     RawSectionHeader sectionTableEntry(entryPtr, RawSectionHeader::extent);
-    d_sectionHeaders.emplace_back(i, sectionTableEntry);
+    d_sectionHeaders.emplace(i, sectionTableEntry);
     entryPtr += sectionHeaderSize;
   }
 
@@ -92,16 +94,16 @@ void ObjectFile::loadSectionTable() {
     spdlog::error("No sections found in the object file");
     return;
   }
+
   // ELF header has the index for the section header name string, stash that index
   if ((d_strTabSectionIndex = d_elfHeader->sectionNameIndex()) >= 0xff00) {
-    d_strTabSectionIndex = std::get<1>(d_sectionHeaders[0]).link();
+    d_strTabSectionIndex = d_sectionHeaders.begin()->second.link();
   }
 }
 
 void ObjectFile::loadSymbolTable() {
   // Filter in Symbol sections
-  for (const SectionHeaderWithIndex& sectionHeader :
-       filteredSections(d_sectionHeaders, SectionType::e_Symtab, SectionType::e_Dynsym)) {
+  for (const auto& sectionHeader : filteredSections(d_sectionHeaders, SectionType::e_Symtab, SectionType::e_Dynsym)) {
     const auto& [index, header] = sectionHeader;
 
     size_t nbSymbolEntries = header.size() / RawSymbolTableEntry::extent;
@@ -114,16 +116,37 @@ void ObjectFile::loadSymbolTable() {
       symbols.emplace_back(rawSymbolTableEntry);
       symbolStart += RawSymbolTableEntry::extent;
     }
-    d_symbolTableEntries.emplace(index, std::move(symbols));
+    d_symbolEntries.emplace(index, std::move(symbols));
+  }
+}
+
+void ObjectFile::loadNames() {
+  auto storeFromSectionIdx = [this](size_t idx) {
+    if (auto iter = d_sectionHeaders.find(idx); iter != d_sectionHeaders.end()) {
+      const auto& sectionHeader = iter->second;
+      size_t sectionSize = sectionHeader.size();
+      auto* sectionStart = reinterpret_cast<char*>(iter->second.offset());
+      std::advance(sectionStart, d_offsetBegin);
+      d_names.storeSection(idx, std::string_view(sectionStart, sectionSize));
+    }
+  };
+
+  // Stash section names
+  storeFromSectionIdx(d_strTabSectionIndex);
+
+  // Stash symbols
+  // For section 'symtab' and 'dynsym' the link field point to the section that contains the strings
+  for (const auto& sectionHeader : filteredSections(d_sectionHeaders, SectionType::e_Symtab, SectionType::e_Dynsym)) {
+    const auto& [sectionIndex, header] = sectionHeader;
+    storeFromSectionIdx(header.link());
   }
 }
 
 void ObjectFile::loadRelocationEntries() {
   // FIXME This kinda clunkilicious...
 
-  for (const SectionHeaderWithIndex& sectionHeader :
-       filteredSections(d_sectionHeaders, SectionType::e_Rel, SectionType::e_Rela)) {
-    const auto& [index, header] = sectionHeader;
+  for (const auto& sectionHeader : filteredSections(d_sectionHeaders, SectionType::e_Rel, SectionType::e_Rela)) {
+    const auto& [sectionIndex, header] = sectionHeader;
     auto* relocationStart = reinterpret_cast<std::byte*>(header.offset());
     std::advance(relocationStart, d_offsetBegin);
     // For rel sections, info() will point to the section where the relocations apply, link() point to the
@@ -131,22 +154,22 @@ void ObjectFile::loadRelocationEntries() {
     const bool hasAddend = header.type() == SectionType::e_Rela;
     size_t nbSymbolEntries =
         header.size() / (hasAddend ? RawRelocationEntryWithAddend ::extent : RawRelocationEntry::extent);
-    size_t relocatedSectionIndex = header.info();
+    // size_t relocatedSectionIndex = header.info();
     size_t symbolSectionIndex = header.link();
-    d_relocationsEntries[relocatedSectionIndex] = {};
+    d_relocationsEntries[sectionIndex] = {};
     for (size_t i = 0; i != nbSymbolEntries; ++i) {
       if (hasAddend) {
         RawRelocationEntry rawEntry(relocationStart, RawRelocationEntry::extent);
         uint64_t symbolIndex = RawRelocationEntryUtil::offset(rawEntry);
         RelocationEntry entry{symbolIndex, RawRelocationEntryUtil::info(rawEntry)};
-        d_relocationsEntries[relocatedSectionIndex].push_back(std::move(entry));
+        d_relocationsEntries[sectionIndex].push_back(std::move(entry));
         relocationStart += RawRelocationEntryWithAddend ::extent;
       } else {
         RawRelocationEntryWithAddend rawEntry(relocationStart, RawRelocationEntryWithAddend ::extent);
         uint64_t symbolIndex = RawRelocationEntryUtil::offset(rawEntry);
         RelocationEntryWithAddend entry{symbolIndex, RawRelocationEntryUtil::info(rawEntry),
                                         RawRelocationEntryUtil::addend(rawEntry)};
-        d_relocationsEntries[relocatedSectionIndex].push_back(std::move(entry));
+        d_relocationsEntries[sectionIndex].push_back(std::move(entry));
         relocationStart += RawRelocationEntry ::extent;
       }
     }
@@ -154,17 +177,6 @@ void ObjectFile::loadRelocationEntries() {
 }
 
 ObjectFile::State ObjectFile::currentState() const { return d_currentState; }
-
-std::string_view ObjectFile::extractStringFromTable(size_t sectionHeaderIndex, size_t stringIndex) const {
-  const auto& [idx, strSectionHeader] = d_sectionHeaders[sectionHeaderIndex];
-  auto* stringStart = reinterpret_cast<char*>(strSectionHeader.offset());
-  std::advance(stringStart, d_offsetBegin);
-  std::advance(stringStart, stringIndex);
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "LocalValueEscapesScope"
-  return {stringStart};
-#pragma clang diagnostic pop
-}
 
 nlohmann::json ObjectFile::json() const {
   using json = nlohmann::json;
@@ -177,7 +189,8 @@ nlohmann::json ObjectFile::json() const {
   std::transform(d_sectionHeaders.begin(), d_sectionHeaders.end(), std::back_inserter(decodedSections), [this](auto e) {
     const auto& [index, section] = e;
     json k;
-    k["name"] = extractStringFromTable(d_strTabSectionIndex, section.nameIndex());
+    k["index"] = index;
+    k["name"] = d_names.get(d_strTabSectionIndex, section.nameIndex());
     k["section"] = section.json();
     return k;
   });
@@ -185,27 +198,34 @@ nlohmann::json ObjectFile::json() const {
   objFileJson["sectionHeaders"] = decodedSections;
 
   std::vector<nlohmann::json> decodedSymbolTableEntries;
-  for (const auto& indexedSymbols : d_symbolTableEntries) {
+  for (const auto& indexedSymbols : d_symbolEntries) {
     const auto& [idx, symbols] = indexedSymbols;
-    std::transform(symbols.begin(), symbols.end(), std::back_inserter(decodedSymbolTableEntries), [this, idx](auto e) {
-      json k;
-      k["name"] = extractStringFromTable(std::get<1>(d_sectionHeaders[idx]).link(), e.nameIndex());
-      k["section"] = Conversion::toString(std::get<1>(d_sectionHeaders[idx]).type());
-      k["symbol"] = e.json();
-      return k;
-    });
+    if (auto iter = d_sectionHeaders.find(idx); iter != d_sectionHeaders.end()) {
+      std::transform(symbols.begin(), symbols.end(), std::back_inserter(decodedSymbolTableEntries),
+                     [this, iter](auto e) {
+                       json k;
+                       if (e.type() == SymbolType::e_Section) {
+                         if (auto sectionHeaderIter = d_sectionHeaders.find(e.sectionHeaderIndex());
+                             sectionHeaderIter != d_sectionHeaders.end()) {
+                           k["name"] = d_names.get(d_strTabSectionIndex, sectionHeaderIter->second.nameIndex());
+                         }
+                       } else {
+                         k["name"] = d_names.get(iter->second.link(), e.nameIndex());
+                       }
+                       k["section"] = Conversion::toString(iter->second.type());
+                       k["symbol"] = e.json();
+                       return k;
+                     });
+    }
   }
   objFileJson["symbols"] = decodedSymbolTableEntries;
 
   std::vector<json> relEntriesPerSectionsJson;
   for (auto&& relEntries : d_relocationsEntries) {
     std::vector<nlohmann::json> decodedRelocations;
-    std::transform(relEntries.second.begin(), relEntries.second.end(), std::back_inserter(decodedRelocations),
-                   [](auto e) {
-                     json k;
-                     std::visit([&k](auto e) { k["relocation"] = e.json(); }, e);
-                     return k;
-                   });
+    for (auto relEntry : relEntries.second) {
+      std::visit([&decodedRelocations](auto e) { decodedRelocations.push_back(e.json()); }, relEntry);
+    }
     nlohmann::json entry;
     entry["section"] = relEntries.first;
     entry["relocationEntries"] = decodedRelocations;
@@ -216,6 +236,6 @@ nlohmann::json ObjectFile::json() const {
   return objFileJson;
 }
 
-const ObjectFile::IndexedSymbolTable& ObjectFile::symbols() const { return d_symbolTableEntries; }
+const ObjectFile::IndexedSymbols& ObjectFile::symbols() const { return d_symbolEntries; }
 
 }  // namespace nooblink

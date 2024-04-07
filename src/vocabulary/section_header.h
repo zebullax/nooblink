@@ -1,13 +1,13 @@
 // -*-C++-*-
 //
-// File: section_header_table_entry.h
+// File: section_header.h
 // Project: nooblink
 //
 // Description: This component provides a vocabulary type to describe a section header
 //
 
-#ifndef NOOBLINK_SECTION_HEADER_TABLE_ENTRY_H
-#define NOOBLINK_SECTION_HEADER_TABLE_ENTRY_H
+#ifndef NOOBLINK_SECTION_HEADER_H
+#define NOOBLINK_SECTION_HEADER_H
 
 // nooblink
 #include <raw/header_constants.h>
@@ -22,7 +22,7 @@
 
 namespace nooblink {
 
-class SectionHeaderTableEntry {
+class SectionHeader {
  public:
   // TYPES
 
@@ -44,7 +44,7 @@ class SectionHeaderTableEntry {
   // CREATORS
 
   // Construct this object using the specified 'rawSectionHeader' to decode from
-  explicit SectionHeaderTableEntry(const RawSectionHeader& rawSectionHeader);
+  explicit SectionHeader(const RawSectionHeader& rawSectionHeader);
 
   // ACCESSORS
 
@@ -66,7 +66,7 @@ class SectionHeaderTableEntry {
   // the file.
   [[nodiscard]] std::byte* offset() const;
 
-  // Return size
+  // Return section header size in bytes
   [[nodiscard]] uint64_t size() const;
 
   // Return link index.
@@ -93,7 +93,7 @@ class SectionHeaderTableEntry {
  private:
   // FRIENDS
 
-  friend std::ostream& operator<<(std::ostream& os, const SectionHeaderTableEntry& sectionHeader);
+  friend std::ostream& operator<<(std::ostream& os, const SectionHeader& sectionHeader);
 
   // DATA
   uint32_t d_nameIndex;
@@ -110,4 +110,4 @@ class SectionHeaderTableEntry {
 
 }  // namespace nooblink
 
-#endif  // NOOBLINK_SECTION_HEADER_TABLE_ENTRY_H
+#endif  // NOOBLINK_SECTION_HEADER_H

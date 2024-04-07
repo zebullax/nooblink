@@ -129,4 +129,4 @@ class ElfHeader {
 };
 }  // namespace nooblink
 
-#endif
+#endif  // NOOBLINK_VOCABULARY_ELF_HEADER_H
