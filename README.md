@@ -47,6 +47,47 @@ graph TD;
 ## Bug 🐛
 
 ## Timeline ⌛
+- 04/07 - Fix symbol names
+For section type symbols, we have to (unless I'm wrong) go back to the section header definition using the `symbol.sectionHeaderIndex()`, then use classic way to get the name for that section... The string table linked to via `sh_link` from the `symtab` section header is useless for those.
+
+So the symbol
+```json
+{
+  "name": ".debug_str",
+  "section": "Symtab",
+  "symbol": {
+    "binding": "Local",
+    "nameIndex": 0,
+    "sectionHeaderIndex": 11,
+    "size": 0,
+    "type": "Section",
+    "value": "0x00000000",
+    "visibility": "Default"
+  }
+}
+```
+tracks back to
+```json
+{
+  "index": 11,
+  "name": ".debug_str",
+  "section": {
+    "addr": 0,
+    "addrAlign": 1,
+    "entrySize": 1,
+    "flags": [
+      "isMerge",
+      "isStrings"
+    ],
+    "info": 0,
+    "link": 0,
+    "nameIndex": 112,
+    "offset": 674,
+    "size": 101,
+    "type": "Progbits"
+  }
+}
+```
 - 02/25 - Fix interpretation of section index in symbols, confirm (eyeball) vs readelf
 ````txt
 {
