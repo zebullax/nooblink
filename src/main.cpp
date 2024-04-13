@@ -18,16 +18,21 @@
 namespace po = boost::program_options;
 int main(int argc, char** argv) {
   po::options_description cmdLineOptions("Command line options");
-  cmdLineOptions.add_options()("object-file,O", po::value<std::vector<std::string>>());
+  cmdLineOptions.add_options()("object-file,O", po::value<std::vector<std::string>>(), "Object files to link together")(
+      "verbose,V", "Print debug level messages");
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, cmdLineOptions), vm);
   po::notify(vm);
 
-  nooblink::Context context;
+  if (vm.count("verbose")) {
+    spdlog::set_level(spdlog::level::debug);
+  }
   if (!vm.count("object-file")) {
-    spdlog::info("At least one object file must be specified using -O / --object-file");
+    spdlog::error("At least one object file must be specified using -O / --object-file");
     return EXIT_FAILURE;
   }
+
+  nooblink::Context context;
   for (auto&& objFile : vm["object-file"].as<std::vector<std::string>>()) {
     nooblink::ObjectFile* objectFile = context.loadObjectFile(objFile);
     if (!objectFile || objectFile->currentState() != nooblink::ObjectFile::State::e_Loaded) {

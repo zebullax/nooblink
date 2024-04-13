@@ -143,7 +143,7 @@ void ObjectFile::loadNames() {
 }
 
 void ObjectFile::loadRelocationEntries() {
-  // FIXME This kinda clunkilicious...
+  using namespace std::string_literals;
 
   for (const auto& sectionHeader : filteredSections(d_sectionHeaders, SectionType::e_Rel, SectionType::e_Rela)) {
     const auto& [sectionIndex, header] = sectionHeader;
@@ -152,25 +152,24 @@ void ObjectFile::loadRelocationEntries() {
     // For rel sections, info() will point to the section where the relocations apply, link() point to the
     // symbol section containing the symbol the relocation applies to
     const bool hasAddend = header.type() == SectionType::e_Rela;
+    spdlog::debug("Found relocation entries in section "s + std::to_string(sectionIndex));
     size_t nbSymbolEntries =
-        header.size() / (hasAddend ? RawRelocationEntryWithAddend ::extent : RawRelocationEntry::extent);
+        header.size() / (hasAddend ? RawRelocationEntryWithAddend::extent : RawRelocationEntry::extent);
     // size_t relocatedSectionIndex = header.info();
     size_t symbolSectionIndex = header.link();
     d_relocationsEntries[sectionIndex] = {};
+    // FIXME This kinda clunkilicious...
     for (size_t i = 0; i != nbSymbolEntries; ++i) {
-      if (hasAddend) {
+      if (!hasAddend) {
         RawRelocationEntry rawEntry(relocationStart, RawRelocationEntry::extent);
-        uint64_t symbolIndex = RawRelocationEntryUtil::offset(rawEntry);
-        RelocationEntry entry{symbolIndex, RawRelocationEntryUtil::info(rawEntry)};
-        d_relocationsEntries[sectionIndex].push_back(std::move(entry));
-        relocationStart += RawRelocationEntryWithAddend ::extent;
-      } else {
-        RawRelocationEntryWithAddend rawEntry(relocationStart, RawRelocationEntryWithAddend ::extent);
-        uint64_t symbolIndex = RawRelocationEntryUtil::offset(rawEntry);
-        RelocationEntryWithAddend entry{symbolIndex, RawRelocationEntryUtil::info(rawEntry),
-                                        RawRelocationEntryUtil::addend(rawEntry)};
+        RelocationEntry entry(rawEntry);
         d_relocationsEntries[sectionIndex].push_back(std::move(entry));
         relocationStart += RawRelocationEntry ::extent;
+      } else {
+        RawRelocationEntryWithAddend rawEntry(relocationStart, RawRelocationEntryWithAddend::extent);
+        RelocationEntryWithAddend entry(rawEntry);
+        d_relocationsEntries[sectionIndex].push_back(std::move(entry));
+        relocationStart += RawRelocationEntryWithAddend::extent;
       }
     }
   }
@@ -228,6 +227,7 @@ nlohmann::json ObjectFile::json() const {
     }
     nlohmann::json entry;
     entry["section"] = relEntries.first;
+    // entry["section"] = d_names.get(d_strTabSectionIndex, relEntries.first);
     entry["relocationEntries"] = decodedRelocations;
     relEntriesPerSectionsJson.push_back(std::move(entry));
   }

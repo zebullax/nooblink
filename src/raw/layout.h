@@ -75,7 +75,7 @@ struct Layout {
     struct RelocationEntryWithAddend {
       static constexpr size_t k_Offset = 0x00;
       static constexpr size_t k_Info = 0x08;
-      static constexpr size_t k_Addend = 0x16;
+      static constexpr size_t k_Addend = 0x10;
     };
   };
 

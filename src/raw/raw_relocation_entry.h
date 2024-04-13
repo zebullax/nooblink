@@ -21,8 +21,8 @@ using RawRelocationEntry =
     std::span<std::byte, Layout::FieldOffset::RelocationEntry::k_Info + Layout::FieldLength::RelocationEntry::k_Info>;
 
 // Alias over sequence of bytes covering a relocation entry with addend
-using RawRelocationEntryWithAddend = std::span<std::byte, Layout::FieldOffset::RelocationEntryWithAddend::k_Info +
-                                                              Layout::FieldLength::RelocationEntryWithAddend::k_Info>;
+using RawRelocationEntryWithAddend = std::span<std::byte, Layout::FieldOffset::RelocationEntryWithAddend::k_Addend +
+                                                              Layout::FieldLength::RelocationEntryWithAddend::k_Addend>;
 
 }  // namespace nooblink
 

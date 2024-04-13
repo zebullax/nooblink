@@ -10,8 +10,8 @@
 namespace nooblink {
 
 uint64_t RawRelocationEntryUtil::addend(RawRelocationEntryWithAddend relocation) {
-  std::span field = relocation.subspan<Layout::FieldOffset::RelocationEntryWithAddend::k_Offset,
-                                       Layout::FieldLength::RelocationEntryWithAddend::k_Offset>();
+  std::span field = relocation.subspan<Layout::FieldOffset::RelocationEntryWithAddend::k_Addend,
+                                       Layout::FieldLength::RelocationEntryWithAddend::k_Addend>();
   return ByteUtil::convertTo<uint64_t>(field);
 }
 

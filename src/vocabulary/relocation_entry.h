@@ -15,9 +15,16 @@
 // nlohmann
 #include <nlohmann/json.hpp>
 
+#include "raw/raw_relocation_entry.h"
+
 namespace nooblink {
 
 struct RelocationEntry {
+  // CREATORS
+  RelocationEntry(RawRelocationEntry raw);
+
+  // DATA (TODO cant be bothered with accessors)
+
   // This member gives the location at which to apply the relocation action. For a relocatable file, the value is the
   // byte offset from the beginning of the section to the storage unit affected by the relocation. For an executable
   // file or a shared object, the value is the virtual address of the storage unit affected by the relocation.
@@ -29,11 +36,16 @@ struct RelocationEntry {
   // value''. Relocation types are processor-specific; descriptions of their behavior appear in the processor supplement
   uint64_t d_info;
 
+  // ACCESSORS
+
   // Render and return a json representation for this object
   nlohmann::json json() const;
 };
 
 struct RelocationEntryWithAddend {
+  // CREATORS
+  RelocationEntryWithAddend(RawRelocationEntryWithAddend raw);
+
   // This member gives the location at which to apply the relocation action. For a relocatable file, the value is the
   // byte offset from the beginning of the section to the storage unit affected by the relocation. For an executable
   // file or a shared object, the value is the virtual address of the storage unit affected by the relocation.
@@ -47,6 +59,8 @@ struct RelocationEntryWithAddend {
 
   // This member specifies a constant addend used to compute the value to be stored into the relocatable field.
   uint64_t d_addend;
+
+  // ACCESSORS
 
   // Render and return a json representation for this object
   nlohmann::json json() const;

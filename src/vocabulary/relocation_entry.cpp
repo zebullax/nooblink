@@ -9,6 +9,8 @@
 #include <utility/conversion.h>
 #include <vocabulary/relocation_entry_util.h>
 
+#include "raw/raw_relocation_entry_util.h"
+
 namespace nooblink {
 namespace {
 auto toHex = [](auto e) {
@@ -17,6 +19,10 @@ auto toHex = [](auto e) {
   return oss.str();
 };
 }
+
+RelocationEntry::RelocationEntry(RawRelocationEntry raw)
+    : d_offset(RawRelocationEntryUtil::offset(raw)), d_info(RawRelocationEntryUtil::info(raw)) {}
+
 nlohmann::json RelocationEntry::json() const {
   using json = nlohmann::json;
   json j;
@@ -27,6 +33,11 @@ nlohmann::json RelocationEntry::json() const {
   j["info"] = info;
   return j;
 }
+
+RelocationEntryWithAddend::RelocationEntryWithAddend(RawRelocationEntryWithAddend raw)
+    : d_offset(RawRelocationEntryUtil::offset(raw)),
+      d_info(RawRelocationEntryUtil::info(raw)),
+      d_addend(RawRelocationEntryUtil::addend(raw)) {}
 
 nlohmann::json RelocationEntryWithAddend::json() const {
   using json = nlohmann::json;

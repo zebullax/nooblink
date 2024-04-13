@@ -94,7 +94,8 @@ class ObjectFile {
   // Load all relocation entries
   void loadRelocationEntries();
 
-  // Load all names for section and symbols
+  // Load all names for section and symbols.  Calling this before having loaded sections and symbols is undefined
+  // behavior
   void loadNames();
 
  public:
