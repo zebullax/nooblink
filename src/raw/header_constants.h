@@ -17,6 +17,9 @@
 
 namespace nooblink {
 
+// Alias over section index as found in object file natural order
+using SectionIndex = uint32_t;
+
 enum class AddressClass : uint8_t { e_Invalid, e_32, e_64 };
 std::ostream &operator<<(std::ostream &os, const AddressClass &addressClass);
 

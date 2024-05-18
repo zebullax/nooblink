@@ -59,7 +59,7 @@ SymbolType SymbolTableEntry::type() const { return d_type; }
 uint32_t SymbolTableEntry::nameIndex() const { return d_nameIndex; }
 
 bool SymbolTableEntry::isUndef() const {
-  return d_nameIndex == 0 && d_value == 0 && d_size == 0 && d_sectionHeaderIndex == 0;
+  return d_sectionHeaderIndex == std::to_underlying(SpecialSectionIndex::e_Undefined);
 }
 
 nlohmann::json SymbolTableEntry::json() const {

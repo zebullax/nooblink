@@ -35,10 +35,9 @@ constexpr const size_t k_ElfHeaderLength = RawElfHeader::extent;
 
 // Utility to filter the specified 'sections' indexed section header on specified 'sectionTypes' section types
 auto filteredSections(std::ranges::range auto&& sections, std::same_as<SectionType> auto&&... sectionTypes) {
-  return sections | std::views::filter(
-                        [sectionTypes...](const std::tuple<ObjectFile::SectionIndex, SectionHeader>& sectionHeader) {
-                          return ((std::get<1>(sectionHeader).type() == sectionTypes) || ...);
-                        });
+  return sections | std::views::filter([sectionTypes...](const std::tuple<SectionIndex, SectionHeader>& sectionHeader) {
+           return ((std::get<1>(sectionHeader).type() == sectionTypes) || ...);
+         });
 }
 
 }  // namespace
@@ -201,18 +200,20 @@ nlohmann::json ObjectFile::json() const {
     const auto& [idx, symbols] = indexedSymbols;
     if (auto iter = d_sectionHeaders.find(idx); iter != d_sectionHeaders.end()) {
       std::transform(symbols.begin(), symbols.end(), std::back_inserter(decodedSymbolTableEntries),
-                     [this, iter](auto e) {
+                     [this, iter](auto symbol) {
                        json k;
-                       if (e.type() == SymbolType::e_Section) {
-                         if (auto sectionHeaderIter = d_sectionHeaders.find(e.sectionHeaderIndex());
+                       if (symbol.type() == SymbolType::e_Section) {
+                         if (auto sectionHeaderIter = d_sectionHeaders.find(symbol.sectionHeaderIndex());
                              sectionHeaderIter != d_sectionHeaders.end()) {
                            k["name"] = d_names.get(d_strTabSectionIndex, sectionHeaderIter->second.nameIndex());
+                         } else {
+                           k["name"] = "Error##UnknownSection";
                          }
                        } else {
-                         k["name"] = d_names.get(iter->second.link(), e.nameIndex());
+                         k["name"] = d_names.get(iter->second.link(), symbol.nameIndex());
                        }
                        k["section"] = Conversion::toString(iter->second.type());
-                       k["symbol"] = e.json();
+                       k["symbol"] = symbol.json();
                        return k;
                      });
     }
@@ -237,5 +238,7 @@ nlohmann::json ObjectFile::json() const {
 }
 
 const ObjectFile::IndexedSymbols& ObjectFile::symbols() const { return d_symbolEntries; }
+
+const StringTable& ObjectFile::names() const { return d_names; }
 
 }  // namespace nooblink

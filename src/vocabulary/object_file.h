@@ -24,7 +24,6 @@
 #include <cstdint>
 #include <memory>
 #include <ostream>
-#include <string_view>
 #include <unordered_map>
 #include <variant>
 #include <vector>
@@ -43,9 +42,6 @@ class ObjectFile {
     // This object is not in a usable state
     e_Error,
   };
-
-  // Alias over section index as found in object file natural order
-  using SectionIndex = uint32_t;
 
   // Alias over a section index and the sequence of related symbol table entries. The order of symbols for a given
   // section index is left as per the original object file. The section index is critical to be able to reach the
@@ -85,17 +81,17 @@ class ObjectFile {
   // Load the content of the ELF main header
   void loadElfHeader();
 
-  // Load all section header entries from the section header table
+  // Load all section header entries from the section header table.  Calling this before 'loadElfHeader' is undefined
+  // behaviour
   void loadSectionTable();
 
-  // Load all symbol table entries
+  // Load all symbol table entries.  Calling this before 'loadSectionTable' is undefined behaviour
   void loadSymbolTable();
 
   // Load all relocation entries
   void loadRelocationEntries();
 
-  // Load all names for section and symbols.  Calling this before having loaded sections and symbols is undefined
-  // behavior
+  // Load all names for section and symbols.  Calling this before 'loadSymbolTable' is undefined behaviour
   void loadNames();
 
  public:
@@ -123,6 +119,9 @@ class ObjectFile {
 
   // Return all relocation entries, indexed by their related section index
   [[nodiscard]] const IndexedRelocations& relocations() const;
+
+  // Return names loaded from the object file
+  [[nodiscard]] const StringTable& names() const;
 };
 
 }  // namespace nooblink

@@ -11,11 +11,15 @@
 #include <boost/program_options/variables_map.hpp>
 // std
 #include <cstdlib>
+#include <filesystem>
+#include <ranges>
 #include <sstream>
 #include <string>
 #include <vector>
 
 namespace po = boost::program_options;
+using namespace std::string_literals;
+
 int main(int argc, char** argv) {
   po::options_description cmdLineOptions("Command line options");
   cmdLineOptions.add_options()("object-file,O", po::value<std::vector<std::string>>(), "Object files to link together")(
@@ -33,16 +37,35 @@ int main(int argc, char** argv) {
   }
 
   nooblink::Context context;
-  for (auto&& objFile : vm["object-file"].as<std::vector<std::string>>()) {
-    nooblink::ObjectFile* objectFile = context.loadObjectFile(objFile);
+  std::vector<std::string> objectFiles = vm["object-file"].as<std::vector<std::string>>();
+  auto filePaths =
+      objectFiles | std::views::transform([](const std::string& name) { return std::filesystem::absolute(name); });
+  for (const auto& filePath : filePaths) {
+    spdlog::debug("Loading object file "s + filePath.string());
+    nooblink::ObjectFile* objectFile = context.loadObjectFile(filePath);
     if (!objectFile || objectFile->currentState() != nooblink::ObjectFile::State::e_Loaded) {
-      spdlog::info("Error while loading object file...");
+      spdlog::error("Error while loading object file...");
       return EXIT_FAILURE;
     }
-    // Will deal later wit logging custom type
+    // Will deal later with logging custom type
     std::ostringstream oss;
     oss << *objectFile << std::endl;
     spdlog::info(oss.str());
+  }
+
+  for (auto&& filePath : filePaths) {
+    auto undefinedSymbols = context.undefinedSymbols(filePath);
+    if (undefinedSymbols.empty()) {
+      spdlog::debug("No undefined symbols found in '"s + filePath.string() + "'");
+    } else {
+      spdlog::info("Undefined symbols found in '"s + filePath.string() + "'");
+      for (const auto& [index, symbols] : undefinedSymbols) {
+        // O(#file) * O(#section) * O(#undef)...
+        for (const auto& symbol : symbols) {
+          spdlog::debug(symbol.json());
+        }
+      }
+    }
   }
   return EXIT_SUCCESS;
 }

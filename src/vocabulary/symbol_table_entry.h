@@ -15,7 +15,6 @@
 // nlohmann
 #include <nlohmann/json.hpp>
 // std
-#include <cstddef>
 #include <ostream>
 
 namespace nooblink {
