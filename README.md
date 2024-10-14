@@ -47,6 +47,7 @@ graph TD;
 ## Bug 🐛
 
 ## Timeline ⌛
+- Now - Pausing to work on P3385 implementation :/
 - 04/07 - Fix symbol names
 For section type symbols, we have to (unless I'm wrong) go back to the section header definition using the `symbol.sectionHeaderIndex()`, then use classic way to get the name for that section... The string table linked to via `sh_link` from the `symtab` section header is useless for those.
 
